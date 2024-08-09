@@ -11,6 +11,8 @@
   "dependencies": {
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "drizzle-kit": "^0.24.0",
+    "drizzle-orm": "^0.33.0",
     "lucide-react": "^0.427.0",
     "next": "14.2.5",
     "nextjs-toploader": "^1.6.12",
