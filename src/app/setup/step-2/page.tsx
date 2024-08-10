@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
 
 const StepTwo = () => {
   return (
@@ -21,7 +22,9 @@ const StepTwo = () => {
         </CardHeader>
         <CardContent></CardContent>
         <CardFooter className="flex justify-between">
-          <Button variant="outline">Previous</Button>
+          <Link href={"/setup/step-1"}>
+            <Button variant="outline">Previous</Button>
+          </Link>
           <Button>
             Next
             <ArrowRightIcon className="ml-2" width={20} height={20} />

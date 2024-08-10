@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
 
 const StepThree = () => {
   return (
@@ -19,19 +20,19 @@ const StepThree = () => {
             Deploy your new project in one-click.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-
-        </CardContent>
+        <CardContent></CardContent>
         <CardFooter className="flex justify-between">
-          <Button variant="outline">Previous</Button>
+          <Link href="/setup/step-2">
+            <Button variant="outline">Previous</Button>
+          </Link>
           <Button>
-           Get Started!
-            <ArrowRightIcon className="ml-2" width={20} height={20}/>
+            Get Started!
+            <ArrowRightIcon className="ml-2" width={20} height={20} />
           </Button>
         </CardFooter>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default StepThree
+export default StepThree;
