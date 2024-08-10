@@ -24,8 +24,7 @@ const StepOne = () => {
         <CardContent>
           <Datatable config={config}/>
         </CardContent>
-        <CardFooter className="flex ">
-          {/* <Button variant="outline">Cancel</Button> */}
+        <CardFooter className="flex">
           <Button className="ml-auto">
            Next
             <ArrowRightIcon className="ml-2" width={20} height={20}/>

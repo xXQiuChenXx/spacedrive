@@ -19,19 +19,17 @@ const StepTwo = () => {
             Deploy your new project in one-click.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-
-        </CardContent>
-        <CardFooter className="flex ">
-          {/* <Button variant="outline">Cancel</Button> */}
-          <Button className="ml-auto">
-           Next
-            <ArrowRightIcon className="ml-2" width={20} height={20}/>
+        <CardContent></CardContent>
+        <CardFooter className="flex justify-between">
+          <Button variant="outline">Previous</Button>
+          <Button>
+            Next
+            <ArrowRightIcon className="ml-2" width={20} height={20} />
           </Button>
         </CardFooter>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default StepTwo
+export default StepTwo;

@@ -22,9 +22,9 @@ const StepThree = () => {
         <CardContent>
 
         </CardContent>
-        <CardFooter className="flex ">
-          {/* <Button variant="outline">Cancel</Button> */}
-          <Button className="ml-auto">
+        <CardFooter className="flex justify-between">
+          <Button variant="outline">Previous</Button>
+          <Button>
            Get Started!
             <ArrowRightIcon className="ml-2" width={20} height={20}/>
           </Button>
