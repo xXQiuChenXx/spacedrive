@@ -1,13 +1,14 @@
 import { migrate } from "drizzle-orm/postgres-js/migrator"
 
 import { db } from "."
+import path from "path"
 
 export async function runMigrate() {
   console.log("⏳ Running migrations...")
 
   const start = Date.now()
 
-  await migrate(db, { migrationsFolder: "drizzle" })
+  await migrate(db, { migrationsFolder: "src/drizzle" })
 
   const end = Date.now()
 
