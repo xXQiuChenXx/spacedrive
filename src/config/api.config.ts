@@ -1,11 +1,12 @@
+
 /**
  * This file contains the configuration for the API endpoints and tokens we use.
  */
 const config = {
     // The clientId and clientSecret are used to authenticate the user with Microsoft Graph API using OAuth. You would
     // not need to change anything here if you can authenticate with your personal Microsoft account with OneDrive International.
-    clientId: process.env.MS_CLIENT_ID || "",
-    clientSecret: process.env.MS_CLIENT_SECRET || "",
+    clientId: process.env.CLIENT_ID || "",
+    clientSecret: process.env.CLIENT_SECRET || "",
     postgressURL:
       process.env.POSTGRES_URL || process.env.POSTGRES_URL_NON_POOLING || "",
   

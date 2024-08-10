@@ -4,6 +4,7 @@ import "./globals.css";
 import { Theme } from "@radix-ui/themes";
 import { ThemeProvider } from "next-themes";
 import NextTopLoader from "nextjs-toploader";
+import { SiteHeader } from "@/components/header/SiteHeader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,9 +21,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider attribute="class">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           <Theme>
-            <NextTopLoader height={1} color="rgb(156, 163, 175, 0.9)" />
+            <NextTopLoader height={2} color="rgb(156, 163, 175, 0.9)" showSpinner={false}/>
+            <SiteHeader />
             {children}
           </Theme>
         </ThemeProvider>
@@ -30,4 +37,3 @@ export default function RootLayout({
     </html>
   );
 }
-  
