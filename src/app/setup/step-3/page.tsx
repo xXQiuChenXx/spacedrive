@@ -9,12 +9,12 @@ import {
 } from "@/components/ui/card";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 
-const StepTwo = () => {
+const StepThree = () => {
   return (
     <div>
       <Card className="w-[900px] mx-auto mt-32 shadow">
         <CardHeader>
-          <CardTitle>Step 2 / 3 - Oauth</CardTitle>
+          <CardTitle>Step 3 / 3 - All most done!</CardTitle>
           <CardDescription>
             Deploy your new project in one-click.
           </CardDescription>
@@ -25,7 +25,7 @@ const StepTwo = () => {
         <CardFooter className="flex ">
           {/* <Button variant="outline">Cancel</Button> */}
           <Button className="ml-auto">
-           Next
+           Get Started!
             <ArrowRightIcon className="ml-2" width={20} height={20}/>
           </Button>
         </CardFooter>
@@ -34,4 +34,4 @@ const StepTwo = () => {
   )
 }
 
-export default StepTwo
+export default StepThree
