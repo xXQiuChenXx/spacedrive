@@ -22,7 +22,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class">
           <Theme>
-            <NextTopLoader />
+            <NextTopLoader height={1} color="rgb(156, 163, 175, 0.9)" />
             {children}
           </Theme>
         </ThemeProvider>
@@ -30,3 +30,4 @@ export default function RootLayout({
     </html>
   );
 }
+  
