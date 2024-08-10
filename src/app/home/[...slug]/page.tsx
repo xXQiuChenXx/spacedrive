@@ -7,3 +7,9 @@ const HomePage = () => {
 }
 
 export default HomePage
+
+export async function generateStaticParams() {
+    return [{
+        slug: "/test"
+    }]
+}
