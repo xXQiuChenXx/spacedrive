@@ -7,5 +7,5 @@ const HomePage = () => {
 export default HomePage;
 
 export async function generateStaticParams() {
-  return [{ folder: [] }, { folder: [] }];
+  return [{ folder: ["test", "subtest"] }, { folder: ["testing", "subtesting"] }];
 }
