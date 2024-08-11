@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/card";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 const StepThree = () => {
   return (
@@ -20,10 +22,15 @@ const StepThree = () => {
             Deploy your new project in one-click.
           </CardDescription>
         </CardHeader>
-        <CardContent></CardContent>
+        <CardContent>
+          <div className="flex flex-col space-y-1.5">
+            <Label htmlFor="name">Name</Label>
+            <Input id="name" placeholder="Name of your project" />
+          </div>
+        </CardContent>
         <CardFooter className="flex justify-between">
           <Link href="/setup/step-2">
-            <Button variant="outline">Previous</Button>
+            <Button variant="outline">Go back</Button>
           </Link>
           <Button>
             Get Started!
