@@ -1,4 +1,5 @@
 import { config } from "@/config/api.config";
+import { saveToken } from "./oAuthStore";
 
 export function generateAuthorisationUrl(): string {
   const { clientId, redirectURI, authApi, scope } = config;
@@ -48,7 +49,7 @@ export const exchangeToken = async ({
   refreshToken,
 }: {
   refreshToken: string;
-}) => {
+}):Promise<AuthResponse> => {
   let response = await fetch(`${config.authApi}/token`, {
     method: "POST",
     body: new URLSearchParams({
@@ -94,6 +95,16 @@ export const validateToken = async ({
   refreshToken: string;
 }) => {
   const res = await exchangeToken({ refreshToken });
-  console.log(res);
+ await saveToken({ accessToken: res.access_token, refreshToken: res.refresh_token})
   
 };
+
+// error: {
+//   code: 'InvalidAuthenticationToken',
+//   message: 'Lifetime validation failed, the token is expired.',
+//   innerError: {
+//     date: '2024-08-11T11:50:29',
+//     'request-id': '6721ee0a-b8dd-4bfe-be05-e1b045280b0b',
+//     'client-request-id': '6721ee0a-b8dd-4bfe-be05-e1b045280b0b'
+//   }
+// }

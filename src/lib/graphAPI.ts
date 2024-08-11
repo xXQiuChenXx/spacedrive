@@ -1,8 +1,7 @@
 import { config } from "@/config/api.config";
 
-export const getUrlFromPath = (path?: string): string => {
+export const generateRequestUrl = (path?: string[]): string => {
   const isRoot = path?.length ? `:` : "";
-  return `${config.graphApi}/me/drive/root${isRoot}${
-    path?.length ? `/${path}` : ""
-  }${isRoot}/children`;
+  const location = path?.length ? `/${path.join("/")}` : "";
+  return `${config.graphApi}/me/drive/root${isRoot}${location}${isRoot}/children`;
 };
