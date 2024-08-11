@@ -7,12 +7,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getToken } from "@/lib/oAuthStore";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-const StepThree = () => {
+const StepThree = async ({
+  searchParams,
+}: {
+  searchParams: { error?: string };
+}) => {
+  const token = await getToken();
+  if (!token.length) console.log("Token not found");
+  const { error } = searchParams;
+  console.log(token[0])
   return (
     <div>
       <Card className="w-[900px] mx-auto mt-32 shadow">
