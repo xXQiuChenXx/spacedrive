@@ -22,22 +22,19 @@ type AuthResponse = {
 };
 
 export const exchangeCode = async (code: string): Promise<AuthResponse> => {
-  let response = await fetch(
-    `${config.authApi}/token`,
-    {
-      method: "post",
-      body: new URLSearchParams({
-        client_id: config.clientId,
-        client_secret: config.clientSecret,
-        redirect_uri: config.redirectURI,
-        grant_type: "authorization_code",
-        code: code,
-      }),
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    }
-  ).then((res) => (res.ok ? res.json() : null));
+  let response = await fetch(`${config.authApi}/token`, {
+    method: "post",
+    body: new URLSearchParams({
+      client_id: config.clientId,
+      client_secret: config.clientSecret,
+      redirect_uri: config.redirectURI,
+      grant_type: "authorization_code",
+      code: code,
+    }),
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+  }).then((res) => (res.ok ? res.json() : null));
 
   if (!response || response?.error)
     throw new Error(
@@ -47,23 +44,24 @@ export const exchangeCode = async (code: string): Promise<AuthResponse> => {
   return response;
 };
 
-export const exchangeToken = async (refreshToken: string) => {
-  let response = await fetch(
-    `${config.authApi}/token`,
-    {
-      method: "POST",
-      body: new URLSearchParams({
-        client_id: config.clientId,
-        client_secret: config.clientSecret,
-        redirect_uri: config.redirectURI,
-        grant_type: "refresh_token",
-        refresh_token: refreshToken,
-      }),
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    }
-  ).then((res) => (res.ok ? res.json() : null));
+export const exchangeToken = async ({
+  refreshToken,
+}: {
+  refreshToken: string;
+}) => {
+  let response = await fetch(`${config.authApi}/token`, {
+    method: "POST",
+    body: new URLSearchParams({
+      client_id: config.clientId,
+      client_secret: config.clientSecret,
+      redirect_uri: config.redirectURI,
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+    }),
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+  }).then((res) => (res.ok ? res.json() : null));
 
   if (response?.error)
     throw new Error(
@@ -87,4 +85,15 @@ export const exchangeInformation = async (accessToken: string) => {
         "An error occured while exchanging token, please try again latter."
     );
   return response;
+};
+
+export const validateToken = async ({
+  refreshToken,
+}: {
+  accessToken: string;
+  refreshToken: string;
+}) => {
+  const res = await exchangeToken({ refreshToken });
+  console.log(res);
+  
 };

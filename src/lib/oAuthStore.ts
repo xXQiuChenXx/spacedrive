@@ -9,3 +9,29 @@ export async function getToken() {
     .where(eq(credentials.id, "main"));
   return token;
 }
+
+interface BasicToken {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export async function saveToken({ accessToken, refreshToken }: BasicToken) {
+  try {
+    await db
+      .insert(credentials)
+      .values({
+        id: "main",
+        accessToken,
+        refreshToken,
+      })
+      .onConflictDoUpdate({
+        target: credentials.id,
+        set: {
+          accessToken,
+          refreshToken,
+        },
+      });
+  } catch (error) {
+    console.log(error);
+  }
+}
