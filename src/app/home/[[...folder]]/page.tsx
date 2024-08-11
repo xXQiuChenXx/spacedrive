@@ -6,6 +6,7 @@ import { data } from "@/lib/temp";
 import { Shell } from "@/components/Shell";
 import { Suspense } from "react";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
+import { ItemsTable } from "@/components/main/item-table";
 
 const HomePage = async ({
   params,
@@ -36,7 +37,7 @@ const HomePage = async ({
           />
         }
       >
-        {/* <TasksTable tasksPromise={tasksPromise} /> */}
+        <ItemsTable tableData={data} />
       </Suspense>
     </Shell>
   );

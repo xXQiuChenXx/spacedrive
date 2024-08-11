@@ -1,11 +1,6 @@
 import { generateRequestUrl } from "./graphAPI";
 import { config } from "@/config/api.config";
 
-type Props = {
-  folder?: string[];
-  access_token: string;
-};
-
 export type ItemsResponse = {
   "@odata.etag": string;
   id: string;
@@ -26,10 +21,29 @@ export type ErrorResponse = {
     message: string;
   };
 };
+
+type SearchParams = {
+  page: string;
+  per_page: string;
+  sort: string;
+  name: string;
+  from: string;
+  to: string;
+};
+
+type Props = {
+  folder?: string[];
+  access_token: string;
+  searchParams: SearchParams;
+};
+
 export const getItems = async ({
   folder,
   access_token,
+  searchParams,
 }: Props): Promise<ItemsResponse[] | ErrorResponse> => {
+  const { page, per_page, sort, name, from, to } = searchParams;
+
   const requestUrl = generateRequestUrl(folder);
   const params = new URLSearchParams({
     select: "name,id,size,lastModifiedDateTime,folder,file,video,image",
