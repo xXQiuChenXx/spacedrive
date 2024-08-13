@@ -37,7 +37,7 @@ export function ItemsTable({
    * @prop {React.ReactNode} [icon] - An optional icon to display next to the label.
    * @prop {boolean} [withCount] - An optional boolean to display the count of the filter option.
    */
-  const filterFields: DataTableFilterField<ItemsResponse>[] = [
+  const filterFields: DataTableFilterField<Item>[] = [
     {
       label: "Name",
       value: "name",
