@@ -10,13 +10,18 @@ import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { getColumns } from "./tasks-table-columns";
 import { useTasksTable } from "./tasks-table-provider";
 import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions";
-import { ItemsResponse } from "@/lib/driveRequest";
+import { Item } from "@/lib/requests";
+import { filterItems } from "@/lib/requests";
 
-export function ItemsTable({ tasksPromise }: any) {
+export function ItemsTable({
+  itemsPromise,
+}: {
+  itemsPromise: Promise<{ data: Item[]; pageCount: number }>;
+}) {
   // Feature flags for showcasing some additional features. Feel free to remove them.
   const { featureFlags } = useTasksTable();
 
-  const { data, pageCount } = React.use;
+  const { data, pageCount } = React.use(itemsPromise);
 
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo(() => getColumns(), []);
@@ -57,9 +62,7 @@ export function ItemsTable({ tasksPromise }: any) {
   });
 
   return (
-    <DataTable
-      table={table}
-    >
+    <DataTable table={table}>
       <DataTableToolbar table={table} filterFields={filterFields}>
         <TasksTableToolbarActions table={table} />
       </DataTableToolbar>
