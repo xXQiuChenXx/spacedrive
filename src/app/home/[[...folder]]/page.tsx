@@ -15,7 +15,7 @@ const HomePage = async ({
   const token = await getToken();
   if (!token.length) return redirect("/setup");
   const { accessToken, refreshToken } = token[0];
-  // await validateToken({ accessToken, refreshToken });
+  await validateToken({ accessToken, refreshToken });
   const items = (await getItems({
     access_token: accessToken,
     folder: params.folder,
