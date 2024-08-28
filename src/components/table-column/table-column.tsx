@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { formatBytes } from "@/lib/utils";
 
 export function getColumns(): ColumnDef<ItemsResponse>[] {
   return [
@@ -51,15 +52,15 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
       ),
     },
     {
-      accessorKey: "fileSize",
+      accessorKey: "size",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="File Size" />
       ),
       // Todo
-      cell: ({ cell }) => cell.getValue(),
+      cell: ({ cell }) => formatBytes(cell.getValue() as number),
     },
     {
-      accessorKey: "lastModified",
+      accessorKey: "lastModifiedDateTime",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Last Modified" />
       ),

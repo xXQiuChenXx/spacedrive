@@ -41,7 +41,7 @@ export const getItems = async ({
     cache: "no-store",
   }).then((res) => res.json());
 
-  return response;
+  return response?.value;
 
   if (!response?.error || response?.error?.code === "itemNotFound")
     return response.value;
