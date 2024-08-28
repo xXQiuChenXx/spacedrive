@@ -6,7 +6,7 @@ type Props = {
   access_token: string;
 };
 
-export type ItemsResponse = {
+export type OriResponse = {
   "@odata.etag": string;
   id: string;
   lastModifiedDateTime: string;
@@ -17,6 +17,22 @@ export type ItemsResponse = {
   file?: {
     hashes: Object;
     mimeType: string;
+  };
+  size: number;
+};
+
+export type ItemsResponse = {
+  "@odata.etag": string;
+  id: string;
+  lastModifiedDateTime: string;
+  name: string;
+  folder?: {
+    childCount: number;
+  };
+  file: {
+    name: string;
+    isFolder: boolean;
+    mimeType?: string;
   };
   size: number;
 };
@@ -41,8 +57,19 @@ export const getItems = async ({
     cache: "no-store",
   }).then((res) => res.json());
 
-  return response?.value;
-
-  if (!response?.error || response?.error?.code === "itemNotFound")
-    return response.value;
+  if (response?.value) {
+    return response.value.map((x: OriResponse) => {
+      return {
+        ...x,
+        file: {
+          name: x.name,
+          isFolder: !!x?.folder,
+          mimeType: x.file?.mimeType,
+        },
+      };
+    });
+  } else {
+    console.log(response.error);
+    return response;
+  }
 };

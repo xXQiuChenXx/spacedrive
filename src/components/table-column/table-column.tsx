@@ -8,11 +8,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { formatBytes } from "@/lib/utils";
+import { FolderIcon } from "lucide-react";
 
 export function getColumns(): ColumnDef<ItemsResponse>[] {
   return [
@@ -42,14 +42,14 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
       size: 40,
     },
     {
-      accessorKey: "name",
+      accessorKey: "file",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Name" />
+        <DataTableColumnHeader column={column} title="File Name" />
       ),
-
-      cell: ({ row }) => (
-        <div className="max-w-[31.25rem]  truncate font-medium">
-          {row.getValue("name")}
+      cell: ({ cell, getValue }) => (
+        <div className="max-w-[31.25rem] truncate font-medium flex gap-3 items-center">
+          {(getValue() as ItemsResponse["file"])?.isFolder && <FolderIcon />}
+          {(getValue() as ItemsResponse["file"]).name}
         </div>
       ),
     },
