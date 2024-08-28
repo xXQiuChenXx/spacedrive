@@ -1,7 +1,8 @@
+import DataTable from "@/components/DataTable";
+import { Shell } from "@/components/Shell";
 import { getItems, ItemsResponse } from "@/lib/driveRequest";
 import { validateToken } from "@/lib/oAuthHandler";
 import { getToken } from "@/lib/oAuthStore";
-import { Shell } from "lucide-react";
 import { redirect } from "next/navigation";
 
 const HomePage = async ({
@@ -20,8 +21,11 @@ const HomePage = async ({
     folder: params.folder,
   })) as ItemsResponse[];
 
-  return;
-  <Shell>test </Shell>;
+  return (
+    <Shell>
+      <DataTable data={items} />
+    </Shell>
+  );
 };
 
 export default HomePage;

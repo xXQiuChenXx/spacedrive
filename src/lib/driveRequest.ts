@@ -20,6 +20,7 @@ export type ItemsResponse = {
   };
   size: number;
 };
+
 export type ErrorResponse = {
   error: {
     code: string;
