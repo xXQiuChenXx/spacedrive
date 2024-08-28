@@ -39,7 +39,7 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
       ),
       enableSorting: false,
       enableHiding: false,
-      size: 40,   
+      size: 40,
     },
     {
       accessorKey: "name",
@@ -67,7 +67,7 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
         <DataTableColumnHeader column={column} title="Last Modified" />
       ),
       cell: ({ cell }) => cell.getValue(),
-      size: 100
+      size: 100,
       // Todo cell: ({ cell }) => formatDate(cell.getValue() as Date),
     },
     {

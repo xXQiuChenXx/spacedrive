@@ -19,7 +19,7 @@ const HomePage = async ({
     access_token: accessToken,
     folder: params.folder,
   })) as ItemsResponse[];
-  console.log(items[0])
+  console.log(items)
 
   return (
     <div className="container py-8 mt-14">
