@@ -39,12 +39,14 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
       ),
       enableSorting: false,
       enableHiding: false,
+      size: 40,   
     },
     {
       accessorKey: "name",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Name" />
       ),
+
       cell: ({ row }) => (
         <div className="max-w-[31.25rem]  truncate font-medium">
           {row.getValue("name")}
@@ -56,7 +58,7 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="File Size" />
       ),
-      // Todo
+      size: 100,
       cell: ({ cell }) => formatBytes(cell.getValue() as number),
     },
     {
@@ -65,6 +67,7 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
         <DataTableColumnHeader column={column} title="Last Modified" />
       ),
       cell: ({ cell }) => cell.getValue(),
+      size: 100
       // Todo cell: ({ cell }) => formatDate(cell.getValue() as Date),
     },
     {

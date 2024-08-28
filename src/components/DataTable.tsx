@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Table,
@@ -20,7 +20,7 @@ const DataTable = ({ data }: { data: ItemsResponse[] }) => {
   const { table } = useDataTable({ columns, data });
 
   return (
-    <div className="w-full space-y-2.5 overflow-auto">
+    <div className="w-full md:w-11/12 mx-auto space-y-2.5 overflow-auto">
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
@@ -47,7 +47,7 @@ const DataTable = ({ data }: { data: ItemsResponse[] }) => {
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} width={cell.column.getSize()}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
