@@ -1,3 +1,4 @@
+import DataRoute from "@/components/DataRoute";
 import DataTable from "@/components/DataTable";
 import { getItems, ItemsResponse } from "@/lib/driveRequest";
 import { validateToken } from "@/lib/oAuthHandler";
@@ -22,7 +23,8 @@ const HomePage = async ({
   console.log(items)
 
   return (
-    <div className="container py-8 mt-14">
+    <div className="container py-8 mt-10">
+      <DataRoute />
       <DataTable data={items} />
     </div>
   );
