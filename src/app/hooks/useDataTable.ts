@@ -2,13 +2,12 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
-  TableOptions,
   useReactTable,
 } from "@tanstack/react-table";
 
 interface Props {
-    columns: any;
-    data: any;
+  columns: any;
+  data: any;
 }
 
 export function useDataTable<TData>({ columns, data }: Props) {
@@ -17,7 +16,7 @@ export function useDataTable<TData>({ columns, data }: Props) {
     data,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel()
+    getSortedRowModel: getSortedRowModel(),
   });
 
   return { table };

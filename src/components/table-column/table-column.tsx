@@ -1,5 +1,6 @@
 import React from "react";
 import { type ColumnDef } from "@tanstack/react-table";
+import { formatDate } from "@/lib/utils";
 import { ItemsResponse } from "@/lib/driveRequest";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "./column-header";
@@ -60,6 +61,15 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
         const name = (row.getValue("file") as any)?.name;
         return name.includes(value);
       },
+      sortingFn: (rowA, rowB, columnId) => {
+        // 1 when a > b
+        const { isFolder: isFolderA, name: nameA } = rowA.original.file;
+        const { isFolder: isFolderB, name: nameB } = rowB.original.file;
+        if (isFolderA !== isFolderB) {
+          return isFolderA ? -1 : 1;
+        }
+        return nameA.localeCompare(nameB);
+      },
       size: 560,
     },
     {
@@ -75,9 +85,8 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Last Modified" />
       ),
-      cell: ({ cell }) => cell.getValue(),
+      cell: ({ cell }) => formatDate(cell.getValue() as string),
       size: 100,
-      // Todo cell: ({ cell }) => formatDate(cell.getValue() as Date),
     },
     {
       id: "actions",
