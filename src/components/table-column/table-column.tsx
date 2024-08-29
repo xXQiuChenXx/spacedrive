@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { formatBytes } from "@/lib/utils";
-import { FolderIcon } from "lucide-react";
+import { FolderIcon, FileTextIcon } from "lucide-react";
 
 export function getColumns(): ColumnDef<ItemsResponse>[] {
   return [
@@ -48,10 +48,15 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
       ),
       cell: ({ cell, getValue }) => (
         <div className="max-w-[31.25rem] truncate font-medium flex gap-3 items-center">
-          {(getValue() as ItemsResponse["file"])?.isFolder && <FolderIcon />}
+          {(getValue() as ItemsResponse["file"])?.isFolder ? (
+            <FolderIcon className="size-5"/>
+          ) : (
+            <FileTextIcon className="size-5" />
+          )}
           {(getValue() as ItemsResponse["file"]).name}
         </div>
       ),
+      size: 560
     },
     {
       accessorKey: "size",
