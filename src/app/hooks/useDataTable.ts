@@ -1,5 +1,7 @@
 import {
   getCoreRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
   TableOptions,
   useReactTable,
 } from "@tanstack/react-table";
@@ -14,6 +16,8 @@ export function useDataTable<TData>({ columns, data }: Props) {
     columns,
     data,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel()
   });
 
   return { table };

@@ -49,14 +49,18 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
       cell: ({ cell, getValue }) => (
         <div className="max-w-[31.25rem] truncate font-medium flex gap-3 items-center">
           {(getValue() as ItemsResponse["file"])?.isFolder ? (
-            <FolderIcon className="size-5"/>
+            <FolderIcon className="size-5" />
           ) : (
             <FileTextIcon className="size-5" />
           )}
           {(getValue() as ItemsResponse["file"]).name}
         </div>
       ),
-      size: 560
+      filterFn: (row, id, value) => {
+        const name = (row.getValue("file") as any)?.name;
+        return name.includes(value);
+      },
+      size: 560,
     },
     {
       accessorKey: "size",

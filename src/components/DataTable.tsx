@@ -14,6 +14,7 @@ import { useMemo } from "react";
 import { getColumns } from "./table-column/table-column";
 import { flexRender, useReactTable } from "@tanstack/react-table";
 import { useDataTable } from "@/app/hooks/useDataTable";
+import { DataTableToolbar } from "./DataToolbar";
 
 const DataTable = ({ data }: { data: ItemsResponse[] }) => {
   const router = useRouter();
@@ -24,6 +25,7 @@ const DataTable = ({ data }: { data: ItemsResponse[] }) => {
 
   return (
     <div className="w-full md:w-11/12 mx-auto space-y-2.5 overflow-auto">
+      <DataTableToolbar table={table} />
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>

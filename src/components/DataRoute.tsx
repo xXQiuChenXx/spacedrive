@@ -20,12 +20,11 @@ const DataRoute = () => {
       <BreadcrumbList>
         {routes.map((route, i) => (
           <Fragment key={"link-" + route}>
-            <BreadcrumbItem key={route + i}>
+            <BreadcrumbItem>
               <BreadcrumbLink
                 href={
                   routes[i + 1] ? "/" + routes.slice(0, i + 1).join("/") : "#"
                 }
-                key={route + i}
               >
                 {decodeURI(route)}
               </BreadcrumbLink>
