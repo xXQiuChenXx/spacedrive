@@ -36,7 +36,7 @@ const HomePage = async ({
   console.log(items ?? item);
 
   return (
-    <div className="container py-8 mt-10">
+    <div className="container py-8 mt-5">
       <DataRoute />
       {items ? <DataTable data={items} /> : <FileDescription data={item} />}
     </div>

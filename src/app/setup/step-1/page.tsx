@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { IconAlertTriangle } from "@tabler/icons-react";
-import { Text } from "@radix-ui/themes";
 import {
   Card,
   CardContent,

@@ -116,7 +116,7 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40">
-                <DropdownMenuItem onSelect={() => setShowRenameDialog(true)}>
+                <DropdownMenuItem onSelect={() => setShowRenameDialog(true)} onClick={(e) => e.preventDefault()}>
                   Rename
                 </DropdownMenuItem>
                 <DropdownMenuItem onSelect={() => setShowShareDialog(true)}>
