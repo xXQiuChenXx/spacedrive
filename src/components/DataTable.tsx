@@ -56,14 +56,21 @@ const DataTable = ({ data }: { data: ItemsResponse[] }) => {
                   className="cursor-pointer"
                   data-state={row.getIsSelected() && "selected"}
                   onClick={(event) => {
-                    const filename = (row.getValue("file") as any)?.name;
-                    router.push(`${pathname}/${filename}`);
+                    if (
+                      (event.target as HTMLElement).getAttribute(
+                        "data-group"
+                      ) === "row-data"
+                    ) {
+                      const filename = (row.getValue("file") as any)?.name;
+                      router.push(`${pathname}/${filename}`);
+                    }
                   }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
                       style={{ width: cell.column.getSize() }}
+                      data-group="row-data"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
