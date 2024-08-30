@@ -1,6 +1,7 @@
 import DataRoute from "@/components/DataRoute";
 import DataTable from "@/components/DataTable";
-import { getItems, ItemsResponse } from "@/lib/driveRequest";
+import FileDescription from "@/components/FileDescription";
+import { getItems, ItemsResponse, OriResponse } from "@/lib/driveRequest";
 import { validateToken } from "@/lib/oAuthHandler";
 import { getToken } from "@/lib/oAuthStore";
 import { redirect } from "next/navigation";
@@ -19,13 +20,25 @@ const HomePage = async ({
   const items = (await getItems({
     access_token: accessToken,
     folder: params.folder,
+    listChild: true,
   })) as ItemsResponse[];
-  console.log(items)
+
+  let item;
+
+  if (!items) {
+    item = (await getItems({
+      access_token: accessToken,
+      folder: params.folder,
+      row: true,
+    })) as OriResponse;
+  }
+
+  console.log(items ?? item);
 
   return (
     <div className="container py-8 mt-10">
       <DataRoute />
-      <DataTable data={items} />
+      {items ? <DataTable data={items} /> : <FileDescription data={item} />}
     </div>
   );
 };
