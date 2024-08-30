@@ -1,7 +1,9 @@
-import { getItems, ItemsResponse } from "@/lib/driveRequest";
+import DataRoute from "@/components/DataRoute";
+import DataTable from "@/components/DataTable";
+import FileDescription from "@/components/FileDescription";
+import { getItems, ItemsResponse, OriResponse } from "@/lib/driveRequest";
 import { validateToken } from "@/lib/oAuthHandler";
 import { getToken } from "@/lib/oAuthStore";
-import { Shell } from "lucide-react";
 import { redirect } from "next/navigation";
 
 const HomePage = async ({
@@ -18,10 +20,27 @@ const HomePage = async ({
   const items = (await getItems({
     access_token: accessToken,
     folder: params.folder,
+    listChild: true,
   })) as ItemsResponse[];
 
-  return;
-  <Shell>test </Shell>;
+  let item;
+
+  if (!items) {
+    item = (await getItems({
+      access_token: accessToken,
+      folder: params.folder,
+      row: true,
+    })) as OriResponse;
+  }
+
+  console.log(items ?? item);
+
+  return (
+    <div className="container py-8 mt-5">
+      <DataRoute />
+      {items ? <DataTable data={items} /> : <FileDescription data={item} />}
+    </div>
+  );
 };
 
 export default HomePage;

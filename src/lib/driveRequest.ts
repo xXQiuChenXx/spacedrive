@@ -1,13 +1,15 @@
-import { generateRequestUrl } from "./graphAPI";
-import { config } from "@/config/api.config";
+import { getItemRequestURL } from "./graphAPI";
 
 type Props = {
   folder?: string[];
   access_token: string;
+  listChild?: boolean;
+  row?: boolean;
 };
 
-export type ItemsResponse = {
-  "@odata.etag": string;
+export type OriResponse = {
+  "@odata.etag"?: string;
+  "@microsoft.graph.downloadUrl"?: string;
   id: string;
   lastModifiedDateTime: string;
   name: string;
@@ -19,29 +21,64 @@ export type ItemsResponse = {
     mimeType: string;
   };
   size: number;
+  webURL?: string;
+  createdDateTime?: string;
 };
+
+export type ItemsResponse = {
+  "@odata.etag": string;
+  id: string;
+  lastModifiedDateTime: string;
+  name: string;
+  folder?: {
+    childCount: number;
+  };
+  file: {
+    name: string;
+    isFolder: boolean;
+    mimeType?: string;
+  };
+  size: number;
+};
+
 export type ErrorResponse = {
   error: {
     code: string;
     message: string;
   };
 };
+
 export const getItems = async ({
   folder,
   access_token,
-}: Props): Promise<ItemsResponse[] | ErrorResponse> => {
-  const requestUrl = generateRequestUrl(folder);
+  listChild,
+  row,
+}: Props): Promise<ItemsResponse[] | OriResponse | null> => {
+  const requestUrl = getItemRequestURL(folder, listChild);
   const params = new URLSearchParams({
     select: "name,id,size,lastModifiedDateTime,folder,file,video,image",
   });
 
   const response = await fetch(`${requestUrl}?${params.toString()}`, {
     headers: { Authorization: `Bearer ${access_token}` },
-    cache: "no-store",
+    // cache: "no-store",
   }).then((res) => res.json());
 
-  return response;
+  if (row) return response;
 
-  if (!response?.error || response?.error?.code === "itemNotFound")
-    return response.value;
+  if (response?.value) {
+    return response.value.map((x: OriResponse) => {
+      return {
+        ...x,
+        file: {
+          name: x.name,
+          isFolder: !!x?.folder,
+          mimeType: x.file?.mimeType,
+        },
+      };
+    });
+  } else if (response?.error) {
+    console.log(response.error);
+  }
+  return null;
 };
