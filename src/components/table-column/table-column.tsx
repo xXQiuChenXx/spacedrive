@@ -14,6 +14,9 @@ import {
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { formatBytes } from "@/lib/utils";
 import { FolderIcon, FileTextIcon } from "lucide-react";
+import DeleteDialog from "../action-dialog/DeleteDialog";
+import RenameDialog from "../action-dialog/RenameDialog";
+import ShareDialog from "../action-dialog/ShareDialog";
 
 export function getColumns(): ColumnDef<ItemsResponse>[] {
   return [
@@ -33,6 +36,7 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
       cell: ({ row }) => (
         <Checkbox
           checked={row.getIsSelected()}
+          onClick={(e) => e.stopPropagation()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"
           className="translate-y-0.5"
@@ -93,11 +97,26 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
       cell: function Cell({ row }) {
         const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
         const [showLockDialog, setShowLockDialog] = React.useState(false);
-        const [shoShareDialog, setShowShareDialog] = React.useState(false);
+        const [showShareDialog, setShowShareDialog] = React.useState(false);
         const [showRenameDialog, setShowRenameDialog] = React.useState(false);
 
         return (
           <>
+            <DeleteDialog
+              item={row.original}
+              open={showDeleteDialog}
+              onOpenChange={setShowDeleteDialog}
+            />
+            <RenameDialog
+              item={row.original}
+              open={showRenameDialog}
+              onOpenChange={setShowRenameDialog}
+            />
+            <ShareDialog
+              item={row.original}
+              open={showShareDialog}
+              onOpenChange={setShowShareDialog}
+            />
             {/* <DeleteTasksDialog
               open={showDeleteDialog}
               onOpenChange={setShowDeleteTaskDialog}
@@ -116,16 +135,28 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40">
-                <DropdownMenuItem onSelect={() => setShowRenameDialog(true)} onClick={(e) => e.preventDefault()}>
+                <DropdownMenuItem
+                  onSelect={() => setShowRenameDialog(true)}
+                  onClick={(e) => e.stopPropagation()}
+                >
                   Rename
                 </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => setShowShareDialog(true)}>
+                <DropdownMenuItem
+                  onSelect={() => setShowShareDialog(true)}
+                  onClick={(e) => e.stopPropagation()}
+                >
                   Share
                 </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => setShowLockDialog(true)}>
+                <DropdownMenuItem
+                  onSelect={() => setShowLockDialog(true)}
+                  onClick={(e) => e.stopPropagation()}
+                >
                   Lock
                 </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => setShowDeleteDialog(true)}>
+                <DropdownMenuItem
+                  onSelect={() => setShowDeleteDialog(true)}
+                  onClick={(e) => e.stopPropagation()}
+                >
                   Delete
                 </DropdownMenuItem>
               </DropdownMenuContent>

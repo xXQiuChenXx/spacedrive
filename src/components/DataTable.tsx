@@ -56,11 +56,8 @@ const DataTable = ({ data }: { data: ItemsResponse[] }) => {
                   className="cursor-pointer"
                   data-state={row.getIsSelected() && "selected"}
                   onClick={(event) => {
-                    const target = event.target as HTMLElement;
-                    if (target.tagName !== "BUTTON") {
-                      const filename = (row.getValue("file") as any)?.name;
-                      router.push(`${pathname}/${filename}`);
-                    }
+                    const filename = (row.getValue("file") as any)?.name;
+                    router.push(`${pathname}/${filename}`);
                   }}
                 >
                   {row.getVisibleCells().map((cell) => (
