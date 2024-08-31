@@ -2,7 +2,7 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 import { type Table } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { UploadIcon, DownloadIcon } from "@radix-ui/react-icons";
+import { UploadIcon, DownloadIcon, PlusIcon } from "@radix-ui/react-icons";
 
 export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
   return (
@@ -22,7 +22,16 @@ export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
           size="sm"
           variant="outline"
           className="ml-auto hidden h-8 lg:flex"
-           aria-label="Donwload"
+          aria-label="Donwload"
+        >
+          <PlusIcon className="size-4 mr-2" />
+          Create Folder
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          className="ml-auto hidden h-8 lg:flex"
+          aria-label="Donwload"
         >
           <DownloadIcon className="size-4 mr-2" />
           Download
@@ -31,9 +40,9 @@ export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
           size="sm"
           variant="outline"
           className="ml-auto hidden h-8 lg:flex"
-           aria-label="Upload"
+          aria-label="Upload"
         >
-          <UploadIcon className="size-4 mr-2"/>
+          <UploadIcon className="size-4 mr-2" />
           Upload
         </Button>
       </div>
