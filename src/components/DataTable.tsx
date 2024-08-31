@@ -10,10 +10,16 @@ import {
 } from "@/components/ui/table";
 import { useRouter, usePathname } from "next/navigation";
 import { ItemsResponse } from "@/lib/driveRequest";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { getColumns } from "./table-column/table-column";
-import { flexRender, useReactTable } from "@tanstack/react-table";
+import { flexRender } from "@tanstack/react-table";
 import { useDataTable } from "@/app/hooks/useDataTable";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import { DataTableToolbar } from "./DataToolbar";
 
 const DataTable = ({ data }: { data: ItemsResponse[] }) => {
@@ -22,6 +28,11 @@ const DataTable = ({ data }: { data: ItemsResponse[] }) => {
   // Memoize the columns
   const columns = useMemo(() => getColumns(), []);
   const { table } = useDataTable({ columns, data });
+  const [contextMenuPosition, setContextMenuPosition] = useState({
+    x: 0,
+    y: 0,
+  });
+  const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 
   return (
     <div className="w-full md:w-11/12 mx-auto space-y-2.5 overflow-auto">
@@ -55,6 +66,14 @@ const DataTable = ({ data }: { data: ItemsResponse[] }) => {
                   key={row.id}
                   className="cursor-pointer"
                   data-state={row.getIsSelected() && "selected"}
+                  onContextMenu={(event) => {
+                    event.preventDefault();
+                    setContextMenuPosition({
+                      x: event.clientX,
+                      y: event.clientY,
+                    });
+                    setIsContextMenuVisible(true);
+                  }}
                   onClick={(event) => {
                     if (
                       (event.target as HTMLElement).getAttribute(
@@ -78,6 +97,23 @@ const DataTable = ({ data }: { data: ItemsResponse[] }) => {
                       )}
                     </TableCell>
                   ))}
+                  {isContextMenuVisible && (
+                    <ContextMenu>
+                      <ContextMenuContent
+                        style={{
+                          position: "absolute",
+                          top: contextMenuPosition.y,
+                          left: contextMenuPosition.x,
+                        }}
+                        hidden={!!isContextMenuVisible}
+                      >
+                        <ContextMenuItem>Profile</ContextMenuItem>
+                        <ContextMenuItem>Billing</ContextMenuItem>
+                        <ContextMenuItem>Team</ContextMenuItem>
+                        <ContextMenuItem>Subscription</ContextMenuItem>
+                      </ContextMenuContent>
+                    </ContextMenu>
+                  )}
                 </TableRow>
               ))
             ) : (

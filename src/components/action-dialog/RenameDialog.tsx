@@ -17,7 +17,7 @@ interface DeleteItemProps extends ComponentPropsWithRef<typeof Dialog> {
   item: ItemsResponse;
 }
 
-const RenameDialog = ({ item, ...props }: DeleteItemProps) => {
+const RenameDialog = ({ item, onOpenChange, ...props }: DeleteItemProps) => {
   const [fileName, setFileName] = useState<string>(item.name);
   const handleSubmit = async () => {
     const res = await fetch("http://localhost:3000/api/graph/rename", {
@@ -25,13 +25,13 @@ const RenameDialog = ({ item, ...props }: DeleteItemProps) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ ...item, name: fileName}),
-    }).then(res => res.json());
-    console.log(res);
+      body: JSON.stringify({ ...item, name: fileName }),
+    }).then((res) => res.json());
+    if (res.name && onOpenChange) await onOpenChange(false);
   };
 
   return (
-    <Dialog {...props}>
+    <Dialog {...props} onOpenChange={onOpenChange}>
       <DialogContent onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
           <DialogTitle>Rename File</DialogTitle>
@@ -40,12 +40,18 @@ const RenameDialog = ({ item, ...props }: DeleteItemProps) => {
         <Input value={fileName} onChange={(e) => setFileName(e.target.value)} />
         <DialogFooter className="justify-end">
           <DialogClose asChild>
-            <Button type="button" variant="outline">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={(e) => {
+                if (onOpenChange) onOpenChange(false);
+              }}
+            >
               Cancel
             </Button>
           </DialogClose>
           <Button
-            type="button"
+            type="submit"
             title="rename"
             variant="secondary"
             onClick={handleSubmit}

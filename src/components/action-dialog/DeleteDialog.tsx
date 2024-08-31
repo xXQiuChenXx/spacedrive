@@ -15,9 +15,19 @@ interface DeleteItemProps extends ComponentPropsWithRef<typeof Dialog> {
   item: ItemsResponse;
 }
 
-const DeleteDialog = ({ item, ...props }: DeleteItemProps) => {
+const DeleteDialog = ({ item, onOpenChange, ...props }: DeleteItemProps) => {
+  const onDelete = async () => {
+    const res = await fetch("http://localhost:3000/api/graph/delete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(item),
+    }).then((res) => res.json());
+    if (onOpenChange && res?.success) await onOpenChange(false);
+  };
   return (
-    <Dialog {...props}>
+    <Dialog {...props} onOpenChange={onOpenChange}>
       <DialogContent onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
           <DialogTitle>Delete Confirmation</DialogTitle>
@@ -28,11 +38,25 @@ const DeleteDialog = ({ item, ...props }: DeleteItemProps) => {
         </DialogHeader>
         <DialogFooter className="justify-end">
           <DialogClose asChild>
-            <Button type="button" variant="secondary">
+            <Button
+              type="button"
+              variant="secondary"
+              title="cancel"
+              onClick={(e) => {
+                if (onOpenChange) onOpenChange(false);
+              }}
+            >
               Cancel
             </Button>
           </DialogClose>
-          <Button variant="destructive">Delete</Button>
+          <Button
+            variant="destructive"
+            title="delete"
+            onClick={onDelete}
+            type="submit"
+          >
+            Delete
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

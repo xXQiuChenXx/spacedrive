@@ -60,8 +60,11 @@ export const getItems = async ({
   });
 
   const response = await fetch(`${requestUrl}?${params.toString()}`, {
-    headers: { Authorization: `Bearer ${access_token}` },
-    // cache: "no-store",
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+      "Cache-Control": "no-cache",
+    },
+    cache: "no-store",
   }).then((res) => res.json());
 
   if (row) return response;
