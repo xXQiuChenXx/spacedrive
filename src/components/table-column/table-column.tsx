@@ -52,7 +52,7 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
         <DataTableColumnHeader column={column} title="File Name" />
       ),
       cell: ({ cell, getValue }) => (
-        <div className="max-w-[31.25rem] truncate font-medium flex gap-3 items-center">
+        <div className="max-w-[31.25rem] truncate font-medium flex gap-3 items-center" data-group="row-data">
           {(getValue() as ItemsResponse["file"])?.isFolder ? (
             <FolderIcon className="size-5" />
           ) : (

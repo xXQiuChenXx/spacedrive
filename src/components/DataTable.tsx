@@ -57,47 +57,39 @@ const DataTable = ({ data }: { data: ItemsResponse[] }) => {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <ContextMenu key={row.id}>
-                  <TableRow
-                    key={row.id}
-                    className="cursor-pointer"
-                    data-state={row.getIsSelected() && "selected"}
-                    onContextMenu={(event) => {
-                      event.preventDefault();
-                    }}
-                    onClick={(event) => {
-                      if (
-                        (event.target as HTMLElement).getAttribute(
-                          "data-group"
-                        ) === "row-data"
-                      ) {
-                        const filename = (row.getValue("file") as any)?.name;
-                        router.push(`${pathname}/${filename}`);
-                      }
-                    }}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        style={{ width: cell.column.getSize() }}
-                        data-group="row-data"
-                      >
-                        <ContextMenuTrigger>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </ContextMenuTrigger>
-                        <ContextMenuContent>
-                          <ContextMenuItem>Profile</ContextMenuItem>
-                          <ContextMenuItem>Billing</ContextMenuItem>
-                          <ContextMenuItem>Team</ContextMenuItem>
-                          <ContextMenuItem>Subscription</ContextMenuItem>
-                        </ContextMenuContent>
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </ContextMenu>
+                <TableRow
+                  key={row.id}
+                  className="cursor-pointer"
+                  data-state={row.getIsSelected() && "selected"}
+                  onContextMenu={(event) => {
+                    event.preventDefault();
+                  }}
+                  onClick={(event) => {
+                    console.log("click")
+                    if (
+                      (event.target as HTMLElement).getAttribute(
+                        "data-group"
+                      ) === "row-data"
+                    ) {
+                      console.log("click-click")
+                      const filename = (row.getValue("file") as any)?.name;
+                      router.push(`${pathname}/${filename}`);
+                    }
+                  }}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      style={{ width: cell.column.getSize() }}
+                      data-group="row-data"
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
               ))
             ) : (
               <TableRow>
