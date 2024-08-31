@@ -14,3 +14,15 @@ export const getItemRequestURL = (
     return `${config.graphApi}/me/drive/root${isRoot}${location}`;
   }
 };
+
+export const getUploadItemURL = ({
+  path,
+  fileName,
+}: {
+  path: string;
+  fileName: string;
+}): string => {
+  const isRoot = path === "/" ? "" : ":";
+
+  return `${config.graphApi}/me/drive/root${isRoot}${path}/${fileName}${isRoot}/content`;
+};

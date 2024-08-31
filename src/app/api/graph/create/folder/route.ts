@@ -36,3 +36,7 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
 }
+
+export async function PUT(request: NextRequest) {
+  const formData = await request.formData();
+}

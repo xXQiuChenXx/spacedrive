@@ -22,7 +22,7 @@ const CreateFolderDialog = ({
 }: DeleteItemProps) => {
   const [folderName, setFolderName] = useState<string>("");
   const onCreate = async () => {
-    const res = await fetch("http://localhost:3000/api/graph/create", {
+    const res = await fetch("http://localhost:3000/api/graph/create/folder", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import { ChangeEvent, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { type Table } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
@@ -7,9 +8,23 @@ import CreateFolderDialog from "./action-dialog/CreateFolderDialog";
 import { usePathname } from "next/navigation";
 
 export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
-  const pathname = usePathname();
+  const pathname = usePathname().replace("home/", "");
   const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
-    React.useState(false);
+    useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  async function uploadInputChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target?.files?.[0];
+    if (file) {
+      const formdata = new FormData();
+      formdata.append("file", file);
+      formdata.append("path", pathname);
+      await fetch(window.location.origin + "/api/graph/create/file", {
+        method: "POST",
+        body: formdata,
+      }).then(async (res) => console.log(await res.json()));
+    }
+  }
   return (
     <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
       <div className="flex flex-1 items-center space-x-2">
@@ -24,7 +39,7 @@ export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
       </div>
       <div className="flex items-center gap-2">
         <CreateFolderDialog
-          pathname={pathname.replace("/home", "")}
+          pathname={pathname}
           open={isCreateFolderDialogOpen}
           onOpenChange={setIsCreateFolderDialogOpen}
         />
@@ -52,10 +67,18 @@ export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
           variant="outline"
           className="ml-auto hidden h-8 lg:flex"
           aria-label="Upload"
+          onClick={() => fileInputRef.current?.click()}
         >
           <UploadIcon className="size-4 mr-2" />
           Upload
         </Button>
+        <Input
+          type="file"
+          ref={fileInputRef}
+          className="hidden"
+          hidden
+          onChange={uploadInputChange}
+        />
       </div>
     </div>
   );

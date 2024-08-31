@@ -28,11 +28,6 @@ const DataTable = ({ data }: { data: ItemsResponse[] }) => {
   // Memoize the columns
   const columns = useMemo(() => getColumns(), []);
   const { table } = useDataTable({ columns, data });
-  const [contextMenuPosition, setContextMenuPosition] = useState({
-    x: 0,
-    y: 0,
-  });
-  const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 
   return (
     <div className="w-full md:w-11/12 mx-auto space-y-2.5 overflow-auto">
@@ -62,59 +57,47 @@ const DataTable = ({ data }: { data: ItemsResponse[] }) => {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  className="cursor-pointer"
-                  data-state={row.getIsSelected() && "selected"}
-                  onContextMenu={(event) => {
-                    event.preventDefault();
-                    setContextMenuPosition({
-                      x: event.clientX,
-                      y: event.clientY,
-                    });
-                    setIsContextMenuVisible(true);
-                  }}
-                  onClick={(event) => {
-                    if (
-                      (event.target as HTMLElement).getAttribute(
-                        "data-group"
-                      ) === "row-data"
-                    ) {
-                      const filename = (row.getValue("file") as any)?.name;
-                      router.push(`${pathname}/${filename}`);
-                    }
-                  }}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      style={{ width: cell.column.getSize() }}
-                      data-group="row-data"
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                  {isContextMenuVisible && (
-                    <ContextMenu>
-                      <ContextMenuContent
-                        style={{
-                          position: "absolute",
-                          top: contextMenuPosition.y,
-                          left: contextMenuPosition.x,
-                        }}
-                        hidden={!!isContextMenuVisible}
+                <ContextMenu key={row.id}>
+                  <TableRow
+                    key={row.id}
+                    className="cursor-pointer"
+                    data-state={row.getIsSelected() && "selected"}
+                    onContextMenu={(event) => {
+                      event.preventDefault();
+                    }}
+                    onClick={(event) => {
+                      if (
+                        (event.target as HTMLElement).getAttribute(
+                          "data-group"
+                        ) === "row-data"
+                      ) {
+                        const filename = (row.getValue("file") as any)?.name;
+                        router.push(`${pathname}/${filename}`);
+                      }
+                    }}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        style={{ width: cell.column.getSize() }}
+                        data-group="row-data"
                       >
-                        <ContextMenuItem>Profile</ContextMenuItem>
-                        <ContextMenuItem>Billing</ContextMenuItem>
-                        <ContextMenuItem>Team</ContextMenuItem>
-                        <ContextMenuItem>Subscription</ContextMenuItem>
-                      </ContextMenuContent>
-                    </ContextMenu>
-                  )}
-                </TableRow>
+                        <ContextMenuTrigger>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </ContextMenuTrigger>
+                        <ContextMenuContent>
+                          <ContextMenuItem>Profile</ContextMenuItem>
+                          <ContextMenuItem>Billing</ContextMenuItem>
+                          <ContextMenuItem>Team</ContextMenuItem>
+                          <ContextMenuItem>Subscription</ContextMenuItem>
+                        </ContextMenuContent>
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </ContextMenu>
               ))
             ) : (
               <TableRow>

@@ -56,7 +56,8 @@ export const getItems = async ({
 }: Props): Promise<ItemsResponse[] | OriResponse | null> => {
   const requestUrl = getItemRequestURL(folder, listChild);
   const params = new URLSearchParams({
-    select: "name,id,size,lastModifiedDateTime,folder,file,video,image",
+    select:
+      "name,id,size,lastModifiedDateTime,folder,file,video,image,@microsoft.graph.downloadUrl",
   });
 
   const response = await fetch(`${requestUrl}?${params.toString()}`, {
@@ -84,4 +85,18 @@ export const getItems = async ({
     console.log(response.error);
   }
   return null;
+};
+
+export const getFileContent = async (
+  item: OriResponse,
+  access_token: string
+): Promise<string> => {
+  if (!item["@microsoft.graph.downloadUrl"]) return "";
+  const response = await fetch(item["@microsoft.graph.downloadUrl"], {
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  }).then((res) => res.text());
+
+  return response;
 };

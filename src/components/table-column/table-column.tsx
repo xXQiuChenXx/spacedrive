@@ -147,6 +147,9 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
                 >
                   Share
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+                  Download
+                </DropdownMenuItem>
                 <DropdownMenuItem
                   onSelect={() => setShowLockDialog(true)}
                   onClick={(e) => e.stopPropagation()}
