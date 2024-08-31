@@ -3,13 +3,11 @@ import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";
 import { config } from "@/config/api.config";
 
-type RequestBody = {
-  id: string;
-  name: string;
-};
 export async function GET(request: NextRequest) {
-  const body = (await request.json()) as RequestBody;
-  if (!body.name)
+  const params = request.nextUrl.searchParams;
+  const id = params.get("id");
+  const name = params.get("name");
+  if (!name)
     return Response.json(
       { error: { message: "400 Bad Request" } },
       { status: 400 }
@@ -17,18 +15,15 @@ export async function GET(request: NextRequest) {
   const token = await getToken();
   if (!token.length) return redirect("/setup");
   const { accessToken } = token[0];
-  const res = await fetch(
-    `${config.graphApi}/me/drive/items/${body.id}/content`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": request.headers.get("Content-Type") as string,
-      },
-    }
-  );
+  const res = await fetch(`${config.graphApi}/me/drive/items/${id}/content`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": request.headers.get("Content-Type") as string,
+    },
+  });
   const headers = new Headers();
-  headers.append("Content-Disposition", `attachment; filename=${body.name}`);
+  headers.append("Content-Disposition", `attachment; filename=${name}`);
   headers.append("Content-Type", request.headers.get("Content-Type") as string);
   if (res.ok) return new Response(await res.blob(), { headers });
   else
