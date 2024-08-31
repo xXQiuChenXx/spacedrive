@@ -1,8 +1,13 @@
 import { config } from "@/config/api.config";
 
-export const getItemRequestURL = (path?: string[], listChild?: boolean): string => {
-  const isRoot = path?.length ? `:` : "";
-  const location = path?.length ? `/${path.join("/")}` : "";
+export const getItemRequestURL = (
+  path: string[] | string = "/",
+  listChild?: boolean
+): string => {
+  // const isRoot = path?.length ? `:` : "";
+  // const location = path?.length ? `/${path.join("/")}` : "";
+  const location = typeof path === "string" ? path : `/${path.join("/")}`;
+  const isRoot = path === "/" ? "" : ":";
   if (listChild) {
     return `${config.graphApi}/me/drive/root${isRoot}${location}${isRoot}/children`;
   } else {

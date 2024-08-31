@@ -3,8 +3,13 @@ import { Input } from "@/components/ui/input";
 import { type Table } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { UploadIcon, DownloadIcon, PlusIcon } from "@radix-ui/react-icons";
+import CreateFolderDialog from "./action-dialog/CreateFolderDialog";
+import { usePathname } from "next/navigation";
 
 export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
+  const pathname = usePathname();
+  const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
+    React.useState(false);
   return (
     <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
       <div className="flex flex-1 items-center space-x-2">
@@ -18,11 +23,17 @@ export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
         />
       </div>
       <div className="flex items-center gap-2">
+        <CreateFolderDialog
+          pathname={pathname.replace("/home", "")}
+          open={isCreateFolderDialogOpen}
+          onOpenChange={setIsCreateFolderDialogOpen}
+        />
         <Button
           size="sm"
           variant="outline"
           className="ml-auto hidden h-8 lg:flex"
           aria-label="Donwload"
+          onClick={(e) => setIsCreateFolderDialogOpen(true)}
         >
           <PlusIcon className="size-4 mr-2" />
           Create Folder
