@@ -16,7 +16,6 @@ const ReadMePreview = ({ content }: { content: string }) => {
       <Markdown
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeKatex, rehypeRaw]}
-        // components={customRenderer}
       >
         {content}
       </Markdown>
