@@ -65,13 +65,11 @@ const DataTable = ({ data }: { data: ItemsResponse[] }) => {
                     event.preventDefault();
                   }}
                   onClick={(event) => {
-                    console.log("click")
                     if (
                       (event.target as HTMLElement).getAttribute(
                         "data-group"
                       ) === "row-data"
                     ) {
-                      console.log("click-click")
                       const filename = (row.getValue("file") as any)?.name;
                       router.push(`${pathname}/${filename}`);
                     }

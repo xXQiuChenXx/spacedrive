@@ -3,12 +3,19 @@ import { ChangeEvent, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { type Table } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { UploadIcon, DownloadIcon, PlusIcon } from "@radix-ui/react-icons";
+import {
+  UploadIcon,
+  DownloadIcon,
+  PlusIcon,
+  Cross2Icon,
+} from "@radix-ui/react-icons";
 import CreateFolderDialog from "./action-dialog/CreateFolderDialog";
 import { usePathname } from "next/navigation";
+import { deleteFiles } from "@/lib/deleteHandler";
+import { ItemsResponse } from "@/lib/driveRequest";
 
 export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
-  const pathname = usePathname().replace("home/", "");
+  const pathname = usePathname().replace("home/", "").replace("home", "");
   const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
     useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -58,6 +65,9 @@ export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
           variant="outline"
           className="ml-auto hidden h-8 lg:flex"
           aria-label="Donwload"
+          onClick={(e) =>
+            console.log(table.getSelectedRowModel().rows.map((r) => r.original))
+          }
         >
           <DownloadIcon className="size-4 mr-2" />
           Download
@@ -79,6 +89,22 @@ export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
           hidden
           onChange={uploadInputChange}
         />
+        <Button
+          size="sm"
+          variant="outline"
+          className="ml-auto hidden h-8 lg:flex"
+          aria-label="Upload"
+          onClick={async () =>
+            await deleteFiles(
+              table
+                .getSelectedRowModel()
+                .rows.map((row) => row.original) as ItemsResponse[]
+            )
+          }
+        >
+          <Cross2Icon className="size-4 mr-2" />
+          Delete
+        </Button>
       </div>
     </div>
   );
