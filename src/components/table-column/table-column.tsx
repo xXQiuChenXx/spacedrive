@@ -100,7 +100,6 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
       id: "actions",
       cell: function Cell({ row }) {
         const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
-        const [showLockDialog, setShowLockDialog] = React.useState(false);
         const [showShareDialog, setShowShareDialog] = React.useState(false);
         const [showRenameDialog, setShowRenameDialog] = React.useState(false);
 
@@ -158,12 +157,6 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
                   }}
                 >
                   Download
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onSelect={() => setShowLockDialog(true)}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  Lock
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onSelect={() => setShowDeleteDialog(true)}
