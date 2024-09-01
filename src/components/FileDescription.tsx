@@ -24,9 +24,9 @@ const FileDescription = ({ data }: { data: OriResponse | undefined }) => {
         </CardHeader>
         <CardContent>
           <div className="flex space-x-10">
-            <div className="border w-1/5 text-center flex items-center justify-center flex-col px-3">
+            <div className="border w-1/5 text-center flex items-center justify-center flex-col px-4 break-all">
               <FileIcon className="mb-2" />
-              {data.name}
+              <p >{data.name}</p>
             </div>
             <div className="flex flex-col p-2.5">
               <div className="py-1">
