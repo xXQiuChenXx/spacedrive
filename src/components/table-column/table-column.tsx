@@ -17,6 +17,7 @@ import { FolderIcon, FileTextIcon } from "lucide-react";
 import DeleteDialog from "../action-dialog/DeleteDialog";
 import RenameDialog from "../action-dialog/RenameDialog";
 import ShareDialog from "../action-dialog/ShareDialog";
+import { handleClick } from "@/lib/downloadHandler";
 
 export function getColumns(): ColumnDef<ItemsResponse>[] {
   return [
@@ -52,7 +53,10 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
         <DataTableColumnHeader column={column} title="File Name" />
       ),
       cell: ({ cell, getValue }) => (
-        <div className="max-w-[31.25rem] truncate font-medium flex gap-3 items-center" data-group="row-data">
+        <div
+          className="max-w-[31.25rem] truncate font-medium flex gap-3 items-center"
+          data-group="row-data"
+        >
           {(getValue() as ItemsResponse["file"])?.isFolder ? (
             <FolderIcon className="size-5" />
           ) : (
@@ -147,7 +151,12 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
                 >
                   Share
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleClick({ item: row.original });
+                  }}
+                >
                   Download
                 </DropdownMenuItem>
                 <DropdownMenuItem
