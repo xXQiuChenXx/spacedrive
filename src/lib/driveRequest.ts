@@ -1,3 +1,4 @@
+"use server"
 import { getItemRequestURL } from "./graphAPI";
 
 type Props = {
@@ -65,7 +66,7 @@ export const getItems = async ({
       Authorization: `Bearer ${access_token}`,
       "Cache-Control": "no-cache",
     },
-    cache: "no-store",
+    next: { tags: ["items"] },
   }).then((res) => res.json());
 
   if (row) return response;

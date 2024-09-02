@@ -1,7 +1,7 @@
-import { getToken } from "@/lib/oAuthStore";
 import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";
 import { getItemRequestURL } from "@/lib/graphAPI";
+import { getCachedToken } from "@/lib/oAuthHandler";
 
 type RequestBody = {
   path: string;
@@ -14,9 +14,9 @@ export async function POST(request: NextRequest) {
       { error: { message: "400 Bad Request" } },
       { status: 400 }
     );
-  const token = await getToken();
-  if (!token.length) return redirect("/setup");
-  const { accessToken } = token[0];
+  const token = await getCachedToken();
+  if (!token) return redirect("/setup");
+  const { accessToken } = token;
   const res = await fetch(`${getItemRequestURL(body.path, true)}`, {
     method: "POST",
     body: JSON.stringify({

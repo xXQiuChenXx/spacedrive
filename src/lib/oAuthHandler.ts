@@ -1,5 +1,6 @@
 import { config } from "@/config/api.config";
 import { getTokenFromDB, saveTokenToDB, type TokenModel } from "./oAuthStore";
+import { unstable_cache } from "next/cache";
 
 export function generateAuthorisationUrl(): string {
   const { clientId, redirectURI, authApi, scope } = config;
@@ -45,7 +46,7 @@ export const exchangeCode = async (code: string): Promise<AuthResponse> => {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
-    cache: "no-cache"
+    cache: "no-cache",
   }).then((res) => res.json());
 
   if (!response || response?.error) throw new Error(response.error);
@@ -117,6 +118,10 @@ export const getToken = async (): Promise<Pick<
     };
   }
 };
+
+export const getCachedToken = unstable_cache(getToken, [], {
+  revalidate: 3600,
+});
 
 // error: {
 //   code: 'InvalidAuthenticationToken',

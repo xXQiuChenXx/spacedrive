@@ -9,10 +9,7 @@ import {
   OriResponse,
 } from "@/lib/driveRequest";
 import { redirect } from "next/navigation";
-import { unstable_cache } from "next/cache";
-import { getToken } from "@/lib/oAuthHandler";
-
-const getCachedToken = unstable_cache(getToken, [], { revalidate: 3600 });
+import { getCachedToken, getToken } from "@/lib/oAuthHandler";
 
 const HomePage = async ({
   params,
@@ -68,3 +65,4 @@ const HomePage = async ({
 export default HomePage;
 
 export const dynamicParams = true;
+export const dynamic = 'force-dynamic'
