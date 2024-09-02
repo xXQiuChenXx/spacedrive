@@ -5,6 +5,7 @@ import { Theme } from "@radix-ui/themes";
 import { ThemeProvider } from "next-themes";
 import NextTopLoader from "nextjs-toploader";
 import { SiteHeader } from "@/components/header/SiteHeader";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,11 +29,16 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Theme>
-            <NextTopLoader height={2} color="rgb(156, 163, 175, 0.9)" showSpinner={false}/>
+            <NextTopLoader
+              height={2}
+              color="rgb(156, 163, 175, 0.9)"
+              showSpinner={false}
+            />
             <SiteHeader />
             {children}
           </Theme>
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   );
