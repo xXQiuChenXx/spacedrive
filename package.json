@@ -9,7 +9,8 @@
     "lint": "next lint",
     "shadcn:add": "pnpm dlx shadcn-ui@latest add",
     "db:migrate": "dotenv tsx src/db/migrate.ts",
-    "db:generate": "dotenv drizzle-kit generate"
+    "db:generate": "dotenv drizzle-kit generate",
+    "db:push": "dotenv drizzle-kit push"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.1.1",
