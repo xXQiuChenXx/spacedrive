@@ -10,10 +10,9 @@ import {
 import { ComponentPropsWithRef, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { revalidate } from "@/lib/actions/test";
 import { LoaderIcon } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import { createFolder } from "@/lib/actions/createFolder";
+import { toast } from "sonner";
 
 interface DeleteItemProps extends ComponentPropsWithRef<typeof Dialog> {
   pathname: string;
@@ -22,7 +21,6 @@ interface DeleteItemProps extends ComponentPropsWithRef<typeof Dialog> {
 const CreateFolderDialog = ({ pathname, ...props }: DeleteItemProps) => {
   const [folderName, setFolderName] = useState<string>("");
   const [isCreatePending, startCreateTransition] = useTransition();
-  const { toast } = useToast();
 
   const handleClick = async () => {
     startCreateTransition(async () => {
@@ -32,21 +30,13 @@ const CreateFolderDialog = ({ pathname, ...props }: DeleteItemProps) => {
       });
       props.onOpenChange?.(false);
 
-      console.log(error);
-
       if (error) {
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: error,
-        });
+        toast.error(error);
       } else {
-        toast({
-          title: "Item deleted successfully",
-        });
+        toast.success("Item deleted successfully");
       }
+      setFolderName("");
     });
-    setFolderName("");
   };
   return (
     <Dialog {...props}>

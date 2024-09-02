@@ -11,8 +11,8 @@ import { type ItemsResponse } from "@/lib/driveRequest";
 import { ComponentPropsWithRef, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { deleteItems } from "@/lib/actions/deleteTasks";
-import { useToast } from "@/hooks/use-toast";
 import { LoaderIcon } from "lucide-react";
+import { toast } from "sonner";
 
 interface DeleteItemProps extends ComponentPropsWithRef<typeof Dialog> {
   item: ItemsResponse;
@@ -20,25 +20,16 @@ interface DeleteItemProps extends ComponentPropsWithRef<typeof Dialog> {
 
 const DeleteDialog = ({ item, ...props }: DeleteItemProps) => {
   const [isDeletePending, startDeleteTransition] = useTransition();
-  const { toast } = useToast();
 
   function onDelete() {
     startDeleteTransition(async () => {
       const { error } = await deleteItems({ items: [item] });
       props.onOpenChange?.(false);
-
-      console.log(error)
-
+      
       if (error) {
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: error,
-        });
+        toast.error(error);
       } else {
-        toast({
-          title: "Item deleted successfully",
-        });
+        toast.success("Item deleted successfully");
       }
     });
   }

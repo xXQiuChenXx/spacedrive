@@ -28,11 +28,10 @@ export async function deleteItems({ items }: { items: ItemsResponse[] }) {
     }
   }
   await revalidateTag("items");
-  console.log(failed);
   return {
     data: null,
-    error:
-      failed.length ??
-      `An error occur when trying to delete ${failed.join(", ")}`,
+    error: failed.length
+      ? `An error occur when trying to delete ${failed.join(", ")}`
+      : null,
   };
 }
