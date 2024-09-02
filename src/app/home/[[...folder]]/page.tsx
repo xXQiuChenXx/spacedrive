@@ -50,9 +50,7 @@ const HomePage = async ({
     })) as OriResponse;
     readmeContent = await getFileContent(file, accessToken);
   }
-
-  console.log(items ?? item);
-
+  
   return (
     <div className="container py-8 mt-5">
       <DataRoute />

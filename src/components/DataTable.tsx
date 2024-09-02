@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { usePathname } from "next/navigation";
-import { useRouter } from 'nextjs-toploader/app';
+import { useRouter } from "nextjs-toploader/app";
 import { ItemsResponse } from "@/lib/driveRequest";
 import { useMemo, useState } from "react";
 import { getColumns } from "./table-column/table-column";
@@ -24,11 +24,12 @@ import {
 import { DataTableToolbar } from "./DataToolbar";
 
 const DataTable = ({ data }: { data: ItemsResponse[] }) => {
+  const [items, setItems] = useState(data);
   const router = useRouter();
   const pathname = usePathname();
   // Memoize the columns
   const columns = useMemo(() => getColumns(), []);
-  const { table } = useDataTable({ columns, data });
+  const { table } = useDataTable({ columns, data: items });
 
   return (
     <div className="w-full md:w-11/12 mx-auto space-y-2.5 overflow-auto">

@@ -30,6 +30,7 @@ type AuthResponse = {
 
 const isTokenExpired = (token: TokenModel): boolean => {
   const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+  console.log(currentTime, token)
   return currentTime >= token.issuedAt + token.expiredIn - 5; // -5 for possible delay
 };
 

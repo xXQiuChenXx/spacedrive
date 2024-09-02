@@ -8,26 +8,40 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { type ItemsResponse } from "@/lib/driveRequest";
-import { ComponentPropsWithRef } from "react";
+import { ComponentPropsWithRef, useTransition } from "react";
 import { Button } from "@/components/ui/button";
+import { deleteItems } from "@/lib/actions/deleteTasks";
+import { useToast } from "@/hooks/use-toast";
+import { LoaderIcon } from "lucide-react";
 
 interface DeleteItemProps extends ComponentPropsWithRef<typeof Dialog> {
   item: ItemsResponse;
 }
 
-const DeleteDialog = ({ item, onOpenChange, ...props }: DeleteItemProps) => {
-  const onDelete = async () => {
-    const res = await fetch("http://localhost:3000/api/graph/delete", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(item),
-    }).then((res) => res.json());
-    if (onOpenChange && res?.success) await onOpenChange(false);
-  };
+const DeleteDialog = ({ item, ...props }: DeleteItemProps) => {
+  const [isDeletePending, startDeleteTransition] = useTransition();
+  const { toast } = useToast();
+
+  function onDelete() {
+    startDeleteTransition(async () => {
+      const { error } = await deleteItems({ items: [item] });
+      props.onOpenChange?.(false);
+
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: error,
+        });
+      } else {
+        toast({
+          title: "Item deleted successfully",
+        });
+      }
+    });
+  }
   return (
-    <Dialog {...props} onOpenChange={onOpenChange}>
+    <Dialog {...props}>
       <DialogContent onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
           <DialogTitle>Delete Confirmation</DialogTitle>
@@ -38,23 +52,22 @@ const DeleteDialog = ({ item, onOpenChange, ...props }: DeleteItemProps) => {
         </DialogHeader>
         <DialogFooter className="justify-end">
           <DialogClose asChild>
-            <Button
-              type="button"
-              variant="secondary"
-              title="cancel"
-              onClick={(e) => {
-                if (onOpenChange) onOpenChange(false);
-              }}
-            >
+            <Button type="button" variant="secondary" title="cancel">
               Cancel
             </Button>
           </DialogClose>
           <Button
             variant="destructive"
             title="delete"
+            disabled={isDeletePending}
             onClick={onDelete}
-            type="submit"
           >
+            {isDeletePending && (
+              <LoaderIcon
+                className="mr-2 size-4 animate-spin"
+                aria-hidden="true"
+              />
+            )}
             Delete
           </Button>
         </DialogFooter>
