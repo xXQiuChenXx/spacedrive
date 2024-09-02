@@ -27,6 +27,8 @@ const DeleteDialog = ({ item, ...props }: DeleteItemProps) => {
       const { error } = await deleteItems({ items: [item] });
       props.onOpenChange?.(false);
 
+      console.log(error)
+
       if (error) {
         toast({
           variant: "destructive",
