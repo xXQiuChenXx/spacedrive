@@ -2,10 +2,17 @@ import DataRoute from "@/components/DataRoute";
 import DataTable from "@/components/DataTable";
 import FileDescription from "@/components/FileDescription";
 import ReadMePreview from "@/components/preview/readme";
-import { getFileContent, getItems, ItemsResponse, OriResponse } from "@/lib/driveRequest";
-import { validateToken } from "@/lib/oAuthHandler";
-import { getToken } from "@/lib/oAuthStore";
+import {
+  getFileContent,
+  getItems,
+  ItemsResponse,
+  OriResponse,
+} from "@/lib/driveRequest";
 import { redirect } from "next/navigation";
+import { unstable_cache } from "next/cache";
+import { getToken } from "@/lib/oAuthHandler";
+
+const getCachedToken = unstable_cache(getToken, [], { revalidate: 3600 });
 
 const HomePage = async ({
   params,
@@ -14,10 +21,10 @@ const HomePage = async ({
   params: { folder: string[] };
   searchParams: {};
 }) => {
-  const token = await getToken();
-  if (!token.length) return redirect("/setup");
-  const { accessToken, refreshToken } = token[0];
-  // await validateToken({ accessToken, refreshToken });
+  const token = await getCachedToken();
+  if (!token) return redirect("/setup");
+  const { accessToken } = token;
+
   const items = (await getItems({
     access_token: accessToken,
     folder: params.folder,
@@ -39,11 +46,11 @@ const HomePage = async ({
   }
 
   if (readmeFile) {
-    const file = await getItems({
+    const file = (await getItems({
       access_token: accessToken,
       folder: params.folder.concat([readmeFile.name]),
-      row: true
-    }) as OriResponse;
+      row: true,
+    })) as OriResponse;
     readmeContent = await getFileContent(file, accessToken);
   }
 
