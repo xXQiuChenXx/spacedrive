@@ -1,5 +1,5 @@
 import { config } from "@/config/api.config";
-import { saveToken } from "./oAuthStore";
+import { getTokenFromDB, saveTokenToDB, type TokenModel } from "./oAuthStore";
 
 export function generateAuthorisationUrl(): string {
   const { clientId, redirectURI, authApi, scope } = config;
@@ -14,12 +14,22 @@ export function generateAuthorisationUrl(): string {
 }
 
 type AuthResponse = {
-  token_type: string;
-  scope: string;
-  expires_in: number;
-  ext_expires_in: number;
+  token_type: string; // 'Bearer'
+  scope: string; // 'Files.Read Files.Read.All Files.Read.Selected ',
+  expires_in: number; // 3665,
+  ext_expires_in: number; // 3665,
   access_token: string;
   refresh_token: string;
+  error?: {
+    // error response
+    message: string;
+    code: string;
+  };
+};
+
+const isTokenExpired = (token: TokenModel): boolean => {
+  const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+  return currentTime >= token.issuedAt + token.expiredIn - 5; // -5 for possible delay
 };
 
 export const exchangeCode = async (code: string): Promise<AuthResponse> => {
@@ -35,21 +45,16 @@ export const exchangeCode = async (code: string): Promise<AuthResponse> => {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
-  }).then((res) => (res.ok ? res.json() : null));
+    cache: "no-cache"
+  }).then((res) => res.json());
 
-  if (!response || response?.error)
-    throw new Error(
-      response?.error ||
-        "Invalid exchange code or an error occured, please try again latter."
-    );
+  if (!response || response?.error) throw new Error(response.error);
   return response;
 };
 
 export const exchangeToken = async ({
   refreshToken,
-}: {
-  refreshToken: string;
-}):Promise<AuthResponse> => {
+}: Pick<TokenModel, "refreshToken">): Promise<AuthResponse> => {
   let response = await fetch(`${config.authApi}/token`, {
     method: "POST",
     body: new URLSearchParams({
@@ -59,44 +64,58 @@ export const exchangeToken = async ({
       grant_type: "refresh_token",
       refresh_token: refreshToken,
     }),
+    cache: "no-cache",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
-  }).then((res) => (res.ok ? res.json() : null));
+  }).then((res) => res.json());
 
-  if (response?.error)
-    throw new Error(
-      response?.error ||
-        "An error occured while exchanging token, please try again latter."
-    );
+  if (response?.error) throw new Error(response.error);
   return response;
 };
 
-export const exchangeInformation = async (accessToken: string) => {
+// exchange information
+export const getAccountInformation = async (accessToken: string) => {
   let response = await fetch("https://graph.microsoft.com/v1.0/me", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/x-www-form-urlencoded",
     },
+    cache: "no-cache",
   }).then((res) => res.json());
 
-  if (response?.error)
-    throw new Error(
-      response?.error ||
-        "An error occured while exchanging token, please try again latter."
-    );
+  if (response?.error) throw new Error(response.error);
   return response;
 };
 
-export const validateToken = async ({
+export const renewToken = async ({
   refreshToken,
-}: {
-  accessToken: string;
-  refreshToken: string;
-}) => {
-  const res = await exchangeToken({ refreshToken });
- await saveToken({ accessToken: res.access_token, refreshToken: res.refresh_token})
-  
+}: Pick<TokenModel, "refreshToken">) => {
+  const res = (await exchangeToken({ refreshToken })) as AuthResponse;
+  if (res.error) throw new Error(res.error.message); // break the recursion if error occur
+  await saveTokenToDB({
+    accessToken: res.access_token,
+    refreshToken: res.refresh_token,
+    expiredIn: res.expires_in,
+    issuedAt: Math.floor(Date.now() / 1000),
+  });
+};
+
+export const getToken = async (): Promise<Pick<
+  TokenModel,
+  "accessToken" | "refreshToken"
+> | null> => {
+  const token = await getTokenFromDB();
+  if (!token) return null;
+  if (isTokenExpired(token)) {
+    await renewToken({ refreshToken: token.refreshToken });
+    return await getToken(); // Recursion function
+  } else {
+    return {
+      accessToken: token.accessToken,
+      refreshToken: token.refreshToken,
+    };
+  }
 };
 
 // error: {
