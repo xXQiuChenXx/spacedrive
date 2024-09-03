@@ -1,8 +1,8 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 /**
@@ -13,12 +13,12 @@ export function cn(...inputs: ClassValue[]) {
  */
 export function addStarsAndTrim(text: string): string {
   if (text.length <= 10) {
-    return '**********';
+    return "**********";
   }
 
   const prefix = text.substring(0, 5);
   const suffix = text.substring(text.length - 5);
-  const stars = '*'.repeat(text.length - 10);
+  const stars = "*".repeat(text.length - 10);
 
   return `${prefix}${stars}${suffix}`;
 }
@@ -38,12 +38,16 @@ export function formatBytes(bytes: number, decimals = 2): string {
 
 export function formatDate(dateString: string): string {
   const date = new Date(dateString);
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(date);
 
-  const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(date.getUTCDate()).padStart(2, '0');
-  const hours = String(date.getUTCHours()).padStart(2, '0');
-  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-
-  return `${year}-${month}-${day} ${hours}:${minutes}`;
+  return formattedDate
+    .replace(",", "")
+    .replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$1-$2");
 }

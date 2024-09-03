@@ -4,8 +4,6 @@ export const getItemRequestURL = (
   path: string[] | string = "/",
   listChild?: boolean
 ): string => {
-  // const isRoot = path?.length ? `:` : "";
-  // const location = path?.length ? `/${path.join("/")}` : "";
   const location = typeof path === "string" ? path : `/${path.join("/")}`;
   const isRoot = path === "/" ? "" : ":";
   if (listChild) {
@@ -22,7 +20,7 @@ export const getUploadItemURL = ({
   path: string;
   fileName: string;
 }): string => {
-  const isRoot = path === "/" ? "" : ":";
-
-  return `${config.graphApi}/me/drive/root${isRoot}${path}/${fileName}${isRoot}/content`;
+  return `${config.graphApi}/me/drive/root:${
+    path === "/" ? "" : path
+  }/${fileName}:/content`;
 };

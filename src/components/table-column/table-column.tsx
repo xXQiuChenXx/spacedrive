@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { type ColumnDef } from "@tanstack/react-table";
 import { formatDate } from "@/lib/utils";
 import { ItemsResponse } from "@/lib/driveRequest";
@@ -18,6 +20,7 @@ import DeleteDialog from "../action-dialog/DeleteDialog";
 import RenameDialog from "../action-dialog/RenameDialog";
 import ShareDialog from "../action-dialog/ShareDialog";
 import { handleClick } from "@/lib/downloadHandler";
+import FormatDate from "./format-date";
 
 export function getColumns(): ColumnDef<ItemsResponse>[] {
   return [
@@ -93,23 +96,23 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Last Modified" />
       ),
-      cell: ({ cell }) => formatDate(cell.getValue() as string),
+      cell: ({ cell }) => <FormatDate date={cell.getValue() as string}/>,
       size: 100,
     },
     {
       id: "actions",
       cell: function Cell({ row }) {
         const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
-        const [showLockDialog, setShowLockDialog] = React.useState(false);
         const [showShareDialog, setShowShareDialog] = React.useState(false);
         const [showRenameDialog, setShowRenameDialog] = React.useState(false);
 
         return (
           <>
             <DeleteDialog
-              item={row.original}
+              items={[row.original]}
               open={showDeleteDialog}
               onOpenChange={setShowDeleteDialog}
+              onSuccess={() => row.toggleSelected(false)}
             />
             <RenameDialog
               item={row.original}
@@ -160,14 +163,10 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
                   Download
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onSelect={() => setShowLockDialog(true)}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  Lock
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onSelect={() => setShowDeleteDialog(true)}
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowDeleteDialog(true);
+                  }}
                 >
                   Delete
                 </DropdownMenuItem>

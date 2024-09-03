@@ -2,20 +2,25 @@ import { db } from "@/db";
 import { credentials } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-export async function getToken() {
-  const token = await db
-    .select()
-    .from(credentials)
-    .where(eq(credentials.id, "main"));
-  return token;
-}
-
-interface BasicToken {
+export type TokenModel = {
   accessToken: string;
   refreshToken: string;
+  expiredIn: number;
+  issuedAt: number;
+};
+
+export async function getTokenFromDB(): Promise<TokenModel | null> {
+  return (
+    await db.select().from(credentials).where(eq(credentials.id, "main"))
+  )[0];
 }
 
-export async function saveToken({ accessToken, refreshToken }: BasicToken) {
+export async function saveTokenToDB({
+  accessToken,
+  refreshToken,
+  expiredIn,
+  issuedAt,
+}: TokenModel) {
   try {
     await db
       .insert(credentials)
@@ -23,12 +28,16 @@ export async function saveToken({ accessToken, refreshToken }: BasicToken) {
         id: "main",
         accessToken,
         refreshToken,
+        expiredIn,
+        issuedAt,
       })
       .onConflictDoUpdate({
         target: credentials.id,
         set: {
           accessToken,
           refreshToken,
+          expiredIn,
+          issuedAt,
         },
       });
   } catch (error) {

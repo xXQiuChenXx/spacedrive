@@ -2,10 +2,9 @@ import DataRoute from "@/components/DataRoute";
 import DataTable from "@/components/DataTable";
 import FileDescription from "@/components/FileDescription";
 import ReadMePreview from "@/components/preview/readme";
-import { getFileContent, getItems, ItemsResponse, OriResponse } from "@/lib/driveRequest";
-import { validateToken } from "@/lib/oAuthHandler";
-import { getToken } from "@/lib/oAuthStore";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { getCachedToken } from "@/lib/oAuthHandler";
+import { getInformations } from "@/lib/fns";
 
 const HomePage = async ({
   params,
@@ -14,40 +13,16 @@ const HomePage = async ({
   params: { folder: string[] };
   searchParams: {};
 }) => {
-  const token = await getToken();
-  if (!token.length) return redirect("/setup");
-  const { accessToken, refreshToken } = token[0];
-  // await validateToken({ accessToken, refreshToken });
-  const items = (await getItems({
-    access_token: accessToken,
-    folder: params.folder,
-    listChild: true,
-  })) as ItemsResponse[];
+  const token = await getCachedToken();
+  if (!token) return redirect("/setup");
+  const { accessToken } = token;
 
-  let item;
-  let readmeFile = items?.find(
-    (item) => item.name.toLowerCase() === "readme.md"
-  );
-  let readmeContent;
+  const { item, items, readmeContent } = await getInformations({
+    accessToken,
+    params: params.folder,
+  });
 
-  if (!items) {
-    item = (await getItems({
-      access_token: accessToken,
-      folder: params.folder,
-      row: true,
-    })) as OriResponse;
-  }
-
-  if (readmeFile) {
-    const file = await getItems({
-      access_token: accessToken,
-      folder: params.folder.concat([readmeFile.name]),
-      row: true
-    }) as OriResponse;
-    readmeContent = await getFileContent(file, accessToken);
-  }
-
-  console.log(items ?? item);
+  if (!items && !item) return notFound();
 
   return (
     <div className="container py-8 mt-5">
@@ -61,3 +36,4 @@ const HomePage = async ({
 export default HomePage;
 
 export const dynamicParams = true;
+export const dynamic = "force-dynamic";

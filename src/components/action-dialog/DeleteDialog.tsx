@@ -8,53 +8,67 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { type ItemsResponse } from "@/lib/driveRequest";
-import { ComponentPropsWithRef } from "react";
+import { ComponentPropsWithRef, useTransition } from "react";
 import { Button } from "@/components/ui/button";
+import { deleteItems } from "@/lib/actions/deleteTasks";
+import { LoaderIcon } from "lucide-react";
+import { toast } from "sonner";
 
 interface DeleteItemProps extends ComponentPropsWithRef<typeof Dialog> {
-  item: ItemsResponse;
+  items: ItemsResponse[];
+  onSuccess?: () => void
 }
 
-const DeleteDialog = ({ item, onOpenChange, ...props }: DeleteItemProps) => {
-  const onDelete = async () => {
-    const res = await fetch("http://localhost:3000/api/graph/delete", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(item),
-    }).then((res) => res.json());
-    if (onOpenChange && res?.success) await onOpenChange(false);
-  };
+const DeleteDialog = ({ items, onSuccess, ...props }: DeleteItemProps) => {
+  const [isDeletePending, startDeleteTransition] = useTransition();
+
+  function onDelete() {
+    startDeleteTransition(async () => {
+      const { error } = await deleteItems({ items });
+      props.onOpenChange?.(false);
+
+      if (error) {
+        toast.error(error);
+      } else {
+        toast.success("Item deleted successfully");
+        onSuccess?.();
+      }
+    });
+  }
+
   return (
-    <Dialog {...props} onOpenChange={onOpenChange}>
+    <Dialog {...props}>
       <DialogContent onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
-          <DialogTitle>Delete Confirmation</DialogTitle>
+          <DialogTitle>Delete Files</DialogTitle>
           <DialogDescription>
-            You will not be able to recover the contents of{" "}
-            <span className="font-bold">{item.name}</span> once deleted
+            Are you sure you want to delete <span className="font-bold">{items.length} files</span>?
+            This is a permanent action and the files cannot be recovered.
           </DialogDescription>
+            <ul className="list-disc list-inside text-muted-foreground">
+              {items.map((item) => {
+                return <li key={item.id}>{item.name}</li>;
+              })}
+            </ul>
         </DialogHeader>
         <DialogFooter className="justify-end">
           <DialogClose asChild>
-            <Button
-              type="button"
-              variant="secondary"
-              title="cancel"
-              onClick={(e) => {
-                if (onOpenChange) onOpenChange(false);
-              }}
-            >
+            <Button type="button" variant="secondary" title="cancel">
               Cancel
             </Button>
           </DialogClose>
           <Button
             variant="destructive"
             title="delete"
+            disabled={isDeletePending}
             onClick={onDelete}
-            type="submit"
           >
+            {isDeletePending && (
+              <LoaderIcon
+                className="mr-2 size-4 animate-spin"
+                aria-hidden="true"
+              />
+            )}
             Delete
           </Button>
         </DialogFooter>
