@@ -14,8 +14,11 @@ import {
 import { formatBytes, formatDate } from "@/lib/utils";
 import { FileIcon } from "lucide-react";
 import { handleClick } from "@/lib/downloadHandler";
+import { usePathname } from "next/navigation";
 
 const FileDescription = ({ data }: { data: OriResponse | undefined }) => {
+  const pathname = usePathname();
+
   if (!data) return notFound();
   return (
     <div className="mt-3">
@@ -77,6 +80,9 @@ const FileDescription = ({ data }: { data: OriResponse | undefined }) => {
             title="share"
             variant="outline"
             className="flex-1"
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.origin + pathname);
+            }}
           >
             Copy link
           </Button>
