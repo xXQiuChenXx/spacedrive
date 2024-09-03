@@ -28,6 +28,7 @@ export async function deleteItems({ items }: { items: ItemsResponse[] }) {
     }
   }
   await revalidateTag("items");
+  
   return {
     data: null,
     error: failed.length

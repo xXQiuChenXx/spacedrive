@@ -1,6 +1,9 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
+import { getCachedToken } from "../oAuthHandler";
+import { redirect } from "next/navigation";
+import { getItemRequestURL } from "../graphAPI";
 
 export async function createFolder({
   path,
@@ -9,17 +12,26 @@ export async function createFolder({
   path: string;
   folder: string;
 }) {
-  const res = await fetch("http://localhost:3000/api/graph/create/folder", {
+  const token = await getCachedToken();
+  if (!token) return redirect("/setup");
+  const { accessToken } = token;
+  const response = await fetch(`${getItemRequestURL(path, true)}`, {
     method: "POST",
+    body: JSON.stringify({
+      name: folder,
+      folder: {},
+      "@microsoft.graph.conflictBehavior": "rename",
+    }),
     headers: {
+      Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ path, newFolder: folder }),
   }).then((res) => res.json());
 
-  revalidateTag("items");
+  await revalidateTag("items");
+  
   return {
-    data: res?.error ? null : res,
-    error: res?.error,
+    data: response?.error ? null : response,
+    error: response?.error,
   };
 }
