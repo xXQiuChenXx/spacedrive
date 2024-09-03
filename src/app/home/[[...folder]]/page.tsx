@@ -5,6 +5,8 @@ import ReadMePreview from "@/components/preview/readme";
 import { notFound, redirect } from "next/navigation";
 import { getCachedToken } from "@/lib/oAuthHandler";
 import { getInformations } from "@/lib/fns";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 const HomePage = async ({
   params,
@@ -26,9 +28,11 @@ const HomePage = async ({
 
   return (
     <div className="px-5 md:container py-8 mt-5">
-      <DataRoute />
-      {items ? <DataTable data={items} /> : <FileDescription data={item} />}
-      {readmeContent && <ReadMePreview content={readmeContent} />}
+      <Suspense fallback={<Loading />}>
+        <DataRoute />
+        {items ? <DataTable data={items} /> : <FileDescription data={item} />}
+        {readmeContent && <ReadMePreview content={readmeContent} />}
+      </Suspense>
     </div>
   );
 };

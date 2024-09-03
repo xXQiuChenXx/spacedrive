@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Theme } from "@radix-ui/themes";
 import { ThemeProvider } from "next-themes";
@@ -36,6 +37,7 @@ export default function RootLayout({
             />
             <SiteHeader />
             {children}
+            <Analytics />
           </Theme>
         </ThemeProvider>
         <Toaster />
