@@ -9,6 +9,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Fragment } from "react";
+import { HomeIcon } from "@radix-ui/react-icons";
 
 const DataRoute = () => {
   const pathname = usePathname();
@@ -18,6 +19,7 @@ const DataRoute = () => {
   return (
     <Breadcrumb className="w-11/12 mx-auto py-3">
       <BreadcrumbList>
+      <HomeIcon className="size-4"/>
         {routes.map((route, i) => (
           <Fragment key={"link-" + route}>
             <BreadcrumbItem>
