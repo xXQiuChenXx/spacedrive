@@ -109,6 +109,7 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
               items={[row.original]}
               open={showDeleteDialog}
               onOpenChange={setShowDeleteDialog}
+              onSuccess={() => row.toggleSelected(false)}
             />
             <RenameDialog
               item={row.original}
@@ -159,8 +160,10 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
                   Download
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onSelect={() => setShowDeleteDialog(true)}
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowDeleteDialog(true)
+                  }}
                 >
                   Delete
                 </DropdownMenuItem>

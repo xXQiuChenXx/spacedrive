@@ -16,9 +16,10 @@ import { toast } from "sonner";
 
 interface DeleteItemProps extends ComponentPropsWithRef<typeof Dialog> {
   items: ItemsResponse[];
+  onSuccess?: () => void
 }
 
-const DeleteDialog = ({ items, ...props }: DeleteItemProps) => {
+const DeleteDialog = ({ items, onSuccess, ...props }: DeleteItemProps) => {
   const [isDeletePending, startDeleteTransition] = useTransition();
 
   function onDelete() {
@@ -30,9 +31,11 @@ const DeleteDialog = ({ items, ...props }: DeleteItemProps) => {
         toast.error(error);
       } else {
         toast.success("Item deleted successfully");
+        onSuccess?.();
       }
     });
   }
+
   return (
     <Dialog {...props}>
       <DialogContent onClick={(e) => e.stopPropagation()}>

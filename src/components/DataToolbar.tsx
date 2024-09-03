@@ -56,6 +56,7 @@ export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
           }
           open={showDeleteDialog}
           onOpenChange={setShowDeleteDialog}
+          onSuccess={() => table.toggleAllPageRowsSelected(false)} // cancel all selection after deleted
         />
         <CreateFolderDialog
           pathname={pathname}
