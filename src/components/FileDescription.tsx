@@ -36,7 +36,7 @@ const FileDescription = ({ data }: { data: OriResponse | undefined }) => {
             <div className="flex flex-col p-2.5">
               <div className="py-1">
                 <p className="text-muted-foreground">File Name:</p>
-                <p>{data.name}</p>
+                <p className="truncate">{data.name}</p>
               </div>
               <div className="py-1">
                 <p className="text-muted-foreground">File Size:</p>
