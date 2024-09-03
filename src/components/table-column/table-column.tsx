@@ -22,7 +22,7 @@ import ShareDialog from "../action-dialog/ShareDialog";
 import { handleClick } from "@/lib/downloadHandler";
 import FormatDate from "./format-date";
 
-export function getColumns(): ColumnDef<ItemsResponse>[] {
+export function getColumns(isDesktop: boolean): ColumnDef<ItemsResponse>[] {
   return [
     {
       id: "select",
@@ -57,7 +57,7 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
       ),
       cell: ({ cell, getValue }) => (
         <div
-          className="max-w-[31.25rem] truncate font-medium flex gap-3 items-center"
+          className="max-w-[31.25rem] truncate font-medium flex gap-3 items-center text-ellipsis"
           data-group="row-data"
         >
           {(getValue() as ItemsResponse["file"])?.isFolder ? (
@@ -88,6 +88,9 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="File Size" />
       ),
+      meta: {
+        show: isDesktop,
+      },
       size: 100,
       cell: ({ cell }) => formatBytes(cell.getValue() as number),
     },
@@ -96,8 +99,11 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Last Modified" />
       ),
-      cell: ({ cell }) => <FormatDate date={cell.getValue() as string}/>,
+      cell: ({ cell }) => <FormatDate date={cell.getValue() as string} />,
       size: 100,
+      meta: {
+        show: isDesktop,
+      },
     },
     {
       id: "actions",

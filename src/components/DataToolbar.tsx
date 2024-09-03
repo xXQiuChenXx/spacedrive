@@ -13,11 +13,14 @@ import CreateFolderDialog from "./action-dialog/CreateFolderDialog";
 import { usePathname } from "next/navigation";
 import { ItemsResponse } from "@/lib/driveRequest";
 import DeleteDialog from "@/components/action-dialog/DeleteDialog";
-import { revalidateTag } from "next/cache";
 import { toast } from "sonner";
 import { uploadFile } from "@/lib/actions/uploadFile";
 
-export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
+export const DataTableToolbar = ({
+  table,
+}: {
+  table: Table<ItemsResponse>;
+}) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const pathname = usePathname().replace("home/", "").replace("home", "");
   const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
@@ -74,12 +77,23 @@ export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
         <Button
           size="sm"
           variant="outline"
-          className="ml-auto hidden h-8 lg:flex"
+          className="ml-auto h-8 flex"
           aria-label="Donwload"
           onClick={(e) => setIsCreateFolderDialogOpen(true)}
         >
           <PlusIcon className="size-4 mr-2" />
           Create Folder
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          className="ml-auto h-8 flex"
+          aria-label="Upload"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={isPending}
+        >
+          <UploadIcon className="size-4 mr-2" />
+          Upload
         </Button>
         <Button
           size="sm"
@@ -93,17 +107,6 @@ export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
         >
           <DownloadIcon className="size-4 mr-2" />
           Download
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          className="ml-auto hidden h-8 lg:flex"
-          aria-label="Upload"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={isPending}
-        >
-          <UploadIcon className="size-4 mr-2" />
-          Upload
         </Button>
         <Input
           type="file"

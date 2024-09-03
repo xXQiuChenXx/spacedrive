@@ -6,7 +6,7 @@ const FormatDate = ({ date }: { date: string }) => {
   useEffect(() => {
     setFormattedDate(formatDate(date));
   }, [date]);
-  return <Fragment>{formattedDate}</Fragment>;
+  return <Fragment >{formattedDate}</Fragment>;
 };
 
 export default FormatDate;

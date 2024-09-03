@@ -22,12 +22,15 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { DataTableToolbar } from "./DataToolbar";
+import { useMediaQuery } from "@/app/hooks/use-media-query";
 
 const DataTable = ({ data }: { data: ItemsResponse[] }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+
   // Memoize the columns
-  const columns = useMemo(() => getColumns(), []);
+  const columns = useMemo(() => getColumns(isDesktop), [isDesktop]);
   const { table } = useDataTable({ columns, data });
 
   return (
@@ -84,7 +87,7 @@ const DataTable = ({ data }: { data: ItemsResponse[] }) => {
                         cell.column.id !== "select" ? "row-data" : undefined
                       }
                       onClick={() => {
-                        if(cell.column.id === "select") {
+                        if (cell.column.id === "select") {
                           cell.row.toggleSelected();
                         }
                       }}
