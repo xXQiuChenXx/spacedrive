@@ -1,5 +1,5 @@
 "use client";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useRef, useState, useTransition } from "react";
 import { Input } from "@/components/ui/input";
 import { type Table } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,9 @@ import CreateFolderDialog from "./action-dialog/CreateFolderDialog";
 import { usePathname } from "next/navigation";
 import { ItemsResponse } from "@/lib/driveRequest";
 import DeleteDialog from "@/components/action-dialog/DeleteDialog";
+import { revalidateTag } from "next/cache";
+import { toast } from "sonner";
+import { uploadFile } from "@/lib/actions/uploadFile";
 
 export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -20,17 +23,22 @@ export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
   const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
     useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isPending, startTransition] = useTransition();
 
-  async function uploadInputChange(event: ChangeEvent<HTMLInputElement>) {
+  function uploadInputChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target?.files?.[0];
     if (file) {
-      const formdata = new FormData();
-      formdata.append("file", file);
-      formdata.append("path", pathname);
-      await fetch(window.location.origin + "/api/graph/create/file", {
-        method: "POST",
-        body: formdata,
-      }).then(async (res) => console.log(await res.json()));
+      startTransition(async () => {
+        const formdata = new FormData();
+        formdata.append("file", file);
+        formdata.append("path", pathname);
+        const { error } = await uploadFile({ formdata });
+        if (error) {
+          toast.error(error);
+        } else {
+          toast.success(file.name + " uploaded successfully");
+        }
+      });
     }
   }
 
@@ -92,6 +100,7 @@ export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
           className="ml-auto hidden h-8 lg:flex"
           aria-label="Upload"
           onClick={() => fileInputRef.current?.click()}
+          disabled={isPending}
         >
           <UploadIcon className="size-4 mr-2" />
           Upload

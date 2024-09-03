@@ -16,8 +16,8 @@ export async function POST(request: NextRequest) {
   const token = await getCachedToken();
   if (!token) return redirect("/setup");
   const { accessToken } = token;
-  console.log(getUploadItemURL({ fileName: file.name, path: path }))
-  const res = await fetch(
+  console.log(getUploadItemURL({ fileName: file.name, path: path }));
+  const response = await fetch(
     getUploadItemURL({ fileName: file.name, path: path }),
     {
       method: "PUT",
@@ -27,13 +27,15 @@ export async function POST(request: NextRequest) {
         "Content-Type": file.type,
       },
     }
-  );
-  if (res.ok) return Response.json(await res.json());
-  else
+  ).then((res) => res?.json());
+  if (response?.error) {
+    console.log(response.error);
     return Response.json(
       { error: { message: "500 Internal Server Error" } },
       { status: 500 }
     );
+  }
+  return Response.json(response);
 }
 
 export async function PUT(request: NextRequest) {

@@ -29,9 +29,9 @@ export async function createFolder({
   }).then((res) => res.json());
 
   await revalidateTag("items");
-  
+
   return {
     data: response?.error ? null : response,
-    error: response?.error,
+    error: response?.error?.message,
   };
 }

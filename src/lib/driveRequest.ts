@@ -73,6 +73,7 @@ export const getItems = async ({
   if (row && !response?.error) return response;
 
   if (response?.value) {
+    
     return response.value.map((x: OriResponse) => {
       return {
         ...x,

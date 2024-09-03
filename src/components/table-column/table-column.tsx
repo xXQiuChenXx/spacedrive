@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { type ColumnDef } from "@tanstack/react-table";
 import { formatDate } from "@/lib/utils";
 import { ItemsResponse } from "@/lib/driveRequest";
@@ -18,6 +20,7 @@ import DeleteDialog from "../action-dialog/DeleteDialog";
 import RenameDialog from "../action-dialog/RenameDialog";
 import ShareDialog from "../action-dialog/ShareDialog";
 import { handleClick } from "@/lib/downloadHandler";
+import FormatDate from "./format-date";
 
 export function getColumns(): ColumnDef<ItemsResponse>[] {
   return [
@@ -93,7 +96,7 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Last Modified" />
       ),
-      cell: ({ cell }) => formatDate(cell.getValue() as string),
+      cell: ({ cell }) => <FormatDate date={cell.getValue() as string}/>,
       size: 100,
     },
     {
@@ -162,7 +165,7 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
                 <DropdownMenuItem
                   onClick={(e) => {
                     e.stopPropagation();
-                    setShowDeleteDialog(true)
+                    setShowDeleteDialog(true);
                   }}
                 >
                   Delete

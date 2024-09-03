@@ -4,6 +4,7 @@ import {
   ItemsResponse,
   OriResponse,
 } from "@/lib/driveRequest";
+import { revalidateTag } from "next/cache";
 
 export async function getInformations({
   accessToken,
@@ -17,8 +18,6 @@ export async function getInformations({
     folder: params,
     listChild: true,
   })) as ItemsResponse[];
-
-  
 
   let item;
   let readmeFile = items?.find(

@@ -28,6 +28,6 @@ export async function renameItem({ item, newName }: renameItemProps) {
 
   return {
     data: response?.error ? null : response,
-    error: response?.error,
+    error: response?.error?.message,
   };
 }

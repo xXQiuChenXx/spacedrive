@@ -47,5 +47,7 @@ export function formatDate(dateString: string): string {
     hour12: false,
   }).format(date);
 
-  return formattedDate.replace(',', '').replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$1-$2');
+  return formattedDate
+    .replace(",", "")
+    .replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$1-$2");
 }
