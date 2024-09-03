@@ -2,14 +2,9 @@ import DataRoute from "@/components/DataRoute";
 import DataTable from "@/components/DataTable";
 import FileDescription from "@/components/FileDescription";
 import ReadMePreview from "@/components/preview/readme";
-import {
-  getFileContent,
-  getItems,
-  ItemsResponse,
-  OriResponse,
-} from "@/lib/driveRequest";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getCachedToken } from "@/lib/oAuthHandler";
+import { getInformations } from "@/lib/fns";
 
 const HomePage = async ({
   params,
@@ -22,35 +17,10 @@ const HomePage = async ({
   if (!token) return redirect("/setup");
   const { accessToken } = token;
 
-  const items = (await getItems({
-    access_token: accessToken,
-    folder: params.folder,
-    listChild: true,
-  })) as ItemsResponse[];
+  const { item, items, readmeContent } = await getInformations({ accessToken, params: params.folder });
 
-  let item;
-  let readmeFile = items?.find(
-    (item) => item.name.toLowerCase() === "readme.md"
-  );
-  let readmeContent;
+  if (!items && !item) return notFound();
 
-  if (!items) {
-    item = (await getItems({
-      access_token: accessToken,
-      folder: params.folder,
-      row: true,
-    })) as OriResponse;
-  }
-
-  if (readmeFile) {
-    const file = (await getItems({
-      access_token: accessToken,
-      folder: params.folder.concat([readmeFile.name]),
-      row: true,
-    })) as OriResponse;
-    readmeContent = await getFileContent(file, accessToken);
-  }
-  
   return (
     <div className="container py-8 mt-5">
       <DataRoute />
@@ -63,4 +33,4 @@ const HomePage = async ({
 export default HomePage;
 
 export const dynamicParams = true;
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
