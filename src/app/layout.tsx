@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { Theme } from "@radix-ui/themes";
 import { ThemeProvider } from "next-themes";
