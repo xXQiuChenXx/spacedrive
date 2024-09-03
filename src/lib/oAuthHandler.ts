@@ -121,4 +121,5 @@ export const getToken = async (): Promise<Pick<
 
 export const getCachedToken = unstable_cache(getToken, [], {
   revalidate: 60, // 60 seconds
+  tags: ["token"],
 });

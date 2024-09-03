@@ -5,7 +5,7 @@ const FormatDate = ({ date }: { date: string }) => {
   const [formattedDate, setFormattedDate] = useState("");
   useEffect(() => {
     setFormattedDate(formatDate(date));
-  }, [formattedDate]);
+  }, [date]);
   return <Fragment>{formattedDate}</Fragment>;
 };
 

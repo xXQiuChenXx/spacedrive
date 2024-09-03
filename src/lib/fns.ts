@@ -4,7 +4,6 @@ import {
   ItemsResponse,
   OriResponse,
 } from "@/lib/driveRequest";
-import { revalidateTag } from "next/cache";
 
 export async function getInformations({
   accessToken,

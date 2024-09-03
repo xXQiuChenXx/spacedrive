@@ -1,6 +1,7 @@
 "use server";
 import { revalidateTag } from "next/cache";
 import { getItemRequestURL } from "./graphAPI";
+import { config } from "@/config/api.config";
 
 type Props = {
   folder?: string[];
@@ -59,7 +60,7 @@ export const getItems = async ({
   const requestUrl = getItemRequestURL(folder, listChild);
   const params = new URLSearchParams({
     select:
-      "name,id,size,lastModifiedDateTime,folder,file,video,image,@microsoft.graph.downloadUrl",
+      "name,id,size,lastModifiedDateTime,folder,file,video,image" //,@microsoft.graph.downloadUrl",
   });
 
   const response = await fetch(`${requestUrl}?${params.toString()}`, {
@@ -95,8 +96,7 @@ export const getFileContent = async (
   item: OriResponse,
   access_token: string
 ): Promise<string> => {
-  if (!item["@microsoft.graph.downloadUrl"]) return "";
-  const response = await fetch(item["@microsoft.graph.downloadUrl"], {
+  const response = await fetch(`${config.graphApi}/me/drive/items/${item.id}/content`,  {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
