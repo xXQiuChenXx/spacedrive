@@ -7,6 +7,7 @@ import { ThemeProvider } from "next-themes";
 import NextTopLoader from "nextjs-toploader";
 import { SiteHeader } from "@/components/header/SiteHeader";
 import { Toaster } from "@/components/ui/toaster";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,6 +38,7 @@ export default function RootLayout({
             />
             <SiteHeader />
             {children}
+            <SpeedInsights />
             <Analytics />
           </Theme>
         </ThemeProvider>
