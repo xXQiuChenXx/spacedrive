@@ -15,17 +15,17 @@ import { LoaderIcon } from "lucide-react";
 import { toast } from "sonner";
 
 interface DeleteItemProps extends ComponentPropsWithRef<typeof Dialog> {
-  item: ItemsResponse;
+  items: ItemsResponse[];
 }
 
-const DeleteDialog = ({ item, ...props }: DeleteItemProps) => {
+const DeleteDialog = ({ items, ...props }: DeleteItemProps) => {
   const [isDeletePending, startDeleteTransition] = useTransition();
 
   function onDelete() {
     startDeleteTransition(async () => {
-      const { error } = await deleteItems({ items: [item] });
+      const { error } = await deleteItems({ items });
       props.onOpenChange?.(false);
-      
+
       if (error) {
         toast.error(error);
       } else {
@@ -37,11 +37,16 @@ const DeleteDialog = ({ item, ...props }: DeleteItemProps) => {
     <Dialog {...props}>
       <DialogContent onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
-          <DialogTitle>Delete Confirmation</DialogTitle>
+          <DialogTitle>Delete Files</DialogTitle>
           <DialogDescription>
-            You will not be able to recover the contents of{" "}
-            <span className="font-bold">{item.name}</span> once deleted
+            Are you sure you want to delete <span className="font-bold">{items.length} files</span>?
+            This is a permanent action and the files cannot be recovered.
           </DialogDescription>
+            <ul className="list-disc list-inside text-muted-foreground">
+              {items.map((item) => {
+                return <li key={item.id}>{item.name}</li>;
+              })}
+            </ul>
         </DialogHeader>
         <DialogFooter className="justify-end">
           <DialogClose asChild>

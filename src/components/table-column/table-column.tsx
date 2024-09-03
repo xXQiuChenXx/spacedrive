@@ -106,7 +106,7 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
         return (
           <>
             <DeleteDialog
-              item={row.original}
+              items={[row.original]}
               open={showDeleteDialog}
               onOpenChange={setShowDeleteDialog}
             />

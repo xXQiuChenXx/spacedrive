@@ -13,8 +13,10 @@ import CreateFolderDialog from "./action-dialog/CreateFolderDialog";
 import { usePathname } from "next/navigation";
 import { deleteFiles } from "@/lib/deleteHandler";
 import { ItemsResponse } from "@/lib/driveRequest";
+import DeleteDialog from "@/components/action-dialog/DeleteDialog";
 
 export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const pathname = usePathname().replace("home/", "").replace("home", "");
   const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
     useState(false);
@@ -32,6 +34,7 @@ export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
       }).then(async (res) => console.log(await res.json()));
     }
   }
+
   return (
     <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
       <div className="flex flex-1 items-center space-x-2">
@@ -45,6 +48,15 @@ export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
         />
       </div>
       <div className="flex items-center gap-2">
+        <DeleteDialog
+          items={
+            table
+              .getSelectedRowModel()
+              .rows.map((row) => row.original) as ItemsResponse[]
+          }
+          open={showDeleteDialog}
+          onOpenChange={setShowDeleteDialog}
+        />
         <CreateFolderDialog
           pathname={pathname}
           open={isCreateFolderDialogOpen}
@@ -94,13 +106,7 @@ export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
           variant="outline"
           className="ml-auto hidden h-8 lg:flex"
           aria-label="Upload"
-          onClick={async () =>
-            await deleteFiles(
-              table
-                .getSelectedRowModel()
-                .rows.map((row) => row.original) as ItemsResponse[]
-            )
-          }
+          onClick={() => setShowDeleteDialog(true)}
         >
           <Cross2Icon className="size-4 mr-2" />
           Delete

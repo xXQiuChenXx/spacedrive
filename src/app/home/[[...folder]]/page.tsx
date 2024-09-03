@@ -9,7 +9,7 @@ import {
   OriResponse,
 } from "@/lib/driveRequest";
 import { redirect } from "next/navigation";
-import { getCachedToken, getToken } from "@/lib/oAuthHandler";
+import { getCachedToken } from "@/lib/oAuthHandler";
 
 const HomePage = async ({
   params,
