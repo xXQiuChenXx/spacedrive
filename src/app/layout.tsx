@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Theme } from "@radix-ui/themes";
 import { ThemeProvider } from "next-themes";
 import NextTopLoader from "nextjs-toploader";
 import { SiteHeader } from "@/components/header/SiteHeader";
 import { Toaster } from "@/components/ui/toaster";
-import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -38,8 +36,6 @@ export default function RootLayout({
             />
             <SiteHeader />
             {children}
-            <SpeedInsights />
-            <Analytics />
           </Theme>
         </ThemeProvider>
         <Toaster />
