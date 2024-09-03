@@ -1,4 +1,4 @@
-"use server"
+"use server";
 import { getItemRequestURL } from "./graphAPI";
 
 type Props = {
@@ -69,7 +69,7 @@ export const getItems = async ({
     next: { tags: ["items"] },
   }).then((res) => res.json());
 
-  if (row) return response;
+  if (row && !response?.error) return response;
 
   if (response?.value) {
     return response.value.map((x: OriResponse) => {

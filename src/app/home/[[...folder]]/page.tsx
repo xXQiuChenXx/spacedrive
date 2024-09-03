@@ -17,7 +17,11 @@ const HomePage = async ({
   if (!token) return redirect("/setup");
   const { accessToken } = token;
 
-  const { item, items, readmeContent } = await getInformations({ accessToken, params: params.folder });
+  const { item, items, readmeContent } = await getInformations({
+    accessToken,
+    params: params.folder,
+  });
+  console.log("test", item);
 
   if (!items && !item) return notFound();
 
