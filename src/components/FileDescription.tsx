@@ -1,3 +1,4 @@
+"use client";
 import { type OriResponse } from "@/lib/driveRequest";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { formatBytes, formatDate } from "@/lib/utils";
 import { FileIcon } from "lucide-react";
+import { handleClick } from "@/lib/downloadHandler";
 
 const FileDescription = ({ data }: { data: OriResponse | undefined }) => {
   if (!data) return notFound();
@@ -57,13 +59,33 @@ const FileDescription = ({ data }: { data: OriResponse | undefined }) => {
           </div>
         </CardContent>
         <CardFooter className="flex flex-wrap gap-4 w-full md:mx-auto md:w-fit">
-          <Button type="button" title="download" variant="outline" className="w-full md:w-fit">
+          <Button
+            type="button"
+            title="download"
+            variant="outline"
+            className="w-full md:w-fit"
+            onClick={(e) => {
+              handleClick({
+                item: { id: data.id, name: data.name },
+              });
+            }}
+          >
             Download
           </Button>
-          <Button type="button" title="share" variant="outline" className="flex-1">
+          <Button
+            type="button"
+            title="share"
+            variant="outline"
+            className="flex-1"
+          >
             Copy link
           </Button>
-          <Button type="button" title="share" variant="outline" className="flex-1">
+          <Button
+            type="button"
+            title="share"
+            variant="outline"
+            className="flex-1"
+          >
             Copy Shorten link
           </Button>
         </CardFooter>
