@@ -14,11 +14,16 @@ import { LoaderIcon } from "lucide-react";
 import { createFolder } from "@/lib/actions/createFolder";
 import { toast } from "sonner";
 
-interface DeleteItemProps extends ComponentPropsWithRef<typeof Dialog> {
+interface CreateFolderProps extends ComponentPropsWithRef<typeof Dialog> {
   pathname: string;
+  onSuccess?: () => void;
 }
 
-const CreateFolderDialog = ({ pathname, ...props }: DeleteItemProps) => {
+const CreateFolderDialog = ({
+  pathname,
+  onSuccess,
+  ...props
+}: CreateFolderProps) => {
   const [folderName, setFolderName] = useState<string>("");
   const [isCreatePending, startCreateTransition] = useTransition();
 
@@ -34,6 +39,7 @@ const CreateFolderDialog = ({ pathname, ...props }: DeleteItemProps) => {
         toast.error(error);
       } else {
         toast.success("Item deleted successfully");
+        onSuccess?.();
       }
       setFolderName("");
     });

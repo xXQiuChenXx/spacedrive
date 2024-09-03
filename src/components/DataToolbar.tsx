@@ -62,6 +62,7 @@ export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
           pathname={pathname}
           open={isCreateFolderDialogOpen}
           onOpenChange={setIsCreateFolderDialogOpen}
+          onSuccess={() => table.toggleAllPageRowsSelected(false)} // cancel all selection after created
         />
         <Button
           size="sm"
