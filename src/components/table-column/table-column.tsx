@@ -124,13 +124,6 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
               open={showShareDialog}
               onOpenChange={setShowShareDialog}
             />
-            {/* <DeleteTasksDialog
-              open={showDeleteDialog}
-              onOpenChange={setShowDeleteTaskDialog}
-              tasks={[row.original]}
-              showTrigger={false}
-              onSuccess={() => row.toggleSelected(false)}
-            /> */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button

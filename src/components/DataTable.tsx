@@ -80,7 +80,14 @@ const DataTable = ({ data }: { data: ItemsResponse[] }) => {
                     <TableCell
                       key={cell.id}
                       style={{ width: cell.column.getSize() }}
-                      data-group="row-data"
+                      data-group={
+                        cell.column.id !== "select" ? "row-data" : undefined
+                      }
+                      onClick={() => {
+                        if(cell.column.id === "select") {
+                          cell.row.toggleSelected();
+                        }
+                      }}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
