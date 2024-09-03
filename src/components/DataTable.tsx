@@ -27,7 +27,7 @@ import { useMediaQuery } from "@/app/hooks/use-media-query";
 const DataTable = ({ data }: { data: ItemsResponse[] }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const isDesktop = useMediaQuery("(min-width: 860px)");
 
   // Memoize the columns
   const columns = useMemo(() => getColumns(isDesktop), [isDesktop]);
@@ -45,7 +45,6 @@ const DataTable = ({ data }: { data: ItemsResponse[] }) => {
                   <TableHead
                     key={header.id}
                     colSpan={header.colSpan}
-                    style={{ width: header.column.getSize() }}
                   >
                     {header.isPlaceholder
                       ? null
@@ -82,7 +81,6 @@ const DataTable = ({ data }: { data: ItemsResponse[] }) => {
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      style={{ width: cell.column.getSize() }}
                       data-group={
                         cell.column.id !== "select" ? "row-data" : undefined
                       }

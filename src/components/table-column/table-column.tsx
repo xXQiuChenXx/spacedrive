@@ -57,15 +57,23 @@ export function getColumns(isDesktop: boolean): ColumnDef<ItemsResponse>[] {
       ),
       cell: ({ cell, getValue }) => (
         <div
-          className="max-w-[31.25rem] truncate font-medium flex gap-3 items-center text-ellipsis"
+          className="font-medium flex gap-3 items-center max-w-44 md:max-w-72 lg:max-w-sm xl:max-w-xl lg:min-w-96"
           data-group="row-data"
         >
           {(getValue() as ItemsResponse["file"])?.isFolder ? (
-            <FolderIcon className="size-5" />
+            <FolderIcon
+              className="size-5 flex-shrink-0"
+              data-group="row-data"
+            />
           ) : (
-            <FileTextIcon className="size-5" />
+            <FileTextIcon
+              className="size-5 flex-shrink-0"
+              data-group="row-data"
+            />
           )}
-          {(getValue() as ItemsResponse["file"]).name}
+          <p className="w-full truncate">
+            {(getValue() as ItemsResponse["file"]).name}
+          </p>
         </div>
       ),
       filterFn: (row, id, value) => {
@@ -81,7 +89,8 @@ export function getColumns(isDesktop: boolean): ColumnDef<ItemsResponse>[] {
         }
         return nameA.localeCompare(nameB);
       },
-      size: 560,
+      enableHiding: false,
+      // size: 560,
     },
     {
       accessorKey: "size",
