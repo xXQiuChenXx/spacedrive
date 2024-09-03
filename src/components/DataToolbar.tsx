@@ -11,7 +11,6 @@ import {
 } from "@radix-ui/react-icons";
 import CreateFolderDialog from "./action-dialog/CreateFolderDialog";
 import { usePathname } from "next/navigation";
-import { deleteFiles } from "@/lib/deleteHandler";
 import { ItemsResponse } from "@/lib/driveRequest";
 import DeleteDialog from "@/components/action-dialog/DeleteDialog";
 
@@ -82,6 +81,7 @@ export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
           onClick={(e) =>
             console.log(table.getSelectedRowModel().rows.map((r) => r.original))
           }
+          disabled={!table.getIsSomeRowsSelected()}
         >
           <DownloadIcon className="size-4 mr-2" />
           Download
@@ -109,6 +109,7 @@ export const DataTableToolbar = ({ table }: { table: Table<unknown> }) => {
           className="ml-auto hidden h-8 lg:flex"
           aria-label="Upload"
           onClick={() => setShowDeleteDialog(true)}
+          disabled={!table.getIsSomeRowsSelected()}
         >
           <Cross2Icon className="size-4 mr-2" />
           Delete
