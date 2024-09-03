@@ -18,6 +18,8 @@ export async function getInformations({
     listChild: true,
   })) as ItemsResponse[];
 
+  
+
   let item;
   let readmeFile = items?.find(
     (item) => item.name.toLowerCase() === "readme.md"

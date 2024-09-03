@@ -21,7 +21,6 @@ const HomePage = async ({
     accessToken,
     params: params.folder,
   });
-  console.log("test", item);
 
   if (!items && !item) return notFound();
 

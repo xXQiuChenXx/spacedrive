@@ -1,4 +1,5 @@
 "use server";
+import { revalidateTag } from "next/cache";
 import { getItemRequestURL } from "./graphAPI";
 
 type Props = {
@@ -82,9 +83,10 @@ export const getItems = async ({
         },
       };
     });
-  } else if (response?.error) {
-    console.log(response.error);
   }
+
+  if (response?.error?.code === "InvalidAuthenticationToken")
+    await revalidateTag("token");
   return null;
 };
 

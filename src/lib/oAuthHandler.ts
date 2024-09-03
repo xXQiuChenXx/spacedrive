@@ -30,7 +30,6 @@ type AuthResponse = {
 
 const isTokenExpired = (token: TokenModel): boolean => {
   const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
-  console.log(currentTime, token)
   return currentTime >= token.issuedAt + token.expiredIn - 5; // -5 for possible delay
 };
 
@@ -121,15 +120,5 @@ export const getToken = async (): Promise<Pick<
 };
 
 export const getCachedToken = unstable_cache(getToken, [], {
-  revalidate: 3600,
+  revalidate: 60, // 60 seconds
 });
-
-// error: {
-//   code: 'InvalidAuthenticationToken',
-//   message: 'Lifetime validation failed, the token is expired.',
-//   innerError: {
-//     date: '2024-08-11T11:50:29',
-//     'request-id': '6721ee0a-b8dd-4bfe-be05-e1b045280b0b',
-//     'client-request-id': '6721ee0a-b8dd-4bfe-be05-e1b045280b0b'
-//   }
-// }
