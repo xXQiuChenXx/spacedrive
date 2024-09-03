@@ -16,17 +16,17 @@ import { FileIcon } from "lucide-react";
 const FileDescription = ({ data }: { data: OriResponse | undefined }) => {
   if (!data) return notFound();
   return (
-    <div className="container w-10/12 mt-3">
-      <Card className="py-3 px-5">
+    <div className="mt-3">
+      <Card className="md:py-3 md:px-5 md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto">
         <CardHeader>
           <CardTitle>File Information</CardTitle>
           <CardDescription>Detailed file information goes here</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex space-x-10">
-            <div className="border w-1/5 text-center flex items-center justify-center flex-col px-4 break-all">
+          <div className="flex flex-col md:flex-row gap-5">
+            <div className="border w-full md:w-fit text-center flex items-center justify-center flex-col px-8 py-20 break-all rounded-lg">
               <FileIcon className="mb-2" />
-              <p >{data.name}</p>
+              <p className="md:w-32">{data.name}</p>
             </div>
             <div className="flex flex-col p-2.5">
               <div className="py-1">
@@ -56,14 +56,14 @@ const FileDescription = ({ data }: { data: OriResponse | undefined }) => {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="flex space-x-7 mx-auto w-fit">
-          <Button type="button" title="download" variant="outline">
+        <CardFooter className="flex flex-wrap gap-4 w-full md:mx-auto md:w-fit">
+          <Button type="button" title="download" variant="outline" className="w-full md:w-fit">
             Download
           </Button>
-          <Button type="button" title="share" variant="outline">
+          <Button type="button" title="share" variant="outline" className="flex-1">
             Copy link
           </Button>
-          <Button type="button" title="share" variant="outline">
+          <Button type="button" title="share" variant="outline" className="flex-1">
             Copy Shorten link
           </Button>
         </CardFooter>
