@@ -46,18 +46,18 @@ export const DataTableToolbar = ({
   }
 
   return (
-    <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
-      <div className="flex flex-1 items-center space-x-2">
+    <div className="flex flex-col md:flex-row gap-y-4 w-full md:items-center justify-between md:space-x-2 overflow-auto p-1">
+      <div className="flex flex-1 items-center space-x-2 w-full">
         <Input
           placeholder="Filter File Name..."
           value={(table.getColumn("file")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("file")?.setFilterValue(event.target.value)
           }
-          className="h-8 w-40 lg:w-64"
+          className="h-8 p-4 md:w-40 lg:w-64"
         />
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center md:gap-2 w-full md:w-fit gap-4">
         <DeleteDialog
           items={
             table
@@ -77,7 +77,7 @@ export const DataTableToolbar = ({
         <Button
           size="sm"
           variant="outline"
-          className="ml-auto h-8 flex"
+          className="w-1/2 md:w-fit md:ml-auto h-8 flex items-center py-4"
           aria-label="Donwload"
           onClick={(e) => setIsCreateFolderDialogOpen(true)}
         >
@@ -87,7 +87,7 @@ export const DataTableToolbar = ({
         <Button
           size="sm"
           variant="outline"
-          className="ml-auto h-8 flex"
+          className="w-1/2 md:w-fit md:ml-auto h-8 flex items-center py-4"
           aria-label="Upload"
           onClick={() => fileInputRef.current?.click()}
           disabled={isPending}

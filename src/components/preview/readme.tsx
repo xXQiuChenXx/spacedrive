@@ -10,7 +10,7 @@ import { useMemo } from "react";
 const ReadMePreview = ({ content }: { content: string }) => {
   const readmeContent = useMemo(() => content, [content]);
   return (
-    <div className="w-11/12 mx-auto border p-10 mt-16 prose dark:prose-invert max-w-none rounded-lg shadow">
+    <div className="md:w-11/12 md:mx-auto text-sm md:text-base border p-4 md:p-10 mt-16 prose dark:prose-invert max-w-none rounded-lg shadow">
       <p className="font-bold text-base text-black dark:text-white">
         <BookOpenText className="size-6 inline-block mr-4" />
         README.md

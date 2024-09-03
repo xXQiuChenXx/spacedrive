@@ -51,7 +51,7 @@ const DeleteDialog = ({ items, onSuccess, ...props }: DeleteItemProps) => {
               })}
             </ul>
         </DialogHeader>
-        <DialogFooter className="justify-end">
+        <DialogFooter className="justify-end gap-3 md:gap-2">
           <DialogClose asChild>
             <Button type="button" variant="secondary" title="cancel">
               Cancel

@@ -47,7 +47,7 @@ const RenameDialog = ({ item, onSuccess, ...props }: RenameItemProps) => {
           <DialogDescription>Enter the new name of the file</DialogDescription>
         </DialogHeader>
         <Input value={fileName} onChange={(e) => setFileName(e.target.value)} />
-        <DialogFooter className="justify-end">
+        <DialogFooter className="justify-end gap-3 md:gap-2">
           <DialogClose asChild>
             <Button type="button" variant="outline">
               Cancel

@@ -25,7 +25,7 @@ const HomePage = async ({
   if (!items && !item) return notFound();
 
   return (
-    <div className="container py-8 mt-5">
+    <div className="px-5 md:container py-8 mt-5">
       <DataRoute />
       {items ? <DataTable data={items} /> : <FileDescription data={item} />}
       {readmeContent && <ReadMePreview content={readmeContent} />}
