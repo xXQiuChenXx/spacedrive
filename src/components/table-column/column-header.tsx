@@ -28,7 +28,7 @@ import {
     className,
   }: DataTableColumnHeaderProps<TData, TValue>) {
     if (!column.getCanSort() && !column.getCanHide()) {
-      return <div className={cn(className)}>{title}</div>
+      return <div className={className}>{title}</div>
     }
   
     return (
