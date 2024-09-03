@@ -71,7 +71,7 @@ export function getColumns(isDesktop: boolean): ColumnDef<ItemsResponse>[] {
               data-group="row-data"
             />
           )}
-          <p className="w-full truncate">
+          <p className="w-full truncate" data-group="row-data">
             {(getValue() as ItemsResponse["file"]).name}
           </p>
         </div>
