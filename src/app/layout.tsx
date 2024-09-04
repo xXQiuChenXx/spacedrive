@@ -8,7 +8,6 @@ import NextTopLoader from "nextjs-toploader";
 import { SiteHeader } from "@/components/header/SiteHeader";
 import { Toaster } from "@/components/ui/toaster";
 import { siteConfig } from "@/config/site.config";
-import "@/lib/fontAwesome"
 
 const inter = Inter({ subsets: ["latin"] });
 

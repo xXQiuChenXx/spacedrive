@@ -1,5 +1,40 @@
 import type { IconPrefix, IconName } from "@fortawesome/fontawesome-svg-core";
 
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+  faFileImage,
+  faFilePdf,
+  faFileWord,
+  faFilePowerpoint,
+  faFileExcel,
+  faFileAudio,
+  faFileVideo,
+  faFileArchive,
+  faFileCode,
+  faFileAlt,
+  faFile,
+} from "@fortawesome/free-regular-svg-icons";
+import { faBook, faLink } from "@fortawesome/free-solid-svg-icons";
+import { faMarkdown } from "@fortawesome/free-brands-svg-icons";
+
+// Add the icons to the library
+library.add(
+  faFileImage,
+  faFilePdf,
+  faFileWord,
+  faFilePowerpoint,
+  faFileExcel,
+  faFileAudio,
+  faFileVideo,
+  faFileArchive,
+  faFileCode,
+  faFileAlt,
+  faFile,
+  faBook,
+  faLink,
+  faMarkdown
+);
+
 const icons: { [key: string]: [IconPrefix, IconName] } = {
   image: ["far", "file-image"],
   pdf: ["far", "file-pdf"],

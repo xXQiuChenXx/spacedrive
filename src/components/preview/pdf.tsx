@@ -2,22 +2,32 @@
 import { ItemsResponse, OriResponse } from "@/lib/driveRequest";
 import PreviewContainer from "./PreviewContainer";
 import { useEffect, useState } from "react";
+import { Viewer, Worker } from "@react-pdf-viewer/core";
+import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 
-export const PDFPreview = ({
-  file,
-}: {
-  file: OriResponse | ItemsResponse;
-}) => {
-    const [origin, setOrigin] = useState("");
-    useEffect(() => {
-        setOrigin(window.location.origin)
-    }, [])
+// Import styles
+import "@react-pdf-viewer/core/lib/styles/index.css";
+import "@react-pdf-viewer/default-layout/lib/styles/index.css";
+export const PDFPreview = ({ file }: { file: OriResponse | ItemsResponse }) => {
+  const [origin, setOrigin] = useState("");
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
   const filePath = encodeURI(origin + "/api/graph/raw?item=" + file.id);
-  const url = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${filePath}`;
   return (
     <PreviewContainer file={file}>
-      <iframe className="h-lvh" src={url} width="100%" height="100%" title="pdf-viewer"></iframe>
+      <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.js">
+        <div className="h-[80vh]">
+          <Viewer
+            fileUrl={filePath}
+            plugins={[
+              // Register plugins
+              defaultLayoutPluginInstance,
+            ]}
+          />
+        </div>
+      </Worker>
     </PreviewContainer>
   );
 };
-
