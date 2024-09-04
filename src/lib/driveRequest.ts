@@ -2,6 +2,7 @@
 import { revalidateTag } from "next/cache";
 import { getItemRequestURL } from "./graphAPI";
 import { config } from "@/config/api.config";
+import { getCachedToken } from "./oAuthHandler";
 
 type Props = {
   folder?: string[];
@@ -26,22 +27,19 @@ export type OriResponse = {
   size: number;
   webURL?: string;
   createdDateTime?: string;
+  video?: Object;
+  image?: {
+    height: number;
+    width: number;
+  };
 };
 
-export type ItemsResponse = {
-  "@odata.etag": string;
-  id: string;
-  lastModifiedDateTime: string;
-  name: string;
-  folder?: {
-    childCount: number;
-  };
+export interface ItemsResponse extends Omit<OriResponse, "file">{
   file: {
     name: string;
     isFolder: boolean;
     mimeType?: string;
   };
-  size: number;
 };
 
 export type ErrorResponse = {
@@ -59,8 +57,7 @@ export const getItems = async ({
 }: Props): Promise<ItemsResponse[] | OriResponse | null> => {
   const requestUrl = getItemRequestURL(folder, listChild);
   const params = new URLSearchParams({
-    select:
-      "name,id,size,lastModifiedDateTime,folder,file,video,image" //,@microsoft.graph.downloadUrl",
+    select: "name,id,size,lastModifiedDateTime,folder,file,video,image", //,@microsoft.graph.downloadUrl",
   });
 
   const response = await fetch(`${requestUrl}?${params.toString()}`, {
@@ -74,7 +71,6 @@ export const getItems = async ({
   if (row && !response?.error) return response;
 
   if (response?.value) {
-    
     return response.value.map((x: OriResponse) => {
       return {
         ...x,
@@ -94,13 +90,18 @@ export const getItems = async ({
 
 export const getFileContent = async (
   item: OriResponse,
-  access_token: string
+  access_token?: string
 ): Promise<string> => {
-  const response = await fetch(`${config.graphApi}/me/drive/items/${item.id}/content`,  {
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    },
-  }).then((res) => res.text());
+  if (!access_token) access_token = (await getCachedToken())?.accessToken;
+
+  const response = await fetch(
+    `${config.graphApi}/me/drive/items/${item.id}/content`,
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    }
+  ).then((res) => res.text());
 
   return response;
 };

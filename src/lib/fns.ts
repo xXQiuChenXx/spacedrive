@@ -41,5 +41,5 @@ export async function getInformations({
     readmeContent = await getFileContent(file, accessToken);
   }
 
-  return { items, item, readmeContent };
+  return { items, item, readmeContent, readmeFile };
 }
