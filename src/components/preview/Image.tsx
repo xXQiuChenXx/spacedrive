@@ -2,7 +2,7 @@ import { type OriResponse } from "@/lib/driveRequest";
 import Image from "next/image";
 import PreviewContainer from "./PreviewContainer";
 
-const ImagePreview = ({ file }: { file: OriResponse }) => {
+export const ImagePreview = ({ file }: { file: OriResponse }) => {
   return (
     <PreviewContainer file={file}>
       <Image
@@ -18,4 +18,3 @@ const ImagePreview = ({ file }: { file: OriResponse }) => {
   );
 };
 
-export default ImagePreview;

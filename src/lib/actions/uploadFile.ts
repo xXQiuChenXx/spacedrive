@@ -4,18 +4,22 @@ import { getCachedToken } from "@/lib/oAuthHandler";
 import { redirect } from "next/navigation";
 import { getUploadItemURL } from "@/lib/graphAPI";
 import { revalidateTag } from "next/cache";
+import { escape } from "querystring";
 
 export async function uploadFile({ formdata }: { formdata: FormData }) {
   const file = formdata.get("file") as File;
   const path = formdata.get("path") as string;
-
   if (!file || !path) return { error: "400 Bad Request" };
 
   const token = await getCachedToken();
   if (!token) return redirect("/setup");
   const { accessToken } = token;
+
   const response = await fetch(
-    getUploadItemURL({ fileName: file.name, path: path }),
+    getUploadItemURL({
+      fileName: encodeURIComponent(file.name),
+      path: path,
+    }),
     {
       method: "PUT",
       body: file,
@@ -24,8 +28,8 @@ export async function uploadFile({ formdata }: { formdata: FormData }) {
         "Content-Type": file.type,
       },
     }
-  ).then((res) => res?.json());
-  await revalidateTag("items");
+  ).then((res) => res.json());
+  if (!response?.error) await revalidateTag("items");
   return {
     data: response?.error ? null : response,
     error: response?.error?.message,

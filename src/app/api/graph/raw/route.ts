@@ -33,21 +33,21 @@ export async function GET(request: NextRequest) {
   }
   const contentType = response.headers.get("content-type");
 
-  if (!contentType || !contentType.startsWith("image")) {
-    return Response.json(
-      {
-        error: {
-          code: "400 Bad Request",
-          message: "The requested content only can be image type",
-        },
-      },
-      { status: 400 }
-    );
-  }
+  // if (!contentType || !contentType.startsWith("image")) {
+  //   return Response.json(
+  //     {
+  //       error: {
+  //         code: "400 Bad Request",
+  //         message: "The requested content only can be image type",
+  //       },
+  //     },
+  //     { status: 400 }
+  //   );
+  // }
   const imageBuffer = await response.arrayBuffer();
 
   return new Response(Buffer.from(imageBuffer), {
     status: 200,
-    headers: { "Content-Type": contentType },
+    headers: { "Content-Type": contentType as string },
   });
 }

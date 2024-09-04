@@ -33,8 +33,8 @@ const HomePage = async ({
       <DataRoute />
       <Suspense
         fallback={
-          <div className="flex items-center">
-            <LoaderIcon className="size-4 animate-spin" />
+          <div className="flex items-center w-fit mx-auto mt-10">
+            <LoaderIcon className="size-4 animate-spin mr-4" />
             <p>Loading...</p>
           </div>
         }

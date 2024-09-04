@@ -37,6 +37,7 @@ export async function getInformations({
       access_token: accessToken,
       folder: params.concat([readmeFile.name]),
       row: true,
+      expand: true,
     })) as OriResponse;
     readmeContent = await getFileContent(file, accessToken);
   }

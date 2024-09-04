@@ -9,6 +9,7 @@ type Props = {
   access_token: string;
   listChild?: boolean;
   row?: boolean;
+  expand?: boolean;
 };
 
 export type OriResponse = {
@@ -27,20 +28,30 @@ export type OriResponse = {
   size: number;
   webURL?: string;
   createdDateTime?: string;
-  video?: Object;
+  video?: {
+    audioBitsPerSample: number;
+    audioChannels: number;
+    audioSamplesPerSecond: number;
+    bitRate: number;
+    duration: number;
+    fourCC: string; //'H264',
+    frameRate: number;
+    height: number;
+    width: number;
+  };
   image?: {
     height: number;
     width: number;
   };
 };
 
-export interface ItemsResponse extends Omit<OriResponse, "file">{
+export interface ItemsResponse extends Omit<OriResponse, "file"> {
   file: {
     name: string;
     isFolder: boolean;
     mimeType?: string;
   };
-};
+}
 
 export type ErrorResponse = {
   error: {
@@ -54,11 +65,14 @@ export const getItems = async ({
   access_token,
   listChild,
   row,
+  expand,
 }: Props): Promise<ItemsResponse[] | OriResponse | null> => {
   const requestUrl = getItemRequestURL(folder, listChild);
   const params = new URLSearchParams({
     select: "name,id,size,lastModifiedDateTime,folder,file,video,image", //,@microsoft.graph.downloadUrl",
   });
+
+  if (expand) params.append("expand", "thumbnails");
 
   const response = await fetch(`${requestUrl}?${params.toString()}`, {
     headers: {
@@ -100,6 +114,7 @@ export const getFileContent = async (
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
+      cache: item.size > 2 * 1024 * 1024 ? "no-cache" : "force-cache",
     }
   ).then((res) => res.text());
 
