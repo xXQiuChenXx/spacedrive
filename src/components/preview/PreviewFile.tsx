@@ -5,7 +5,8 @@ import { MarkdownPreview } from "./Markdown";
 import { ImagePreview } from "./Image";
 import { CodePreview } from "./Code";
 import TextPreview from "./Text";
-import PDFPreview from "./pdf";
+import { PDFPreview } from "./pdf";
+import { OfficePreview } from "./Office";
 
 const PreviewFile = async ({ file }: { file: OriResponse }) => {
   const previewType = getPreviewType(getFileExtension(file.name), {
@@ -36,8 +37,8 @@ const PreviewFile = async ({ file }: { file: OriResponse }) => {
       case preview.pdf:
         return <PDFPreview file={file} />;
 
-      //   case preview.office:
-      //     return <OfficePreview file={file} content={content} />;
+      case preview.office:
+        return <OfficePreview file={file} />;
     }
   }
   return null;
