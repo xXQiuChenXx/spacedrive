@@ -54,7 +54,7 @@ export function getColumns(
     {
       accessorKey: "file",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="File Name" />
+        <DataTableColumnHeader column={column} title="File Name"className="lg:min-w-96" />
       ),
       cell: ({ cell, getValue }) => (
         <div
