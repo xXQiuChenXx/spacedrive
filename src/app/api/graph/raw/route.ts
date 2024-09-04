@@ -48,6 +48,11 @@ export async function GET(request: NextRequest) {
 
   return new Response(Buffer.from(imageBuffer), {
     status: 200,
-    headers: { "Content-Type": contentType as string },
+    headers: {
+      "Content-Type": contentType as string,
+      "Content-Disposition": response.headers.get(
+        "content-disposition"
+      ) as string,
+    },
   });
 }
