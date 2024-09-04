@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
   const id = params.get("id");
   const name = params.get("name");
-  if (!name)
+  if (!name || name?.toLocaleLowerCase() === ".password")
     return Response.json(
       { error: { message: "400 Bad Request" } },
       { status: 400 }

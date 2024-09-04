@@ -11,7 +11,7 @@ import {
 import { usePathname } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
 import { ItemsResponse } from "@/lib/driveRequest";
-import { useMemo } from "react";
+import { ReactNode, useMemo } from "react";
 import { getColumns } from "./table-column/table-column";
 import { flexRender } from "@tanstack/react-table";
 import { useDataTable } from "@/app/hooks/useDataTable";
@@ -24,7 +24,13 @@ import {
 import { DataTableToolbar } from "./DataToolbar";
 import { useMediaQuery } from "@/app/hooks/use-media-query";
 
-const DataTable = ({ data }: { data: ItemsResponse[] }) => {
+const DataTable = ({
+  data,
+  children,
+}: {
+  data: ItemsResponse[];
+  children: ReactNode;
+}) => {
   const router = useRouter();
   const pathname = usePathname();
   const isDesktop = useMediaQuery("(min-width: 860px)");
@@ -34,18 +40,15 @@ const DataTable = ({ data }: { data: ItemsResponse[] }) => {
   const { table } = useDataTable({ columns, data });
 
   return (
-    <div className="w-full md:w-11/12 mx-auto space-y-2.5 overflow-auto">
+    <div className="w-full md:w-11/12 mx-auto overflow-auto">
       <DataTableToolbar table={table} />
-      <div className="overflow-hidden rounded-md border">
+      <div className="overflow-hidden rounded-md border mt-2.5">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((group) => (
               <TableRow key={group.id}>
                 {group.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    colSpan={header.colSpan}
-                  >
+                  <TableHead key={header.id} colSpan={header.colSpan}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -111,6 +114,7 @@ const DataTable = ({ data }: { data: ItemsResponse[] }) => {
           </TableBody>
         </Table>
       </div>
+      <div className="mt-10">{children}</div>
     </div>
   );
 };
