@@ -22,9 +22,9 @@ export const PDFPreview = ({ file }: { file: OriResponse | ItemsResponse }) => {
           <Viewer
             fileUrl={filePath}
             plugins={[
-              // Register plugins
               defaultLayoutPluginInstance,
             ]}
+            enableSmoothScroll
           />
         </div>
       </Worker>
