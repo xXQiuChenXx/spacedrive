@@ -12,11 +12,11 @@ export const PDFPreview = ({
     useEffect(() => {
         setOrigin(window.location.origin)
     }, [])
-  const filePath = origin + "/api/graph/raw?item=" + file.id;
+  const filePath = encodeURI(origin + "/api/graph/raw?item=" + file.id);
   const url = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${filePath}`;
   return (
     <PreviewContainer file={file}>
-      <iframe  src={url} width="100%" height="100%" title="pdf-viewer"></iframe>
+      <iframe className="h-lvh" src={url} width="100%" height="100%" title="pdf-viewer"></iframe>
     </PreviewContainer>
   );
 };

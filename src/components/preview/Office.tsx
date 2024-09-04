@@ -16,7 +16,7 @@ export const OfficePreview = ({
   const url = `https://view.officeapps.live.com/op/embed.aspx?src=${filePath}`;
   return (
     <PreviewContainer file={file}>
-      <iframe  src={url} width="100%" height="100%" title="pdf-viewer"></iframe>
+      <iframe className="h-lvh" src={url} width="100%" height="100%" title="pdf-viewer"></iframe>
     </PreviewContainer>
   );
 };
