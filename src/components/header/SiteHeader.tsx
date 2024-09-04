@@ -6,11 +6,13 @@ import { ThemeToggle } from "./ThemeToggle";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow">
       <div className="container flex h-14 items-center">
         <Link href="/" className="mr-2 flex items-center md:mr-6 md:space-x-2">
-          <IconWhirl  width={25} height={25} aria-hidden="true" />
-          <span className="hidden font-bold md:inline-block whitespace-nowrap">Space Drive</span>
+          <IconWhirl width={25} height={25} aria-hidden="true" />
+          <span className="hidden font-bold md:inline-block whitespace-nowrap">
+            Space Drive
+          </span>
         </Link>
         <nav className="flex w-full items-center gap-6 text-sm">
           <Link

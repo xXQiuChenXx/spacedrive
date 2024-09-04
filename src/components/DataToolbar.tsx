@@ -1,5 +1,12 @@
 "use client";
-import { ChangeEvent, useRef, useState, useTransition } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { Input } from "@/components/ui/input";
 import { type Table } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
@@ -18,10 +25,11 @@ import { uploadFile } from "@/lib/actions/uploadFile";
 
 export const DataTableToolbar = ({
   table,
+  setShowDeleteDialog,
 }: {
   table: Table<ItemsResponse>;
+  setShowDeleteDialog: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const pathname = usePathname().replace("home/", "").replace("home", "");
   const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
     useState(false);
@@ -58,16 +66,6 @@ export const DataTableToolbar = ({
         />
       </div>
       <div className="flex items-center md:gap-2 w-full md:w-fit gap-4">
-        <DeleteDialog
-          items={
-            table
-              .getSelectedRowModel()
-              .rows.map((row) => row.original) as ItemsResponse[]
-          }
-          open={showDeleteDialog}
-          onOpenChange={setShowDeleteDialog}
-          onSuccess={() => table.toggleAllPageRowsSelected(false)} // cancel all selection after deleted
-        />
         <CreateFolderDialog
           pathname={pathname}
           open={isCreateFolderDialogOpen}
@@ -118,7 +116,7 @@ export const DataTableToolbar = ({
         <Button
           size="sm"
           variant="outline"
-          className="ml-auto hidden h-8 lg:flex"
+          className="ml-auto hidden h-8 md:flex"
           aria-label="Upload"
           onClick={() => setShowDeleteDialog(true)}
           disabled={!table.getIsSomeRowsSelected()}

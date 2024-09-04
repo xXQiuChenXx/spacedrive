@@ -11,7 +11,7 @@ import {
 import { usePathname } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
 import { ItemsResponse } from "@/lib/driveRequest";
-import { ReactNode, useMemo } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { getColumns } from "./table-column/table-column";
 import { flexRender } from "@tanstack/react-table";
 import { useDataTable } from "@/app/hooks/useDataTable";
@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/context-menu";
 import { DataTableToolbar } from "./DataToolbar";
 import { useMediaQuery } from "@/app/hooks/use-media-query";
+import { Button } from "./ui/button";
+import DeleteDialog from "./action-dialog/DeleteDialog";
 
 const DataTable = ({
   data,
@@ -34,14 +36,15 @@ const DataTable = ({
   const router = useRouter();
   const pathname = usePathname();
   const isDesktop = useMediaQuery("(min-width: 860px)");
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   // Memoize the columns
-  const columns = useMemo(() => getColumns(isDesktop), [isDesktop]);
+  const columns = useMemo(() => getColumns(isDesktop, pathname), [isDesktop, pathname]);
   const { table } = useDataTable({ columns, data });
 
   return (
     <div className="w-full md:w-11/12 mx-auto overflow-auto">
-      <DataTableToolbar table={table} />
+      <DataTableToolbar table={table} setShowDeleteDialog={setShowDeleteDialog}/>
       <div className="overflow-hidden rounded-md border mt-2.5">
         <Table>
           <TableHeader>
@@ -114,6 +117,33 @@ const DataTable = ({
           </TableBody>
         </Table>
       </div>
+      <p className="text-muted-foreground p-2">
+        {table.getFilteredSelectedRowModel().rows.length} of{" "}
+        {table.getFilteredRowModel().rows.length} row(s) selected.
+      </p>
+      {Boolean(table.getFilteredSelectedRowModel().rows.length) && !isDesktop && (
+        <div className="fixed bottom-0 left-0 mb-6 z-50 w-full">
+          <div className="bg-gray-900 flex justify-center w-fit mx-auto gap-5 border p-3 shodow-lg rounded">
+            <Button
+              variant="destructive"
+              onClick={() => setShowDeleteDialog(true)}
+            >
+              Delete
+            </Button>
+            <Button variant="outline">Download</Button>
+          </div>
+        </div>
+      )}
+      <DeleteDialog
+        items={
+          table
+            .getSelectedRowModel()
+            .rows.map((row) => row.original) as ItemsResponse[]
+        }
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        onSuccess={() => table.toggleAllPageRowsSelected(false)} // cancel all selection after deleted
+      />
       <div className="mt-10">{children}</div>
     </div>
   );

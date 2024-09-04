@@ -19,7 +19,7 @@ export const MarkdownPreview = ({
   const mdContent = useMemo(() => content, [content]);
   return (
     <PreviewContainer file={file}>
-      <div className="text-sm md:text-base prose dark:prose-invert max-w-none p-4">
+      <div className="text-sm md:text-base prose dark:prose-invert max-w-none md:p-4">
         <Markdown
           remarkPlugins={[remarkGfm, remarkMath]}
           rehypePlugins={[rehypeKatex, rehypeRaw]}

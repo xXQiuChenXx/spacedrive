@@ -1,8 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import { type ColumnDef } from "@tanstack/react-table";
-import { formatDate } from "@/lib/utils";
 import { ItemsResponse } from "@/lib/driveRequest";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "./column-header";
@@ -18,11 +16,14 @@ import { formatBytes } from "@/lib/utils";
 import { FolderIcon, FileTextIcon } from "lucide-react";
 import DeleteDialog from "../action-dialog/DeleteDialog";
 import RenameDialog from "../action-dialog/RenameDialog";
-import ShareDialog from "../action-dialog/ShareDialog";
 import { handleClick } from "@/lib/downloadHandler";
 import FormatDate from "./format-date";
+import { useState } from "react";
 
-export function getColumns(isDesktop: boolean): ColumnDef<ItemsResponse>[] {
+export function getColumns(
+  isDesktop: boolean,
+  pathname: string
+): ColumnDef<ItemsResponse>[] {
   return [
     {
       id: "select",
@@ -117,9 +118,8 @@ export function getColumns(isDesktop: boolean): ColumnDef<ItemsResponse>[] {
     {
       id: "actions",
       cell: function Cell({ row }) {
-        const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
-        const [showShareDialog, setShowShareDialog] = React.useState(false);
-        const [showRenameDialog, setShowRenameDialog] = React.useState(false);
+        const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+        const [showRenameDialog, setShowRenameDialog] = useState(false);
 
         return (
           <>
@@ -133,11 +133,6 @@ export function getColumns(isDesktop: boolean): ColumnDef<ItemsResponse>[] {
               item={row.original}
               open={showRenameDialog}
               onOpenChange={setShowRenameDialog}
-            />
-            <ShareDialog
-              item={row.original}
-              open={showShareDialog}
-              onOpenChange={setShowShareDialog}
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -157,10 +152,13 @@ export function getColumns(isDesktop: boolean): ColumnDef<ItemsResponse>[] {
                   Rename
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onSelect={() => setShowShareDialog(true)}
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={() =>
+                    navigator.clipboard.writeText(
+                      `${window.location.origin}${pathname}/${row.original.name}`
+                    )
+                  }
                 >
-                  Share
+                  Copy Link
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={(e) => {
