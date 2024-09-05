@@ -19,9 +19,11 @@ import {
 import CreateFolderDialog from "./action-dialog/CreateFolderDialog";
 import { usePathname } from "next/navigation";
 import { ItemsResponse } from "@/lib/driveRequest";
-import DeleteDialog from "@/components/action-dialog/DeleteDialog";
 import { toast } from "sonner";
 import { uploadFile } from "@/lib/actions/uploadFile";
+import { downloadMultiFiles } from "@/lib/MultiFileDownloader";
+import path from "path";
+import { LoaderIcon } from "lucide-react";
 
 export const DataTableToolbar = ({
   table,
@@ -35,6 +37,8 @@ export const DataTableToolbar = ({
     useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isPending, startTransition] = useTransition();
+  const [isDownloading, startDownloadTransition] = useTransition();
+  const folderName = path.basename(pathname);
 
   function uploadInputChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target?.files?.[0];
@@ -51,6 +55,17 @@ export const DataTableToolbar = ({
         }
       });
     }
+  }
+  function onDonwloadClick() {
+    startDownloadTransition(async () => {
+      const items = table
+        .getSelectedRowModel()
+        .rows.map((r) => r.original)
+        .filter((item) => !item.file.isFolder);
+      await downloadMultiFiles({ items, folderName }).catch((err) =>
+        console.log(err)
+      );
+    });
   }
 
   return (
@@ -90,21 +105,27 @@ export const DataTableToolbar = ({
           onClick={() => fileInputRef.current?.click()}
           disabled={isPending}
         >
-          <UploadIcon className="size-4 mr-2" />
-          Upload
+          {isPending ? (
+            <LoaderIcon className="animate-spin mr-2 size-4" />
+          ) : (
+            <UploadIcon className="size-4 mr-2" />
+          )}
+          {isPending ? "Uploading..." : "Upload"}
         </Button>
         <Button
           size="sm"
           variant="outline"
           className="ml-auto hidden h-8 lg:flex"
           aria-label="Donwload"
-          onClick={(e) =>
-            console.log(table.getSelectedRowModel().rows.map((r) => r.original))
-          }
-          disabled={!table.getIsSomeRowsSelected()}
+          onClick={onDonwloadClick}
+          disabled={!table.getIsSomeRowsSelected() || isDownloading}
         >
-          <DownloadIcon className="size-4 mr-2" />
-          Download
+          {isDownloading ? (
+            <LoaderIcon className="animate-spin mr-2 size-4" />
+          ) : (
+            <DownloadIcon className="size-4 mr-2" />
+          )}
+          {isDownloading ? "Downloading" : "Download"}
         </Button>
         <Input
           type="file"

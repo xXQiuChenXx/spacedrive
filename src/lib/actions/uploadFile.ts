@@ -4,7 +4,6 @@ import { getCachedToken } from "@/lib/oAuthHandler";
 import { redirect } from "next/navigation";
 import { getUploadItemURL } from "@/lib/graphAPI";
 import { revalidateTag } from "next/cache";
-import { escape } from "querystring";
 
 export async function uploadFile({ formdata }: { formdata: FormData }) {
   const file = formdata.get("file") as File;

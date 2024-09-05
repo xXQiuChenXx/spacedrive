@@ -7,9 +7,9 @@ export const getItemRequestURL = (
   const location = typeof path === "string" ? path : `/${path.join("/")}`;
   const isRoot = path === "/" ? "" : ":";
   if (listChild) {
-    return `${config.graphApi}/me/drive/root${isRoot}${location}${isRoot}/children`;
+    return `${config.graphApi}/me/drive/root${isRoot}${encodeURIComponent(location)}${isRoot}/children`;
   } else {
-    return `${config.graphApi}/me/drive/root${isRoot}${location}`;
+    return `${config.graphApi}/me/drive/root${isRoot}${encodeURIComponent(location)}`;
   }
 };
 

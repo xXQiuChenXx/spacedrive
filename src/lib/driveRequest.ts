@@ -78,6 +78,7 @@ export const getItems = async ({
     headers: {
       Authorization: `Bearer ${access_token}`,
       "Cache-Control": "no-cache",
+      "X-Need-NoCache": "yes",
     },
     next: { tags: ["items"] },
   }).then((res) => res.json());
@@ -107,12 +108,15 @@ export const getFileContent = async (
   access_token?: string
 ): Promise<string> => {
   if (!access_token) access_token = (await getCachedToken())?.accessToken;
+  console.log(item);
 
   const response = await fetch(
     `${config.graphApi}/me/drive/items/${item.id}/content`,
     {
       headers: {
         Authorization: `Bearer ${access_token}`,
+        "Cache-Control": "no-cache",
+        "X-Need-NoCache": "yes",
       },
       cache: item.size > 2 * 1024 * 1024 ? "no-cache" : "force-cache",
     }
