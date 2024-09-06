@@ -29,7 +29,7 @@ const HomePage = async ({
   if (!items && !item) return notFound();
 
   return (
-    <div className="px-5 md:container py-8 mt-5">
+    <div className="px-5 md:container py-8 mt-5 flex-grow">
       <DataRoute />
       <Suspense fallback={<Loader />}>
         {items ? (
