@@ -1,8 +1,9 @@
 import { ItemsResponse, OriResponse } from "@/lib/driveRequest";
-import React, { ReactNode } from "react";
+import React, { ReactNode, Suspense } from "react";
 import { Separator } from "@/components/ui/separator";
 import { getFileIcon } from "@/lib/getFileIcon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Loader } from "../Loader";
 
 const PreviewContainer = ({
   children,
@@ -21,7 +22,7 @@ const PreviewContainer = ({
         <p className="font-bold w-full truncate">{file.name}</p>
       </div>
       <Separator className="my-3" />
-      {children}
+      <Suspense fallback={<Loader />}>{children}</Suspense>
     </div>
   );
 };
