@@ -18,7 +18,7 @@ const PreviewContainer = ({
           icon={getFileIcon(file.name, { video: Boolean(file?.video) })}
           className="size-3 md:size-4 mr-2 md:ml-4"
         />
-        <p className="font-bold">{file.name}</p>
+        <p className="font-bold w-full truncate">{file.name}</p>
       </div>
       <Separator className="my-3" />
       {children}

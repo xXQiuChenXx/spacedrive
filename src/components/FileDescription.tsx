@@ -39,7 +39,7 @@ const FileDescription = ({
               <p className="md:w-32">{file.name}</p>
             </div>
             <div className="flex flex-col p-2.5">
-              <div className="py-1">
+              <div className="py-1 max-w-sm lg:max-w-lg">
                 <p className="text-muted-foreground">File Name:</p>
                 <p className="truncate">{file.name}</p>
               </div>

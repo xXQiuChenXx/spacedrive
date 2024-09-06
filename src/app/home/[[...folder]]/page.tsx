@@ -8,7 +8,7 @@ import { getInformations } from "@/lib/fns";
 import { Suspense } from "react";
 import PreviewFile from "@/components/preview/PreviewFile";
 import { ItemsResponse } from "@/lib/driveRequest";
-import { LoaderIcon } from "lucide-react";
+import { Loader } from "@/components/Loader";
 
 const HomePage = async ({
   params,
@@ -31,14 +31,7 @@ const HomePage = async ({
   return (
     <div className="px-5 md:container py-8 mt-5">
       <DataRoute />
-      <Suspense
-        fallback={
-          <div className="flex items-center w-fit mx-auto mt-10">
-            <LoaderIcon className="size-4 animate-spin mr-4" />
-            <p>Loading...</p>
-          </div>
-        }
-      >
+      <Suspense fallback={<Loader />}>
         {items ? (
           <DataTable data={items}>
             {readmeContent && (
