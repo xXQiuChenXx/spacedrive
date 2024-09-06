@@ -33,13 +33,7 @@ export async function getInformations({
   }
 
   if (readmeFile) {
-    const file = (await getItems({
-      access_token: accessToken,
-      folder: params.concat([readmeFile.name]),
-      row: true,
-      expand: true,
-    })) as OriResponse;
-    readmeContent = await getFileContent(file, accessToken);
+    readmeContent = await getFileContent(readmeFile, accessToken);
   }
 
   return { items, item, readmeContent, readmeFile };

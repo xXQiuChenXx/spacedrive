@@ -104,11 +104,10 @@ export const getItems = async ({
 };
 
 export const getFileContent = async (
-  item: OriResponse,
+  item: OriResponse | ItemsResponse,
   access_token?: string
 ): Promise<string> => {
   if (!access_token) access_token = (await getCachedToken())?.accessToken;
-  console.log(item);
 
   const response = await fetch(
     `${config.graphApi}/me/drive/items/${item.id}/content`,
