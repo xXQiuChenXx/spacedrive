@@ -54,7 +54,11 @@ export function getColumns(
     {
       accessorKey: "file",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="File Name"className="lg:min-w-96" />
+        <DataTableColumnHeader
+          column={column}
+          title="File Name"
+          className="lg:min-w-96"
+        />
       ),
       cell: ({ cell, getValue }) => (
         <div
@@ -78,8 +82,8 @@ export function getColumns(
         </div>
       ),
       filterFn: (row, id, value) => {
-        const name = (row.getValue("file") as any)?.name;
-        return name.includes(value);
+        const name = (row.getValue("file") as ItemsResponse)?.name;
+        return name.toLowerCase().includes((value as string).toLowerCase());
       },
       sortingFn: (rowA, rowB, columnId) => {
         // 1 when a > b
