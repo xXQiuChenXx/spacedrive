@@ -27,7 +27,6 @@ import { Button } from "./ui/button";
 import DeleteDialog from "./action-dialog/DeleteDialog";
 import { downloadMultiFiles } from "@/lib/MultiFileDownloader";
 import path from "path";
-import { handleClick } from "@/lib/downloadHandler";
 import { DownloadIcon, LoaderIcon } from "lucide-react";
 
 const DataTable = ({
