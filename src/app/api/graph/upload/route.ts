@@ -31,6 +31,6 @@ export async function POST(request: NextRequest) {
 
   if (!response?.error) {
     await revalidateTag("items");
-    return Response.json(response);
   }
+  return Response.json(response);
 }
