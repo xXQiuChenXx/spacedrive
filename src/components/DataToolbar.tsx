@@ -47,7 +47,12 @@ export const DataTableToolbar = ({
         const formdata = new FormData();
         formdata.append("file", file);
         formdata.append("path", pathname);
-        const { error } = (await uploadFile({ formdata })) || {};
+        const { error } =
+          ((await fetch("https://storage.myitscm.com/api/graph/upload", {
+            method: "POST",
+            body: formdata,
+          })) as any) || {};
+
         if (error) {
           toast.error(error);
         } else {
