@@ -28,6 +28,7 @@ export async function uploadFile({ formdata }: { formdata: FormData }) {
       },
     }
   ).then((res) => res.json());
+  console.log(response)
   if (!response?.error) await revalidateTag("items");
   return {
     data: response?.error ? null : response,
