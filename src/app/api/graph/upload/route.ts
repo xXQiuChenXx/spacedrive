@@ -8,7 +8,8 @@ export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const file = formData.get("file") as File;
   const path = formData.get("path") as string;
-  if (!file || !path) return { error: "400 Bad Request" };
+  if (!file || !path)
+    return Response.json({ error: "400 Bad Request" }, { status: 400 });
 
   const token = await getCachedToken();
   if (!token) return redirect("/setup");
