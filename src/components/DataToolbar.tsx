@@ -47,7 +47,7 @@ export const DataTableToolbar = ({
         const formdata = new FormData();
         formdata.append("file", file);
         formdata.append("path", pathname);
-        const { error } = await uploadFile({ formdata });
+        const { error } = (await uploadFile({ formdata })) || {};
         if (error) {
           toast.error(error);
         } else {
