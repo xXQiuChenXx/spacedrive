@@ -1,4 +1,3 @@
-"use server";
 import { apiConfig } from "@/config/api.config";
 import { getTokenFromDB, saveTokenToDB, type TokenModel } from "./oAuthStore";
 import { unstable_cache } from "next/cache";

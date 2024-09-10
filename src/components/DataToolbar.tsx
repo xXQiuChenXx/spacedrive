@@ -24,7 +24,7 @@ import { uploadFile } from "@/lib/actions/uploadFile";
 import { downloadMultiFiles } from "@/lib/MultiFileDownloader";
 import path from "path";
 import { LoaderIcon } from "lucide-react";
-import { getCachedToken } from "@/lib/oAuthHandler";
+import { getCachedToken } from "@/lib/fns";
 
 export const DataTableToolbar = ({
   table,

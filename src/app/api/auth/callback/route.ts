@@ -9,23 +9,19 @@ export async function GET(request: NextRequest) {
 
   if (!code) return redirect("/setup/step-3?error=Code Not Found");
 
-  try {
-    const data = await exchangeCode(code);
-    if (isErrorResponse(data))
-      return redirect(`/setup/step-3?error=${data.error}`);
+  const data = await exchangeCode(code);
+  if (isErrorResponse(data))
+    return redirect(`/setup/step-3?error=${data.error}`);
 
-    const { access_token, refresh_token, expires_in } = data;
-    await saveTokenToDB({
-      accessToken: access_token,
-      refreshToken: refresh_token,
-      expiredIn: expires_in,
-      issuedAt: Math.floor(Date.now() / 1000),
-    });
-  } catch (error) {
-    if (error instanceof Error) {
-      console.log(error);
-      return redirect(`/setup/step-3?error=${error.message}`);
-    }
-  }
+  const { access_token, refresh_token, expires_in } = data;
+  await saveTokenToDB({
+    accessToken: access_token,
+    refreshToken: refresh_token,
+    expiredIn: expires_in,
+    issuedAt: Math.floor(Date.now() / 1000),
+  }).catch((err) => {
+    console.log(err);
+    return redirect(`/setup/step-3?error=${err.message}`);
+  });
   redirect("/setup/step-3");
 }

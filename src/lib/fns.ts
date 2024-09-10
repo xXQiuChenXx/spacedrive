@@ -1,9 +1,12 @@
+"use server";
 import {
   getFileContent,
   getItems,
   ItemsResponse,
   OriResponse,
 } from "@/lib/driveRequest";
+import { unstable_cache } from "next/cache";
+import { getToken } from "./oAuthHandler";
 
 export async function getInformations({
   accessToken,
@@ -38,3 +41,8 @@ export async function getInformations({
 
   return { items, item, readmeContent, readmeFile };
 }
+
+export const getCachedToken = unstable_cache(getToken, [], {
+  revalidate: 60, // 60 seconds
+  tags: ["token"],
+});

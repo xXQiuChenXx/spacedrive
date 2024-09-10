@@ -21,26 +21,22 @@ export async function saveTokenToDB({
   expiredIn,
   issuedAt,
 }: TokenModel) {
-  try {
-    await db
-      .insert(credentials)
-      .values({
-        id: "main",
+  await db
+    .insert(credentials)
+    .values({
+      id: "main",
+      accessToken,
+      refreshToken,
+      expiredIn,
+      issuedAt,
+    })
+    .onConflictDoUpdate({
+      target: credentials.id,
+      set: {
         accessToken,
         refreshToken,
         expiredIn,
         issuedAt,
-      })
-      .onConflictDoUpdate({
-        target: credentials.id,
-        set: {
-          accessToken,
-          refreshToken,
-          expiredIn,
-          issuedAt,
-        },
-      });
-  } catch (error) {
-    console.log(error);
-  }
+      },
+    });
 }
