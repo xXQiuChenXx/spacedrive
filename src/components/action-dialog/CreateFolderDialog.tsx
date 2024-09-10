@@ -57,7 +57,7 @@ const CreateFolderDialog = ({
           value={folderName}
           onChange={(e) => setFolderName(e.target.value)}
         />
-        <DialogFooter className="justify-end">
+        <DialogFooter className="justify-end gap-3 md:gap-2">
           <DialogClose asChild>
             <Button type="button" variant="outline" title="cancel">
               Cancel

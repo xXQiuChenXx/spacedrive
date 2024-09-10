@@ -31,19 +31,28 @@ const StepThree = async ({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" placeholder="Name of your project" />
-          </div>
+          {error ? (
+            <p>Oops! Somthing when wrong, Error {error}</p>
+          ) : (
+            <p>Everything set! You may proceed</p>
+          )}
         </CardContent>
         <CardFooter className="flex justify-between">
           <Link href="/setup/step-2">
             <Button variant="outline">Go back</Button>
           </Link>
-          <Button>
-            Get Started!
-            <ArrowRightIcon className="ml-2" width={20} height={20} />
-          </Button>
+          {error ? (
+            <Link href="/setup/step-1">
+              <Button>Retry</Button>
+            </Link>
+          ) : (
+            <Link href="/home">
+              <Button>
+                Get Started
+                <ArrowRightIcon className="ml-1" width={20} height={20} />
+              </Button>
+            </Link>
+          )}
         </CardFooter>
       </Card>
     </div>

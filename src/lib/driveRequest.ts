@@ -2,12 +2,14 @@
 import { revalidateTag } from "next/cache";
 import { getItemRequestURL } from "./graphAPI";
 import { config } from "@/config/api.config";
+import { getCachedToken } from "./oAuthHandler";
 
 type Props = {
   folder?: string[];
   access_token: string;
   listChild?: boolean;
   row?: boolean;
+  expand?: boolean;
 };
 
 export type OriResponse = {
@@ -26,23 +28,30 @@ export type OriResponse = {
   size: number;
   webURL?: string;
   createdDateTime?: string;
+  video?: {
+    audioBitsPerSample: number;
+    audioChannels: number;
+    audioSamplesPerSecond: number;
+    bitRate: number;
+    duration: number;
+    fourCC: string; //'H264',
+    frameRate: number;
+    height: number;
+    width: number;
+  };
+  image?: {
+    height: number;
+    width: number;
+  };
 };
 
-export type ItemsResponse = {
-  "@odata.etag": string;
-  id: string;
-  lastModifiedDateTime: string;
-  name: string;
-  folder?: {
-    childCount: number;
-  };
+export interface ItemsResponse extends Omit<OriResponse, "file"> {
   file: {
     name: string;
     isFolder: boolean;
     mimeType?: string;
   };
-  size: number;
-};
+}
 
 export type ErrorResponse = {
   error: {
@@ -56,17 +65,20 @@ export const getItems = async ({
   access_token,
   listChild,
   row,
+  expand,
 }: Props): Promise<ItemsResponse[] | OriResponse | null> => {
   const requestUrl = getItemRequestURL(folder, listChild);
   const params = new URLSearchParams({
-    select:
-      "name,id,size,lastModifiedDateTime,folder,file,video,image" //,@microsoft.graph.downloadUrl",
+    select: "name,id,size,lastModifiedDateTime,folder,file,video,image", //,@microsoft.graph.downloadUrl",
   });
+
+  if (expand) params.append("expand", "thumbnails");
 
   const response = await fetch(`${requestUrl}?${params.toString()}`, {
     headers: {
       Authorization: `Bearer ${access_token}`,
       "Cache-Control": "no-cache",
+      "X-Need-NoCache": "yes",
     },
     next: { tags: ["items"] },
   }).then((res) => res.json());
@@ -74,7 +86,6 @@ export const getItems = async ({
   if (row && !response?.error) return response;
 
   if (response?.value) {
-    
     return response.value.map((x: OriResponse) => {
       return {
         ...x,
@@ -93,14 +104,22 @@ export const getItems = async ({
 };
 
 export const getFileContent = async (
-  item: OriResponse,
-  access_token: string
+  item: OriResponse | ItemsResponse,
+  access_token?: string
 ): Promise<string> => {
-  const response = await fetch(`${config.graphApi}/me/drive/items/${item.id}/content`,  {
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    },
-  }).then((res) => res.text());
+  if (!access_token) access_token = (await getCachedToken())?.accessToken;
+
+  const response = await fetch(
+    `${config.graphApi}/me/drive/items/${item.id}/content`,
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Cache-Control": "no-cache",
+        "X-Need-NoCache": "yes",
+      },
+      cache: item.size > 2 * 1024 * 1024 ? "no-cache" : "force-cache",
+    }
+  ).then((res) => res.text());
 
   return response;
 };

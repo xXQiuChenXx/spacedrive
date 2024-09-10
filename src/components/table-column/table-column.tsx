@@ -1,8 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import { type ColumnDef } from "@tanstack/react-table";
-import { formatDate } from "@/lib/utils";
 import { ItemsResponse } from "@/lib/driveRequest";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "./column-header";
@@ -18,11 +16,14 @@ import { formatBytes } from "@/lib/utils";
 import { FolderIcon, FileTextIcon } from "lucide-react";
 import DeleteDialog from "../action-dialog/DeleteDialog";
 import RenameDialog from "../action-dialog/RenameDialog";
-import ShareDialog from "../action-dialog/ShareDialog";
 import { handleClick } from "@/lib/downloadHandler";
 import FormatDate from "./format-date";
+import { useState } from "react";
 
-export function getColumns(): ColumnDef<ItemsResponse>[] {
+export function getColumns(
+  isDesktop: boolean,
+  pathname: string
+): ColumnDef<ItemsResponse>[] {
   return [
     {
       id: "select",
@@ -53,24 +54,36 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
     {
       accessorKey: "file",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="File Name" />
+        <DataTableColumnHeader
+          column={column}
+          title="File Name"
+          className="lg:min-w-96"
+        />
       ),
       cell: ({ cell, getValue }) => (
         <div
-          className="max-w-[31.25rem] truncate font-medium flex gap-3 items-center"
+          className="font-medium flex gap-3 items-center max-w-44 md:max-w-72 lg:max-w-sm xl:max-w-xl lg:min-w-96"
           data-group="row-data"
         >
           {(getValue() as ItemsResponse["file"])?.isFolder ? (
-            <FolderIcon className="size-5" />
+            <FolderIcon
+              className="size-5 flex-shrink-0"
+              data-group="row-data"
+            />
           ) : (
-            <FileTextIcon className="size-5" />
+            <FileTextIcon
+              className="size-5 flex-shrink-0"
+              data-group="row-data"
+            />
           )}
-          {(getValue() as ItemsResponse["file"]).name}
+          <p className="w-full truncate" data-group="row-data">
+            {(getValue() as ItemsResponse["file"]).name}
+          </p>
         </div>
       ),
       filterFn: (row, id, value) => {
-        const name = (row.getValue("file") as any)?.name;
-        return name.includes(value);
+        const name = (row.getValue("file") as ItemsResponse)?.name;
+        return name.toLowerCase().includes((value as string).toLowerCase());
       },
       sortingFn: (rowA, rowB, columnId) => {
         // 1 when a > b
@@ -81,13 +94,17 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
         }
         return nameA.localeCompare(nameB);
       },
-      size: 560,
+      enableHiding: false,
+      // size: 560,
     },
     {
       accessorKey: "size",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="File Size" />
       ),
+      meta: {
+        show: isDesktop,
+      },
       size: 100,
       cell: ({ cell }) => formatBytes(cell.getValue() as number),
     },
@@ -96,15 +113,17 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Last Modified" />
       ),
-      cell: ({ cell }) => <FormatDate date={cell.getValue() as string}/>,
+      cell: ({ cell }) => <FormatDate date={cell.getValue() as string} />,
       size: 100,
+      meta: {
+        show: isDesktop,
+      },
     },
     {
       id: "actions",
       cell: function Cell({ row }) {
-        const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
-        const [showShareDialog, setShowShareDialog] = React.useState(false);
-        const [showRenameDialog, setShowRenameDialog] = React.useState(false);
+        const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+        const [showRenameDialog, setShowRenameDialog] = useState(false);
 
         return (
           <>
@@ -118,11 +137,6 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
               item={row.original}
               open={showRenameDialog}
               onOpenChange={setShowRenameDialog}
-            />
-            <ShareDialog
-              item={row.original}
-              open={showShareDialog}
-              onOpenChange={setShowShareDialog}
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -142,10 +156,13 @@ export function getColumns(): ColumnDef<ItemsResponse>[] {
                   Rename
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onSelect={() => setShowShareDialog(true)}
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={() =>
+                    navigator.clipboard.writeText(
+                      `${window.location.origin}${pathname}/${row.original.name}`
+                    )
+                  }
                 >
-                  Share
+                  Copy Link
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={(e) => {
