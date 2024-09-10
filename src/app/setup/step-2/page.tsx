@@ -9,12 +9,13 @@ import {
 } from "@/components/ui/card";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { generateAuthorisationUrl } from "@/lib/oAuthHandler";
+import { GrantCode } from "@/components/setup/GrantCode";
+import { generateAuthorisationUrl } from "@/lib/setups";
+import { apiConfig } from "@/config/api.config";
 
 const StepTwo = ({ searchParams }: { searchParams: { type: string } }) => {
   const isManual = searchParams?.type === "manual";
+  const authURL = generateAuthorisationUrl({ config: apiConfig });
 
   return (
     <Card className="w-11/12 md:w-5/6 lg:w-4/6 xl:w-7/12 2xl:w-1/2 mx-auto mt-20 lg:mt-28 shadow">
@@ -36,12 +37,7 @@ const StepTwo = ({ searchParams }: { searchParams: { type: string } }) => {
                 automatically
               </Link>
             </p>
-            <div className="flex flex-col space-y-1.5 mt-5">
-              <Label htmlFor="name" className="text-base">
-                Manually insert the grant code:
-              </Label>
-              <Input id="name" placeholder="Enter the code here" />
-            </div>
+            <GrantCode />
           </div>
         ) : (
           <p className="leading-normal text-base text-muted-foreground">
@@ -57,7 +53,7 @@ const StepTwo = ({ searchParams }: { searchParams: { type: string } }) => {
           <Button variant="outline">Go back</Button>
         </Link>
         {!isManual && (
-          <Link href={generateAuthorisationUrl()}>
+          <Link href={authURL}>
             <Button>
               Authorize
               <ArrowRightIcon className="ml-2" width={20} height={20} />

@@ -3,18 +3,6 @@ import { apiConfig } from "@/config/api.config";
 import { getTokenFromDB, saveTokenToDB, type TokenModel } from "./oAuthStore";
 import { unstable_cache } from "next/cache";
 
-export const generateAuthorisationUrl = (): string => {
-  const { clientId, redirectURI, authApi, scope } = apiConfig;
-  const params = new URLSearchParams();
-  params.append("client_id", clientId);
-  params.append("redirect_uri", redirectURI);
-  params.append("response_type", "code");
-  params.append("scope", scope);
-  params.append("response_mode", "query");
-
-  return `${authApi}/authorize?${params.toString()}`;
-};
-
 type AuthResponse = {
   token_type: string; // 'Bearer'
   scope: string; // 'Files.Read Files.Read.All Files.Read.Selected ',
