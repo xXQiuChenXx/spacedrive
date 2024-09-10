@@ -11,7 +11,13 @@ import {
 import { usePathname } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
 import { ItemsResponse } from "@/lib/driveRequest";
-import { ReactNode, useMemo, useState, useTransition } from "react";
+import {
+  DragEventHandler,
+  ReactNode,
+  useMemo,
+  useState,
+  useTransition,
+} from "react";
 import { getColumns } from "./table-column/table-column";
 import { flexRender } from "@tanstack/react-table";
 import { useDataTable } from "@/app/hooks/useDataTable";
@@ -69,7 +75,7 @@ const DataTable = ({
     });
   }
 
-  const handleDragOver = (e) => {
+  const handleDragOver: DragEventHandler<HTMLTableElement> = (e) => {
     e.preventDefault();
     e.stopPropagation();
     // Optional: Add some visual feedback, like changing the background color of the drop zone
@@ -79,10 +85,11 @@ const DataTable = ({
     }
   };
 
-  const handleDrop = async (e) => {
+  const handleDrop: DragEventHandler<HTMLTableElement> = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
+    if (!e?.dataTransfer) return;
     const droppedFiles = Array.from(e.dataTransfer.files) as File[]; // Get the files from the drop event'
     if (!droppedFiles.length) return;
 
@@ -99,12 +106,15 @@ const DataTable = ({
     setDragState(false);
   };
 
-  const handleDragLeave = (event) => {
+  const handleDragLeave: DragEventHandler<HTMLTableElement> = (event) => {
     event.preventDefault();
     event.stopPropagation();
+    if (!event?.currentTarget) return;
 
     // Reset dragging state when leaving the drop zone
-    const rect = event.currentTarget.getBoundingClientRect();
+    const rect = (
+      event?.currentTarget as HTMLTableElement
+    ).getBoundingClientRect();
     const x = event.clientX;
     const y = event.clientY;
 
