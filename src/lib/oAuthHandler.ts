@@ -3,7 +3,7 @@ import { apiConfig } from "@/config/api.config";
 import { getTokenFromDB, saveTokenToDB, type TokenModel } from "./oAuthStore";
 import { unstable_cache } from "next/cache";
 
-type AuthResponse = {
+export type AuthResponse = {
   token_type: string; // 'Bearer'
   scope: string; // 'Files.Read Files.Read.All Files.Read.Selected ',
   expires_in: number; // 3665,
@@ -17,12 +17,32 @@ type AuthResponse = {
   };
 };
 
+export type ErrorResponse = {
+  error: string;
+  error_description: string;
+  error_codes: number[];
+  timestamp: string;
+  trace_id: string;
+  correlation_id: string;
+  error_uri: string;
+};
+
 const isTokenExpired = (token: TokenModel): boolean => {
   const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
   return currentTime >= token.issuedAt + token.expiredIn - 5; // -5 for possible delay
 };
 
-export const exchangeCode = async (code: string): Promise<AuthResponse> => {
+export function isErrorResponse(data: any): data is ErrorResponse {
+  return data?.error !== undefined;
+}
+
+export function isAuthResponse(data: any): data is AuthResponse {
+  return data?.refresh_token !== undefined;
+}
+
+export const exchangeCode = async (
+  code: string
+): Promise<Omit<AuthResponse, "error"> | ErrorResponse> => {
   let response = await fetch(`${apiConfig.authApi}/token`, {
     method: "post",
     body: new URLSearchParams({
@@ -38,8 +58,10 @@ export const exchangeCode = async (code: string): Promise<AuthResponse> => {
     cache: "no-cache",
   }).then((res) => res.json());
 
-  if (!response || response?.error) throw new Error(response.error);
-  return response;
+  if (response?.error) {
+    return response as ErrorResponse;
+  }
+  return response as AuthResponse;
 };
 
 export const exchangeToken = async ({

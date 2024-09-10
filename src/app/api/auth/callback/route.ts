@@ -1,4 +1,4 @@
-import { exchangeCode } from "@/lib/oAuthHandler";
+import { exchangeCode, isErrorResponse } from "@/lib/oAuthHandler";
 import { redirect } from "next/navigation";
 import { type NextRequest } from "next/server";
 import { saveTokenToDB } from "@/lib/oAuthStore";
@@ -10,10 +10,11 @@ export async function GET(request: NextRequest) {
   if (!code) return redirect("/setup/step-3?error=Code Not Found");
 
   try {
-    const { access_token, refresh_token, expires_in } = await exchangeCode(
-      code
-    );
+    const data = await exchangeCode(code);
+    if (isErrorResponse(data))
+      return redirect(`/setup/step-3?error=${data.error}`);
 
+    const { access_token, refresh_token, expires_in } = data;
     await saveTokenToDB({
       accessToken: access_token,
       refreshToken: refresh_token,
@@ -21,9 +22,10 @@ export async function GET(request: NextRequest) {
       issuedAt: Math.floor(Date.now() / 1000),
     });
   } catch (error) {
-    console.log(error);
-    return redirect("/setup/step-3?error=Unknown Error");
+    if (error instanceof Error) {
+      console.log(error);
+      return redirect(`/setup/step-3?error=${error.message}`);
+    }
   }
-
   redirect("/setup/step-3");
 }
