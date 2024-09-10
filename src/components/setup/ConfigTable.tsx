@@ -1,7 +1,7 @@
-import { type config as Config } from "@/config/api.config";
+import { type apiConfig } from "@/config/api.config";
 import { addStarsAndTrim } from "@/lib/utils";
 
-const Datatable = ({ config }: { config: typeof Config }) => {
+export const ConfigTable = ({ config }: { config: apiConfig }) => {
   return (
     <table className="min-w-full table-auto">
       <tbody>
@@ -59,5 +59,3 @@ const Datatable = ({ config }: { config: typeof Config }) => {
     </table>
   );
 };
-
-export default Datatable;

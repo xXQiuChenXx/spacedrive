@@ -1,7 +1,7 @@
 "use server";
 import { revalidateTag } from "next/cache";
 import { type ItemsResponse } from "../driveRequest";
-import { config } from "@/config/api.config";
+import { apiConfig } from "@/config/api.config";
 import { getCachedToken } from "@/lib/oAuthHandler";
 
 export async function deleteItems({ items }: { items: ItemsResponse[] }) {
@@ -12,7 +12,7 @@ export async function deleteItems({ items }: { items: ItemsResponse[] }) {
   for (const item of items) {
     try {
       const response = await fetch(
-        `${config.graphApi}/me/drive/items/${item.id}`,
+        `${apiConfig.graphApi}/me/drive/items/${item.id}`,
         {
           method: "DELETE",
           headers: {

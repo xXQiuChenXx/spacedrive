@@ -3,7 +3,7 @@
 import { type ItemsResponse } from "@/lib/driveRequest";
 import { getCachedToken } from "../oAuthHandler";
 import { redirect } from "next/navigation";
-import { config } from "@/config/api.config";
+import { apiConfig } from "@/config/api.config";
 import { revalidateTag } from "next/cache";
 
 interface renameItemProps {
@@ -15,7 +15,7 @@ export async function renameItem({ item, newName }: renameItemProps) {
   const token = await getCachedToken();
   if (!token) return redirect("/setup");
   const { accessToken } = token;
-  const response = await fetch(`${config.graphApi}/me/drive/items/${item.id}`, {
+  const response = await fetch(`${apiConfig.graphApi}/me/drive/items/${item.id}`, {
     method: "PATCH",
     body: JSON.stringify({ name: newName }),
     headers: {

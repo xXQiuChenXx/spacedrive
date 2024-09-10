@@ -1,4 +1,4 @@
-import { config } from "@/config/api.config";
+import { apiConfig } from "@/config/api.config";
 import { getCachedToken } from "@/lib/oAuthHandler";
 import { redirect } from "next/navigation";
 import { type NextRequest } from "next/server";
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   const { accessToken } = token;
 
   const response = await fetch(
-    `${config.graphApi}/me/drive/items/${itemId}/content`,
+    `${apiConfig.graphApi}/me/drive/items/${itemId}/content`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,

@@ -1,10 +1,10 @@
 "use server";
-import { config } from "@/config/api.config";
+import { apiConfig } from "@/config/api.config";
 import { getTokenFromDB, saveTokenToDB, type TokenModel } from "./oAuthStore";
 import { unstable_cache } from "next/cache";
 
 export const generateAuthorisationUrl = (): string => {
-  const { clientId, redirectURI, authApi, scope } = config;
+  const { clientId, redirectURI, authApi, scope } = apiConfig;
   const params = new URLSearchParams();
   params.append("client_id", clientId);
   params.append("redirect_uri", redirectURI);
@@ -35,12 +35,12 @@ const isTokenExpired = (token: TokenModel): boolean => {
 };
 
 export const exchangeCode = async (code: string): Promise<AuthResponse> => {
-  let response = await fetch(`${config.authApi}/token`, {
+  let response = await fetch(`${apiConfig.authApi}/token`, {
     method: "post",
     body: new URLSearchParams({
-      client_id: config.clientId,
-      client_secret: config.clientSecret,
-      redirect_uri: config.redirectURI,
+      client_id: apiConfig.clientId,
+      client_secret: apiConfig.clientSecret,
+      redirect_uri: apiConfig.redirectURI,
       grant_type: "authorization_code",
       code: code,
     }),
@@ -57,12 +57,12 @@ export const exchangeCode = async (code: string): Promise<AuthResponse> => {
 export const exchangeToken = async ({
   refreshToken,
 }: Pick<TokenModel, "refreshToken">): Promise<AuthResponse> => {
-  let response = await fetch(`${config.authApi}/token`, {
+  let response = await fetch(`${apiConfig.authApi}/token`, {
     method: "POST",
     body: new URLSearchParams({
-      client_id: config.clientId,
-      client_secret: config.clientSecret,
-      redirect_uri: config.redirectURI,
+      client_id: apiConfig.clientId,
+      client_secret: apiConfig.clientSecret,
+      redirect_uri: apiConfig.redirectURI,
       grant_type: "refresh_token",
       refresh_token: refreshToken,
     }),
