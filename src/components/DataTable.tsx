@@ -28,6 +28,9 @@ import DeleteDialog from "./action-dialog/DeleteDialog";
 import { downloadMultiFiles } from "@/lib/MultiFileDownloader";
 import path from "path";
 import { DownloadIcon, LoaderIcon } from "lucide-react";
+import { FileUploader } from "react-drag-drop-files";
+import { getCachedToken } from "@/lib/oAuthHandler";
+import { uploadFile } from "@/lib/actions/uploadFile";
 
 const DataTable = ({
   data,
@@ -45,6 +48,8 @@ const DataTable = ({
     .basename(pathname)
     .replace("home/", "")
     .replace("home", "");
+  const [file, setFile] = useState(null);
+  const [dragState, setDragState] = useState<boolean>(false);
 
   // Memoize the columns
   const columns = useMemo(
@@ -63,6 +68,54 @@ const DataTable = ({
       );
     });
   }
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Optional: Add some visual feedback, like changing the background color of the drop zone
+    if (!dragState) {
+      setDragState(true);
+      console.log("state change");
+    }
+  };
+
+  const handleDrop = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const droppedFiles = Array.from(e.dataTransfer.files) as File[]; // Get the files from the drop event'
+    if (!droppedFiles.length) return;
+
+    const token = await getCachedToken();
+    if (token) {
+      for (const file of droppedFiles) {
+        const accessToken = token.accessToken;
+        const formdata = new FormData();
+        formdata.append("file", file);
+        formdata.append("path", folderName);
+        await uploadFile({ formdata, accessToken });
+      }
+    }
+    setDragState(false);
+  };
+
+  const handleDragLeave = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Reset dragging state when leaving the drop zone
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX;
+    const y = event.clientY;
+
+    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+      if (dragState) {
+        console.log("leave");
+        setDragState(false);
+      }
+    }
+  };
+
   return (
     <div className="w-full md:w-11/12 mx-auto overflow-auto">
       <DataTableToolbar
@@ -70,7 +123,11 @@ const DataTable = ({
         setShowDeleteDialog={setShowDeleteDialog}
       />
       <div className="overflow-hidden rounded-md border mt-2.5">
-        <Table>
+        <Table
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+          onDragLeave={handleDragLeave}
+        >
           <TableHeader>
             {table.getHeaderGroups().map((group) => (
               <TableRow key={group.id}>
@@ -88,7 +145,7 @@ const DataTable = ({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows?.length && !dragState ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -130,12 +187,27 @@ const DataTable = ({
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={table.getAllColumns().length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
+                {dragState ? (
+                  <TableCell
+                    colSpan={table.getAllColumns().length}
+                    className="h-24 text-center"
+                  >
+                    <FileUploader
+                      handleChange={(f: any) => setFile(f)}
+                      name="file"
+                      className="w-full"
+                    >
+                      Test
+                    </FileUploader>
+                  </TableCell>
+                ) : (
+                  <TableCell
+                    colSpan={table.getAllColumns().length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                )}
               </TableRow>
             )}
           </TableBody>
