@@ -56,7 +56,7 @@ const StepTwo = ({ searchParams }: { searchParams: { type: string } }) => {
           <Link href={authURL}>
             <Button>
               Authorize
-              <ArrowRightIcon className="ml-2" width={20} height={20} />
+              <ArrowRightIcon className="ml-2 size-5" />
             </Button>
           </Link>
         )}

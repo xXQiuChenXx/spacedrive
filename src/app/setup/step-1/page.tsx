@@ -62,7 +62,7 @@ const StepOne = () => {
           <Link href={"/setup/step-2"} className="ml-auto">
             <Button type="button">
               Next
-              <ArrowRightIcon className="ml-2" width={20} height={20} />
+              <ArrowRightIcon className="ml-2 size-5" />
             </Button>
           </Link>
         ) : (
@@ -73,7 +73,7 @@ const StepOne = () => {
             variant="secondary"
           >
             Next
-            <ArrowRightIcon className="ml-2" width={20} height={20} />
+            <ArrowRightIcon className="ml-2 size-5"  />
           </Button>
         )}
       </CardFooter>
