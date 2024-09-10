@@ -24,6 +24,7 @@ import { uploadFile } from "@/lib/actions/uploadFile";
 import { downloadMultiFiles } from "@/lib/MultiFileDownloader";
 import path from "path";
 import { LoaderIcon } from "lucide-react";
+import { getCachedToken } from "@/lib/oAuthHandler";
 
 export const DataTableToolbar = ({
   table,
@@ -44,19 +45,20 @@ export const DataTableToolbar = ({
     const file = event.target?.files?.[0];
     if (file) {
       startTransition(async () => {
-        const formdata = new FormData();
-        formdata.append("file", file);
-        formdata.append("path", pathname);
-        const { error } =
-          ((await fetch("https://storage.myitscm.com/api/graph/upload", {
-            method: "POST",
-            body: formdata,
-          })) as any) || {};
+        const token = await getCachedToken();
+        if (!token) toast.error("Failed to fetch token");
+        else {
+          const accessToken = token.accessToken;
+          const formdata = new FormData();
+          formdata.append("file", file);
+          formdata.append("path", pathname);
+          const { error } = await uploadFile({ formdata, accessToken });
 
-        if (error) {
-          toast.error(error);
-        } else {
-          toast.success(file.name + " uploaded successfully");
+          if (error) {
+            toast.error(error);
+          } else {
+            toast.success(file.name + " uploaded successfully");
+          }
         }
       });
     }

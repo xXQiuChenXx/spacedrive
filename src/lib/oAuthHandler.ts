@@ -1,8 +1,9 @@
+"use server";
 import { config } from "@/config/api.config";
 import { getTokenFromDB, saveTokenToDB, type TokenModel } from "./oAuthStore";
 import { unstable_cache } from "next/cache";
 
-export function generateAuthorisationUrl(): string {
+export const generateAuthorisationUrl = (): string => {
   const { clientId, redirectURI, authApi, scope } = config;
   const params = new URLSearchParams();
   params.append("client_id", clientId);
@@ -12,7 +13,7 @@ export function generateAuthorisationUrl(): string {
   params.append("response_mode", "query");
 
   return `${authApi}/authorize?${params.toString()}`;
-}
+};
 
 type AuthResponse = {
   token_type: string; // 'Bearer'
