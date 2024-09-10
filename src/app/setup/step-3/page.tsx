@@ -25,7 +25,7 @@ const StepThree = async ({
     <div>
       <Card className="w-[900px] mx-auto mt-32 shadow">
         <CardHeader>
-          <CardTitle>Step 3 / 3 - All most done!</CardTitle>
+          <CardTitle>Step 3 - All most done!</CardTitle>
           <CardDescription>
             Deploy your new project in one-click.
           </CardDescription>

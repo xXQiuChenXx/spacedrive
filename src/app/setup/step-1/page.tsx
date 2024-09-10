@@ -21,7 +21,7 @@ const StepOne = () => {
   return (
     <Card className="w-11/12 md:w-5/6 lg:w-4/6 xl:w-7/12 2xl:w-1/2 mx-auto mt-20 lg:mt-28 shadow">
       <CardHeader className="space-y-3">
-        <CardTitle>Step 1 / 3 - Preparation</CardTitle>
+        <CardTitle>Step 1 - Preparation</CardTitle>
         <CardDescription className="leading-normal text-base">
           🎉 Welcome to your new One-Drive-Index Web App. Configure your web
           application then gain an access token to start your journey. Check the
