@@ -3,8 +3,8 @@ import { addStarsAndTrim } from "@/lib/utils";
 
 export const ConfigTable = ({ config }: { config: apiConfig }) => {
   return (
-    <table className="min-w-full table-auto">
-      <tbody>
+    <table className="table-auto min-w-full 2xl:min-w-max 2xl:w-11/12 hidden md:table">
+      <tbody >
         <tr className="border bg-white dark:border-gray-700 dark:bg-gray-900">
           <td className="bg-gray-50 py-1 px-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700 dark:bg-gray-800 dark:text-gray-400">
             CLIENT_ID
@@ -14,7 +14,7 @@ export const ConfigTable = ({ config }: { config: apiConfig }) => {
           </td>
         </tr>
         <tr className="border bg-white dark:border-gray-700 dark:bg-gray-900">
-          <td className="bg-gray-50 py-1 px-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700 dark:bg-gray-800 dark:text-gray-400">
+          <td className="bg-gray-50 py-1 px-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700 dark:bg-gray-800 dark:text-gray-400 w-fit">
             CLIENT_SECRET
           </td>
           <td className="whitespace-nowrap py-1 px-3 text-gray-500 dark:text-gray-400">
