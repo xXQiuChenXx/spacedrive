@@ -1,42 +1,57 @@
 import { db } from "@/db";
-import { credentials } from "@/db/schema";
+import { NewUser, user, User } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-export type TokenModel = {
-  accessToken: string;
-  refreshToken: string;
-  expiredIn: number;
-  issuedAt: number;
-};
+// Define the Optional type
+type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
-export async function getTokenFromDB(): Promise<TokenModel | null> {
-  return (
-    await db.select().from(credentials).where(eq(credentials.id, "main"))
-  )[0];
+export async function getUserFromDB(): Promise<User | null> {
+  return (await db.select().from(user).where(eq(user.id, "default")))[0];
 }
 
-export async function saveTokenToDB({
-  accessToken,
+export async function updateToken({
+  refresh_token,
+}: {
+  refresh_token: string;
+}) {
+  return await db
+    .update(user)
+    .set({
+      refreshToken: refresh_token,
+    })
+    .where(eq(user.id, "default"))
+    .returning({ refreshToken: user.refreshToken });
+}
+
+export async function saveUserToDB({
+  id = "default",
+  mail,
   refreshToken,
-  expiredIn,
-  issuedAt,
-}: TokenModel) {
+  userId,
+}: Optional<NewUser, "id">): Promise<void> {
   await db
-    .insert(credentials)
+    .insert(user)
     .values({
-      id: "main",
-      accessToken,
+      id,
+      mail,
       refreshToken,
-      expiredIn,
-      issuedAt,
+      userId,
     })
     .onConflictDoUpdate({
-      target: credentials.id,
+      target: user.id,
       set: {
-        accessToken,
+        mail,
         refreshToken,
-        expiredIn,
-        issuedAt,
+        userId,
       },
     });
+}
+
+export async function deleteTokenFromDB() {
+  await db
+    .update(user)
+    .set({
+      refreshToken: null,
+    })
+    .where(eq(user.id, "default"));
 }

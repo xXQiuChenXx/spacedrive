@@ -1,6 +1,8 @@
+import "server-only";
 import { apiConfig } from "@/config/api.config";
-import { getTokenFromDB, saveTokenToDB, type TokenModel } from "./oAuthStore";
+import { deleteTokenFromDB, getUserFromDB } from "./oAuthStore";
 import { unstable_cache } from "next/cache";
+import { decrypt } from "@/lib/security";
 
 export type AuthResponse = {
   token_type: string; // 'Bearer'
@@ -9,11 +11,13 @@ export type AuthResponse = {
   ext_expires_in: number; // 3665,
   access_token: string;
   refresh_token: string;
-  error?: {
-    // error response
-    message: string;
-    code: string;
-  };
+  error?:
+    | {
+        // error response
+        message: string;
+        code: string;
+      }
+    | string;
 };
 
 export type ErrorResponse = {
@@ -25,23 +29,9 @@ export type ErrorResponse = {
   correlation_id: string;
   error_uri: string;
 };
-
-const isTokenExpired = (token: TokenModel): boolean => {
-  const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
-  return currentTime >= token.issuedAt + token.expiredIn - 5; // -5 for possible delay
-};
-
-export function isErrorResponse(data: any): data is ErrorResponse {
-  return data?.error !== undefined;
-}
-
-export function isAuthResponse(data: any): data is AuthResponse {
-  return data?.refresh_token !== undefined;
-}
-
 export const exchangeCode = async (
   code: string
-): Promise<Omit<AuthResponse, "error"> | ErrorResponse> => {
+): Promise<AuthResponse | null> => {
   let response = await fetch(`${apiConfig.authApi}/token`, {
     method: "post",
     body: new URLSearchParams({
@@ -56,16 +46,14 @@ export const exchangeCode = async (
     },
     cache: "no-cache",
   }).then((res) => res.json());
-
-  if (response?.error) {
-    return response as ErrorResponse;
-  }
-  return response as AuthResponse;
+  return response;
 };
 
 export const exchangeToken = async ({
   refreshToken,
-}: Pick<TokenModel, "refreshToken">): Promise<AuthResponse> => {
+}: {
+  refreshToken: string;
+}): Promise<AuthResponse> => {
   let response = await fetch(`${apiConfig.authApi}/token`, {
     method: "POST",
     body: new URLSearchParams({
@@ -81,7 +69,6 @@ export const exchangeToken = async ({
     },
   }).then((res) => res.json());
 
-  if (response?.error) throw new Error(response.error);
   return response;
 };
 
@@ -95,41 +82,24 @@ export const getAccountInformation = async (accessToken: string) => {
     cache: "no-cache",
   }).then((res) => res.json());
 
-  if (response?.error) throw new Error(response.error);
+  if (response?.error) return null;
   return response;
 };
 
-export const renewToken = async ({
-  refreshToken,
-}: Pick<TokenModel, "refreshToken">) => {
-  const res = (await exchangeToken({ refreshToken })) as AuthResponse;
-  if (res.error) throw new Error(res.error.message); // break the recursion if error occur
-  await saveTokenToDB({
-    accessToken: res.access_token,
-    refreshToken: res.refresh_token,
-    expiredIn: res.expires_in,
-    issuedAt: Math.floor(Date.now() / 1000),
-  });
-};
-
-export const getToken = async (): Promise<Pick<
-  TokenModel,
-  "accessToken" | "refreshToken"
-> | null> => {
-  const token = await getTokenFromDB();
-  if (!token) return null;
-  if (isTokenExpired(token)) {
-    await renewToken({ refreshToken: token.refreshToken });
-    return await getToken(); // Recursion function
-  } else {
-    return {
-      accessToken: token.accessToken,
-      refreshToken: token.refreshToken,
-    };
+export const getToken = async (): Promise<
+  { accessToken: string; refreshToken: string } | undefined
+> => {
+  const token = await getUserFromDB();
+  if (!token?.refreshToken) return;
+  const payload = await decrypt(token.refreshToken);
+  if (payload) {
+    const data = await exchangeToken({ refreshToken: payload.refreshToken });
+    if (data?.error === "invalid_grant") await deleteTokenFromDB();
+    return { accessToken: data.access_token, refreshToken: data.refresh_token };
   }
 };
 
 export const getCachedToken = unstable_cache(getToken, [], {
-  revalidate: 60, // 60 seconds
+  revalidate: 60 * 30, // 30 minutes
   tags: ["token"],
 });

@@ -1,27 +1,48 @@
-import { exchangeCode, isErrorResponse } from "@/lib/oAuthHandler";
+import { exchangeCode, getAccountInformation } from "@/lib/oAuthHandler";
 import { redirect } from "next/navigation";
-import { type NextRequest } from "next/server";
-import { saveTokenToDB } from "@/lib/oAuthStore";
+import { NextRequest } from "next/server";
+import { getUserFromDB, saveUserToDB, updateToken } from "@/lib/oAuthStore";
+import { encrypt } from "@/lib/security";
+import { cookies } from "next/headers";
+import { revalidateTag } from "next/cache";
 
 export async function GET(request: NextRequest) {
   const searchParmas = request.nextUrl.searchParams;
   const code = searchParmas.get("code");
 
-  if (!code) return redirect("/setup/step-3?error=Code Not Found");
+  if (!code) return redirect("/setup/step-2");
 
   const data = await exchangeCode(code);
-  if (isErrorResponse(data))
-    return redirect(`/setup/step-3?error=${data.error}`);
+  if (!data?.access_token || !data.refresh_token)
+    return redirect("/setup/step-3?error=" + data?.error);
 
-  const { access_token, refresh_token, expires_in } = data;
-  await saveTokenToDB({
-    accessToken: access_token,
-    refreshToken: refresh_token,
-    expiredIn: expires_in,
-    issuedAt: Math.floor(Date.now() / 1000),
-  }).catch((err) => {
-    console.log(err);
-    return redirect(`/setup/step-3?error=${err.message}`);
+  const information = await getAccountInformation(data.access_token);
+  if (!information)
+    return redirect(`/setup/step-3?error=account_information_failed`);
+
+  const userInfo = await getUserFromDB().catch((err) => {});
+  const encryptedToken = await encrypt({
+    payload: { refreshToken: data.refresh_token },
   });
-  redirect("/setup/step-3");
+
+  if (userInfo) {
+    // In case of old data exist and old token expired
+    if (userInfo.userId !== information.id)
+      return redirect("/setup/step-3?error=account_mismatch");
+    await updateToken({ refresh_token: encryptedToken }).catch((err) => {
+      console.log(err);
+      return redirect("/setup/step-3?error=" + err.message);
+    });
+  } else {
+    await saveUserToDB({
+      mail: information.mail,
+      refreshToken: encryptedToken,
+      userId: information.id,
+    }).catch((err) => {
+      console.log(err);
+      return redirect("/setup/step-3?error=" + err.message);
+    });
+  }
+  revalidateTag("token");
+  return redirect("/setup/step-3");
 }

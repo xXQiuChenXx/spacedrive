@@ -1,13 +1,9 @@
-import { apiConfig } from "@/config/api.config";
 import { getCachedToken } from "@/lib/oAuthHandler";
-import { validateAPIConfig } from "@/lib/setups";
 import { redirect } from "next/navigation";
 
-const Setup = () => {
-  const validate = validateAPIConfig({ config: apiConfig });
-  if (!validate.success) return redirect("/setup/step-1");
-  const token = getCachedToken();
-  if (!token) return redirect("/setup/step-2");
+const Setup = async () => {
+  const token = await getCachedToken();
+  if (!token?.refreshToken) return redirect("/setup/step-1");
   return redirect("/home");
 };
 

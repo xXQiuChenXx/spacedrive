@@ -23,7 +23,7 @@ const StepTwo = async ({
   const validate = validateAPIConfig({ config: apiConfig });
   if (!validate.success) return redirect("/setup/step-1");
   const token = await getCachedToken();
-  if (token) redirect("/home");
+  if (token?.refreshToken) redirect("/home");
 
   const isManual = searchParams?.type === "manual";
   const authURL = generateAuthorisationUrl({ config: apiConfig });

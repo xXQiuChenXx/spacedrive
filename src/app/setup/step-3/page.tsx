@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getTokenFromDB } from "@/lib/oAuthStore";
+import { getCachedToken } from "@/lib/oAuthHandler";
 import Link from "next/link";
 
 const StepThree = async ({
@@ -15,9 +15,11 @@ const StepThree = async ({
 }: {
   searchParams: { error?: string };
 }) => {
-  const token = await getTokenFromDB();
   const { error } = searchParams;
-  const isError = Boolean(error || !token);
+  const token = await getCachedToken();
+
+  const isError = Boolean(error || !token?.refreshToken);
+
   return (
     <Card className="w-11/12 md:w-5/6 lg:w-4/6 xl:w-7/12 2xl:w-1/2 mx-auto mt-20 lg:mt-28 shadow">
       <CardHeader>
