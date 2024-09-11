@@ -1,7 +1,7 @@
-import { type apiConfig } from "@/config/api.config";
 import { addStarsAndTrim } from "@/lib/utils";
+import { apiConfigT } from "@/types";
 
-export const ConfigTable = ({ config }: { config: apiConfig }) => {
+export const ConfigTable = ({ config }: { config: apiConfigT }) => {
   return (
     <table className="table-auto min-w-full 2xl:min-w-max 2xl:w-11/12 hidden md:table">
       <tbody >

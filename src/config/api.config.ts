@@ -1,7 +1,9 @@
+import { apiConfigT } from "@/types";
+
 /**
  * This file contains the configuration for the API endpoints and tokens we use.
  */
-export const apiConfig = {
+export const apiConfig: apiConfigT = {
   // The clientId and clientSecret are used to authenticate the user with Microsoft Graph API using OAuth. You would
   // not need to change anything here if you can authenticate with your personal Microsoft account with OneDrive International.
   clientId: process.env.CLIENT_ID || "",
@@ -30,5 +32,3 @@ export const apiConfig = {
   // https://vercel.com/docs/concepts/edge-network/caching
   cacheControlHeader: "max-age=0, s-maxage=60, stale-while-revalidate",
 };
-
-export type apiConfig = typeof apiConfig;

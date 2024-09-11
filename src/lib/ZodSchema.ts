@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const ConfigSchema = z.object({
-  clientId: z.string().uuid({ message: "Invalid Client ID"}),
+  clientId: z.string().uuid({ message: "Invalid Client ID" }),
   clientSecret: z
     .string()
     .min(32, { message: "Invalid client secret" })
@@ -25,4 +25,5 @@ export const ConfigSchema = z.object({
       message:
         "scope 'user.read' must be included to get the user information for authentication",
     }),
+  cacheControlHeader: z.string().optional(),
 });

@@ -20,7 +20,7 @@ import {
 } from "react";
 import { getColumns } from "./table-column/table-column";
 import { flexRender } from "@tanstack/react-table";
-import { useDataTable } from "@/app/hooks/useDataTable";
+import { useDataTable } from "@/hooks/useDataTable";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -28,14 +28,14 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { DataTableToolbar } from "./DataToolbar";
-import { useMediaQuery } from "@/app/hooks/use-media-query";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "./ui/button";
 import DeleteDialog from "./action-dialog/DeleteDialog";
 import { downloadMultiFiles } from "@/lib/MultiFileDownloader";
 import path from "path";
 import { DownloadIcon, LoaderIcon } from "lucide-react";
 import { FileUploader } from "react-drag-drop-files";
-import { getCachedToken } from "@/lib/oAuthHandler";
+import { getCachedToken } from "@/lib/fns";
 import { uploadFile } from "@/lib/actions/uploadFile";
 
 const DataTable = ({

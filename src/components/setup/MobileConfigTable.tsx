@@ -1,7 +1,7 @@
-import { apiConfig } from "@/config/api.config";
 import { addStarsAndTrim } from "@/lib/utils";
+import { apiConfigT } from "@/types";
 
-export const MobileConfigTable = ({ config }: { config: apiConfig }) => {
+export const MobileConfigTable = ({ config }: { config: apiConfigT }) => {
   return (
     <div className="text-sm md:hidden flex flex-col gap-2 break-words">
       <div>

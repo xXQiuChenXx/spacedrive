@@ -14,9 +14,13 @@ import Link from "next/link";
 import { ConfigTable } from "@/components/setup/ConfigTable";
 import { validateAPIConfig } from "@/lib/setups";
 import { MobileConfigTable } from "@/components/setup/MobileConfigTable";
+import { getCachedToken } from "@/lib/oAuthHandler";
+import { redirect } from "next/navigation";
 
-const StepOne = () => {
+const StepOne = async () => {
   const validate = validateAPIConfig({ config: apiConfig });
+  const token = await getCachedToken();
+  if (token && validate.success) redirect("/home");
 
   return (
     <Card className="w-11/12 md:w-5/6 lg:w-4/6 xl:w-7/12 2xl:w-1/2 mx-auto mt-20 lg:mt-28 shadow">
@@ -73,7 +77,7 @@ const StepOne = () => {
             variant="secondary"
           >
             Next
-            <ArrowRightIcon className="ml-2 size-5"  />
+            <ArrowRightIcon className="ml-2 size-5" />
           </Button>
         )}
       </CardFooter>

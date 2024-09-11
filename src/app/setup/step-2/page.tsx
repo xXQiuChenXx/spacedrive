@@ -10,10 +10,21 @@ import {
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { GrantCode } from "@/components/setup/GrantCode";
-import { generateAuthorisationUrl } from "@/lib/setups";
+import { generateAuthorisationUrl, validateAPIConfig } from "@/lib/setups";
 import { apiConfig } from "@/config/api.config";
+import { redirect } from "next/navigation";
+import { getCachedToken } from "@/lib/oAuthHandler";
 
-const StepTwo = ({ searchParams }: { searchParams: { type: string } }) => {
+const StepTwo = async ({
+  searchParams,
+}: {
+  searchParams: { type: string };
+}) => {
+  const validate = validateAPIConfig({ config: apiConfig });
+  if (!validate.success) return redirect("/setup/step-1");
+  const token = await getCachedToken();
+  if (token) redirect("/home");
+
   const isManual = searchParams?.type === "manual";
   const authURL = generateAuthorisationUrl({ config: apiConfig });
 

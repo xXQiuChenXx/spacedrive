@@ -1,7 +1,7 @@
 "use server";
 import { revalidateTag } from "next/cache";
 import { getItemRequestURL } from "./graphAPI";
-import { config } from "@/config/api.config";
+import { apiConfig } from "@/config/api.config";
 import { getCachedToken } from "./oAuthHandler";
 
 type Props = {
@@ -110,7 +110,7 @@ export const getFileContent = async (
   if (!access_token) access_token = (await getCachedToken())?.accessToken;
 
   const response = await fetch(
-    `${config.graphApi}/me/drive/items/${item.id}/content`,
+    `${apiConfig.graphApi}/me/drive/items/${item.id}/content`,
     {
       headers: {
         Authorization: `Bearer ${access_token}`,
