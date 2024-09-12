@@ -21,46 +21,40 @@ import {
 import { getColumns } from "./table-column/table-column";
 import { flexRender } from "@tanstack/react-table";
 import { useDataTable } from "@/hooks/useDataTable";
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu";
 import { DataTableToolbar } from "./DataToolbar";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "./ui/button";
 import DeleteDialog from "./action-dialog/DeleteDialog";
 import { downloadMultiFiles } from "@/lib/MultiFileDownloader";
-import path from "path";
 import { DownloadIcon, LoaderIcon } from "lucide-react";
-import { FileUploader } from "react-drag-drop-files";
-import { getCachedToken } from "@/lib/fns";
+import { getCachedToken, refreshItems } from "@/lib/fns";
 import { uploadFile } from "@/lib/actions/uploadFile";
+import DragBox from "./DragBox";
+import { PermissionDialog } from "./action-dialog/PermissionDialog";
 
 const DataTable = ({
   data,
   children,
+  isAdmin,
 }: {
   data: ItemsResponse[];
   children: ReactNode;
+  isAdmin: boolean;
 }) => {
   const router = useRouter();
   const pathname = usePathname();
   const isDesktop = useMediaQuery("(min-width: 860px)");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDownloading, startDownloadTransition] = useTransition();
-  const folderName = path
-    .basename(pathname)
-    .replace("home/", "")
-    .replace("home", "");
-  const [file, setFile] = useState(null);
+  const folderName = pathname.replace(/^home\/?|\/home\/?$/, "");
   const [dragState, setDragState] = useState<boolean>(false);
+  const [isUploading, startUploading] = useTransition();
+  const [isPermissionDialogOpen, setIsPermissionDialogOpen] = useState(false);
 
   // Memoize the columns
   const columns = useMemo(
-    () => getColumns(isDesktop, pathname),
-    [isDesktop, pathname]
+    () => getColumns(isDesktop, pathname, isAdmin),
+    [isDesktop, pathname, isAdmin]
   );
   const { table } = useDataTable({ columns, data });
   function onDonwloadClick() {
@@ -78,11 +72,7 @@ const DataTable = ({
   const handleDragOver: DragEventHandler<HTMLTableElement> = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    // Optional: Add some visual feedback, like changing the background color of the drop zone
-    if (!dragState) {
-      setDragState(true);
-      console.log("state change");
-    }
+    if (!dragState) setDragState(true);
   };
 
   const handleDrop: DragEventHandler<HTMLTableElement> = async (e) => {
@@ -95,15 +85,21 @@ const DataTable = ({
 
     const token = await getCachedToken();
     if (token) {
-      for (const file of droppedFiles) {
-        const accessToken = token.accessToken;
-        const formdata = new FormData();
-        formdata.append("file", file);
-        formdata.append("path", folderName);
-        await uploadFile({ formdata, accessToken });
-      }
+      startUploading(async () => {
+        for (const file of droppedFiles) {
+          if (!file.type) continue; // filter folder
+          const accessToken = token.accessToken;
+          const formdata = new FormData();
+          formdata.append("file", file);
+          formdata.append("path", folderName);
+          await uploadFile({ formdata, accessToken });
+        }
+        await refreshItems();
+        setDragState(false);
+      });
+    } else {
+      setDragState(false);
     }
-    setDragState(false);
   };
 
   const handleDragLeave: DragEventHandler<HTMLTableElement> = (event) => {
@@ -119,18 +115,22 @@ const DataTable = ({
     const y = event.clientY;
 
     if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
-      if (dragState) {
-        console.log("leave");
-        setDragState(false);
-      }
+      if (dragState) setDragState(false);
     }
   };
 
   return (
     <div className="w-full md:w-11/12 mx-auto overflow-auto">
+      <PermissionDialog
+        onSuccess={() => router.refresh()}
+        open={isPermissionDialogOpen}
+        onOpenChange={setIsPermissionDialogOpen}
+      />
       <DataTableToolbar
         table={table}
         setShowDeleteDialog={setShowDeleteDialog}
+        setIsPermissionDialogOpen={setIsPermissionDialogOpen}
+        isAdmin={isAdmin}
       />
       <div className="overflow-hidden rounded-md border mt-2.5">
         <Table
@@ -202,13 +202,7 @@ const DataTable = ({
                     colSpan={table.getAllColumns().length}
                     className="h-24 text-center"
                   >
-                    <FileUploader
-                      handleChange={(f: any) => setFile(f)}
-                      name="file"
-                      className="w-full"
-                    >
-                      Test
-                    </FileUploader>
+                    <DragBox isUploading={isUploading} />
                   </TableCell>
                 ) : (
                   <TableCell

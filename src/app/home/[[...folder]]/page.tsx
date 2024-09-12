@@ -21,7 +21,7 @@ const HomePage = async ({
   if (!token) return redirect("/setup");
   const { accessToken } = token;
 
-  const { item, items, readmeContent, readmeFile } = await getInformations({
+  const { item, items, readmeContent, readmeFile, isAdmin } = await getInformations({
     accessToken,
     params: params.folder,
   });
@@ -33,7 +33,7 @@ const HomePage = async ({
       <DataRoute />
       <Suspense fallback={<Loader />}>
         {items ? (
-          <DataTable data={items}>
+          <DataTable data={items} isAdmin={isAdmin}>
             {readmeContent && (
               <MarkdownPreview
                 content={readmeContent}

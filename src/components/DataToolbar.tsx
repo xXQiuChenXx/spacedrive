@@ -29,9 +29,13 @@ import { getCachedToken } from "@/lib/fns";
 export const DataTableToolbar = ({
   table,
   setShowDeleteDialog,
+  setIsPermissionDialogOpen,
+  isAdmin,
 }: {
   table: Table<ItemsResponse>;
   setShowDeleteDialog: Dispatch<SetStateAction<boolean>>;
+  setIsPermissionDialogOpen: Dispatch<SetStateAction<boolean>>;
+  isAdmin: boolean;
 }) => {
   const pathname = usePathname().replace("home/", "").replace("home", "");
   const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
@@ -99,7 +103,11 @@ export const DataTableToolbar = ({
           variant="outline"
           className="w-1/2 md:w-fit md:ml-auto h-8 flex items-center py-4"
           aria-label="Donwload"
-          onClick={(e) => setIsCreateFolderDialogOpen(true)}
+          onClick={() => {
+            isAdmin
+              ? setIsCreateFolderDialogOpen(true)
+              : setIsPermissionDialogOpen(true);
+          }}
         >
           <PlusIcon className="size-4 mr-2" />
           Create Folder
@@ -109,7 +117,11 @@ export const DataTableToolbar = ({
           variant="outline"
           className="w-1/2 md:w-fit md:ml-auto h-8 flex items-center py-4"
           aria-label="Upload"
-          onClick={() => fileInputRef.current?.click()}
+          onClick={() => {
+            isAdmin
+              ? fileInputRef.current?.click()
+              : setIsPermissionDialogOpen(true);
+          }}
           disabled={isPending}
         >
           {isPending ? (
@@ -146,7 +158,11 @@ export const DataTableToolbar = ({
           variant="outline"
           className="ml-auto hidden h-8 md:flex"
           aria-label="Upload"
-          onClick={() => setShowDeleteDialog(true)}
+          onClick={() => {
+            isAdmin
+              ? setShowDeleteDialog(true)
+              : setIsPermissionDialogOpen(true);
+          }}
           disabled={!table.getIsSomeRowsSelected()}
         >
           <Cross2Icon className="size-4 mr-2" />

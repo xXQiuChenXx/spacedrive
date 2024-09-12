@@ -22,7 +22,8 @@ import { useState } from "react";
 
 export function getColumns(
   isDesktop: boolean,
-  pathname: string
+  pathname: string,
+  isAdmin: boolean
 ): ColumnDef<ItemsResponse>[] {
   return [
     {
@@ -139,7 +140,7 @@ export function getColumns(
               onOpenChange={setShowRenameDialog}
             />
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger asChild className="max-w-max">
                 <Button
                   aria-label="Open menu"
                   variant="ghost"
@@ -149,12 +150,14 @@ export function getColumns(
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40">
-                <DropdownMenuItem
-                  onSelect={() => setShowRenameDialog(true)}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  Rename
-                </DropdownMenuItem>
+                {isAdmin && (
+                  <DropdownMenuItem
+                    onSelect={() => setShowRenameDialog(true)}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Rename
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem
                   onClick={() =>
                     navigator.clipboard.writeText(
@@ -172,14 +175,16 @@ export function getColumns(
                 >
                   Download
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowDeleteDialog(true);
-                  }}
-                >
-                  Delete
-                </DropdownMenuItem>
+                {isAdmin && (
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowDeleteDialog(true);
+                    }}
+                  >
+                    Delete
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </>
