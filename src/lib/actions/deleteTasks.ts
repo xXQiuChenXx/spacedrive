@@ -2,11 +2,11 @@
 import { revalidateTag } from "next/cache";
 import { type ItemsResponse } from "../driveRequest";
 import { apiConfig } from "@/config/api.config";
-import { getCachedToken } from "@/lib/oAuthHandler";
+import { getCachedUser } from "@/lib/oAuthHandler";
 
 export async function deleteItems({ items }: { items: ItemsResponse[] }) {
   const failed = [];
-  const token = await getCachedToken();
+  const token = await getCachedUser();
   if (!token) return { data: null, error: "Token not found" };
   const { accessToken } = token;
   for (const item of items) {

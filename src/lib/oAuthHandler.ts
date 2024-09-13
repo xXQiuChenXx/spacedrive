@@ -3,6 +3,7 @@ import { apiConfig } from "@/config/api.config";
 import { deleteTokenFromDB, getUserFromDB } from "./oAuthStore";
 import { unstable_cache } from "next/cache";
 import { decrypt } from "@/lib/security";
+import { AuthTokenOnly, DecrytedToken, UserInfo } from "@/types";
 
 export type AuthResponse = {
   token_type: string; // 'Bearer'
@@ -29,6 +30,7 @@ export type ErrorResponse = {
   correlation_id: string;
   error_uri: string;
 };
+
 export const exchangeCode = async (
   code: string
 ): Promise<AuthResponse | null> => {
@@ -86,20 +88,25 @@ export const getAccountInformation = async (accessToken: string) => {
   return response;
 };
 
-export const getToken = async (): Promise<
-  { accessToken: string; refreshToken: string } | undefined
-> => {
+export const getUser = async (): Promise<UserInfo | undefined> => {
   const token = await getUserFromDB();
   if (!token?.refreshToken) return;
-  const payload = await decrypt(token.refreshToken);
-  if (payload) {
+  const payload = (await decrypt(token.refreshToken)) as DecrytedToken;
+  if (payload && payload.refreshToken) {
     const data = await exchangeToken({ refreshToken: payload.refreshToken });
-    if (data?.error === "invalid_grant") await deleteTokenFromDB();
-    return { accessToken: data.access_token, refreshToken: data.refresh_token };
+    if (data?.error === "invalid_grant") {
+      await deleteTokenFromDB();
+      return;
+    }
+    return {
+      ...token,
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token,
+    };
   }
 };
 
-export const getCachedToken = unstable_cache(getToken, [], {
+export const getCachedUser = unstable_cache(getUser, [], {
   revalidate: 60 * 30, // 30 minutes
   tags: ["token"],
 });

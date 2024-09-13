@@ -14,11 +14,11 @@ import Link from "next/link";
 import { ConfigTable } from "@/components/setup/ConfigTable";
 import { validateAPIConfig } from "@/lib/setups";
 import { MobileConfigTable } from "@/components/setup/MobileConfigTable";
-import { getCachedToken } from "@/lib/oAuthHandler";
+import { getCachedUser } from "@/lib/oAuthHandler";
 import { redirect } from "next/navigation";
 
 const StepOne = async () => {
-  const token = await getCachedToken();
+  const token = await getCachedUser();
   if (token?.refreshToken) redirect("/home");
   
   const validate = validateAPIConfig({ config: apiConfig });

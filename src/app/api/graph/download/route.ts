@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";
 import { apiConfig } from "@/config/api.config";
-import { getCachedToken } from "@/lib/oAuthHandler";
+import { getCachedUser } from "@/lib/oAuthHandler";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
       { error: { message: "400 Bad Request" } },
       { status: 400 }
     );
-  const token = await getCachedToken();
+  const token = await getCachedUser();
   if (!token) return redirect("/setup");
   const { accessToken } = token;
   const res = await fetch(`${apiConfig.graphApi}/me/drive/items/${id}/content`, {

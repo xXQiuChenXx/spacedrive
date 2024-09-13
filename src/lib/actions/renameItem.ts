@@ -1,7 +1,7 @@
 "use server";
 
 import { type ItemsResponse } from "@/lib/driveRequest";
-import { getCachedToken } from "../oAuthHandler";
+import { getCachedUser } from "../oAuthHandler";
 import { redirect } from "next/navigation";
 import { apiConfig } from "@/config/api.config";
 import { revalidateTag } from "next/cache";
@@ -12,7 +12,7 @@ interface renameItemProps {
 }
 
 export async function renameItem({ item, newName }: renameItemProps) {
-  const token = await getCachedToken();
+  const token = await getCachedUser();
   if (!token) return redirect("/setup");
   const { accessToken } = token;
   const response = await fetch(`${apiConfig.graphApi}/me/drive/items/${item.id}`, {

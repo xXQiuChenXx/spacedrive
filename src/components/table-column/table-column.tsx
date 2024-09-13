@@ -16,7 +16,7 @@ import { formatBytes } from "@/lib/utils";
 import { FolderIcon, FileTextIcon } from "lucide-react";
 import DeleteDialog from "../action-dialog/DeleteDialog";
 import RenameDialog from "../action-dialog/RenameDialog";
-import { handleClick } from "@/lib/downloadHandler";
+import { downloadSingleFile } from "@/lib/downloadHandler";
 import FormatDate from "./format-date";
 import { useState } from "react";
 
@@ -170,7 +170,7 @@ export function getColumns(
                 <DropdownMenuItem
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleClick({ item: row.original });
+                    downloadSingleFile({ item: row.original });
                   }}
                 >
                   Download

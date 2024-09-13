@@ -13,7 +13,7 @@ import { GrantCode } from "@/components/setup/GrantCode";
 import { generateAuthorisationUrl, validateAPIConfig } from "@/lib/setups";
 import { apiConfig } from "@/config/api.config";
 import { redirect } from "next/navigation";
-import { getCachedToken } from "@/lib/oAuthHandler";
+import { getCachedUser } from "@/lib/oAuthHandler";
 
 const StepTwo = async ({
   searchParams,
@@ -22,7 +22,7 @@ const StepTwo = async ({
 }) => {
   const validate = validateAPIConfig({ config: apiConfig });
   if (!validate.success) return redirect("/setup/step-1");
-  const token = await getCachedToken();
+  const token = await getCachedUser();
   if (token?.refreshToken) redirect("/home");
 
   const isManual = searchParams?.type === "manual";

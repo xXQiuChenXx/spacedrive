@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
-import { getCachedToken } from "../oAuthHandler";
+import { getCachedUser } from "../oAuthHandler";
 import { redirect } from "next/navigation";
 import { getItemRequestURL } from "../graphAPI";
 
@@ -12,7 +12,7 @@ export async function createFolder({
   path: string;
   folder: string;
 }) {
-  const token = await getCachedToken();
+  const token = await getCachedUser();
   if (!token) return redirect("/setup");
   const { accessToken } = token;
   const response = await fetch(`${getItemRequestURL(path, true)}`, {

@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getCachedToken } from "@/lib/oAuthHandler";
+import { getCachedUser } from "@/lib/oAuthHandler";
 import Link from "next/link";
 
 const StepThree = async ({
@@ -16,7 +16,7 @@ const StepThree = async ({
   searchParams: { error?: string };
 }) => {
   const { error } = searchParams;
-  const token = await getCachedToken();
+  const token = await getCachedUser();
 
   const isError = Boolean(error || !token?.refreshToken);
 

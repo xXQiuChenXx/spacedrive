@@ -49,10 +49,9 @@ export const DataTableToolbar = ({
     const file = event.target?.files?.[0];
     if (file) {
       startTransition(async () => {
-        const token = await getCachedToken();
-        if (!token) toast.error("Failed to fetch token");
+        const accessToken = await getCachedToken();
+        if (!accessToken) toast.error("Failed to fetch token");
         else {
-          const accessToken = token.accessToken;
           const formdata = new FormData();
           formdata.append("file", file);
           formdata.append("path", pathname);

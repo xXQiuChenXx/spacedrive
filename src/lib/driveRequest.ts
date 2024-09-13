@@ -1,8 +1,8 @@
 "use server";
 import { revalidateTag } from "next/cache";
-import { getItemRequestURL } from "./graphAPI";
+import { getItemRequestURL } from "@/lib/graphAPI";
 import { apiConfig } from "@/config/api.config";
-import { getCachedToken } from "./oAuthHandler";
+import { getCachedUser } from "@/lib/oAuthHandler";
 
 type Props = {
   folder?: string[];
@@ -107,7 +107,7 @@ export const getFileContent = async (
   item: OriResponse | ItemsResponse,
   access_token?: string
 ): Promise<string> => {
-  if (!access_token) access_token = (await getCachedToken())?.accessToken;
+  if (!access_token) access_token = (await getCachedUser())?.accessToken;
 
   const response = await fetch(
     `${apiConfig.graphApi}/me/drive/items/${item.id}/content`,

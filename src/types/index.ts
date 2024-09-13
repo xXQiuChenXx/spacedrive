@@ -1,3 +1,4 @@
+import { User } from "@/db/schema";
 import { ConfigSchema } from "@/lib/ZodSchema";
 import { z } from "zod";
 
@@ -8,3 +9,10 @@ export interface AuthTokenOnly {
   accessToken: string;
   [key: string]: unknown;
 }
+
+export interface DecrytedToken {
+  refreshToken: string;
+  [key: string]: unknown;
+}
+
+export type UserInfo = AuthTokenOnly & User
