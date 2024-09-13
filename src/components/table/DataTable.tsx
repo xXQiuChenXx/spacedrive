@@ -11,67 +11,25 @@ import {
 import { usePathname } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
 import { ItemsResponse } from "@/lib/driveRequest";
-import { DragEventHandler, useState, useTransition } from "react";
 import { flexRender, Table as TanstackTable } from "@tanstack/react-table";
-import { getCachedToken, refreshItems } from "@/lib/fns";
-import { uploadFile } from "@/lib/actions/uploadFile";
 import DragBox from "../DragBox";
+import { useDragAndDrop } from "@/hooks/useDragAndDrop";
 
-const DataTable = ({ table }: { table: TanstackTable<ItemsResponse> }) => {
+export const DataTable = ({
+  table,
+  uploadFile,
+  isUploading,
+}: {
+  table: TanstackTable<ItemsResponse>;
+  uploadFile: ({ files }: { files: File[] }) => void;
+  isUploading: boolean;
+}) => {
   const router = useRouter();
   const pathname = usePathname();
-  const folderName = pathname.replace(/^home\/?|\/home\/?$/, "");
-  const [dragState, setDragState] = useState<boolean>(false);
-  const [isUploading, startUploading] = useTransition();
-
-  const handleDragOver: DragEventHandler<HTMLTableElement> = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!dragState) setDragState(true);
-  };
-
-  const handleDrop: DragEventHandler<HTMLTableElement> = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (!e?.dataTransfer) return;
-    const droppedFiles = Array.from(e.dataTransfer.files) as File[]; // Get the files from the drop event
-    const filteredFiles = droppedFiles.filter((file) => file.type);
-    if (!droppedFiles.length) return;
-
-    const accessToken = await getCachedToken();
-    if (accessToken) {
-      startUploading(async () => {
-        for (const file of filteredFiles) {
-          const formdata = new FormData();
-          formdata.append("file", file);
-          formdata.append("path", folderName);
-          await uploadFile({ formdata, accessToken });
-        }
-        await refreshItems();
-        setDragState(false);
-      });
-    } else {
-      setDragState(false);
-    }
-  };
-
-  const handleDragLeave: DragEventHandler<HTMLTableElement> = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    if (!event?.currentTarget) return;
-
-    // Reset dragging state when leaving the drop zone
-    const rect = (
-      event?.currentTarget as HTMLTableElement
-    ).getBoundingClientRect();
-    const x = event.clientX;
-    const y = event.clientY;
-
-    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
-      if (dragState) setDragState(false);
-    }
-  };
+  const { handleDragLeave, handleDragOver, handleDrop, dragState } =
+    useDragAndDrop({
+      uploadFile,
+    });
 
   return (
     <Table
@@ -98,13 +56,13 @@ const DataTable = ({ table }: { table: TanstackTable<ItemsResponse> }) => {
       </TableHeader>
       <TableBody>
         {table.getRowModel().rows?.length && !dragState ? (
-          table.getRowModel().rows.map((row) => (
+          table.getRowModel().rows.map((row, i) => (
             <TableRow
-              key={row.id}
+              key={`item-${i + 1}`}
               className="cursor-pointer"
               data-state={row.getIsSelected() && "selected"}
               onContextMenu={(event) => {
-                event.preventDefault();
+                event.preventDefault(); // todo
               }}
               onClick={(event) => {
                 if (
@@ -156,5 +114,3 @@ const DataTable = ({ table }: { table: TanstackTable<ItemsResponse> }) => {
     </Table>
   );
 };
-
-export default DataTable;

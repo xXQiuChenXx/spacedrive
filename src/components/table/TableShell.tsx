@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode, useMemo, useState, useTransition } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { PermissionDialog } from "@/components/action-dialog/PermissionDialog";
 import { DataTableToolbar } from "@/components/DataToolbar";
 import TableFooter from "@/components/table/TableFooter";
@@ -12,7 +12,8 @@ import { useRouter } from "nextjs-toploader/app";
 import DeleteDialog from "@/components/action-dialog/DeleteDialog";
 import MobileToolbar from "./MobileToolbar";
 import { useDownloader } from "@/hooks/useDownloader";
-import DataTable from "./DataTable";
+import { DataTable } from "./DataTable";
+import { useUploader } from "@/hooks/useUploader";
 
 export const TableShell = ({
   data,
@@ -26,10 +27,10 @@ export const TableShell = ({
   const isDesktop = useMediaQuery("(min-width: 860px)");
   const [isPermDialogOpen, setPermDialogOpen] = useState<boolean>(false);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
-  // const [isUploading, startUploading] = useTransition();
   const router = useRouter();
   const pathname = usePathname();
   const pathSegment = pathname.split("/");
+  const cleanPath = pathname.replace(/^home\/?|\/home\/?$/, "");
   const columns = useMemo(
     () => getColumns(isDesktop, pathname, isAdmin),
     [isDesktop, pathname, isAdmin]
@@ -41,6 +42,11 @@ export const TableShell = ({
   const { isDownloading, onDownloadClick } = useDownloader({
     selectedItems,
     folderName: pathSegment[pathSegment.length - 1],
+  });
+  const { isUploading, uploadFile } = useUploader({
+    isAdmin,
+    path: cleanPath,
+    setPermDialogOpen,
   });
 
   return (
@@ -61,8 +67,16 @@ export const TableShell = ({
         setShowDeleteDialog={setDeleteDialogOpen}
         setIsPermissionDialogOpen={setPermDialogOpen}
         isAdmin={isAdmin}
+        uploadFile={uploadFile}
+        onDownloadClick={onDownloadClick}
+        isDownloading={isDownloading}
+        isUploading={isUploading}
       />
-      <DataTable table={table} />
+      <DataTable
+        table={table}
+        uploadFile={uploadFile}
+        isUploading={isUploading}
+      />
       <div className="mt-10">{children}</div>
       <TableFooter table={table} />
       {!isDesktop && (

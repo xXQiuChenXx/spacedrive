@@ -19,63 +19,35 @@ import {
 import CreateFolderDialog from "./action-dialog/CreateFolderDialog";
 import { usePathname } from "next/navigation";
 import { ItemsResponse } from "@/lib/driveRequest";
-import { toast } from "sonner";
-import { uploadFile } from "@/lib/actions/uploadFile";
-import { downloadMultiFiles } from "@/lib/MultiFileDownloader";
-import path from "path";
 import { LoaderIcon } from "lucide-react";
-import { getCachedToken } from "@/lib/fns";
 
 export const DataTableToolbar = ({
   table,
+  onDownloadClick,
+  isDownloading,
   setShowDeleteDialog,
   setIsPermissionDialogOpen,
+  uploadFile,
   isAdmin,
+  isUploading,
 }: {
   table: Table<ItemsResponse>;
   setShowDeleteDialog: Dispatch<SetStateAction<boolean>>;
   setIsPermissionDialogOpen: Dispatch<SetStateAction<boolean>>;
   isAdmin: boolean;
+  uploadFile: ({ files }: { files: File[] }) => void;
+  isDownloading: boolean;
+  isUploading: boolean;
+  onDownloadClick: () => void;
 }) => {
   const pathname = usePathname().replace("home/", "").replace("home", "");
   const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
     useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isPending, startTransition] = useTransition();
-  const [isDownloading, startDownloadTransition] = useTransition();
-  const folderName = path.basename(pathname);
 
   function uploadInputChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target?.files?.[0];
-    if (file) {
-      startTransition(async () => {
-        const accessToken = await getCachedToken();
-        if (!accessToken) toast.error("Failed to fetch token");
-        else {
-          const formdata = new FormData();
-          formdata.append("file", file);
-          formdata.append("path", pathname);
-          const { error } = await uploadFile({ formdata, accessToken });
-
-          if (error) {
-            toast.error(error);
-          } else {
-            toast.success(file.name + " uploaded successfully");
-          }
-        }
-      });
-    }
-  }
-  function onDonwloadClick() {
-    startDownloadTransition(async () => {
-      const items = table
-        .getSelectedRowModel()
-        .rows.map((r) => r.original)
-        .filter((item) => !item.file.isFolder);
-      await downloadMultiFiles({ items, folderName }).catch((err) =>
-        console.log(err)
-      );
-    });
+    if (file) uploadFile({ files: [file] });
   }
 
   return (
@@ -121,21 +93,21 @@ export const DataTableToolbar = ({
               ? fileInputRef.current?.click()
               : setIsPermissionDialogOpen(true);
           }}
-          disabled={isPending}
+          disabled={isUploading}
         >
-          {isPending ? (
+          {isUploading ? (
             <LoaderIcon className="animate-spin mr-2 size-4" />
           ) : (
             <UploadIcon className="size-4 mr-2" />
           )}
-          {isPending ? "Uploading..." : "Upload"}
+          {isUploading ? "Uploading..." : "Upload"}
         </Button>
         <Button
           size="sm"
           variant="outline"
           className="ml-auto hidden h-8 lg:flex"
           aria-label="Donwload"
-          onClick={onDonwloadClick}
+          onClick={() => onDownloadClick}
           disabled={!table.getIsSomeRowsSelected() || isDownloading}
         >
           {isDownloading ? (
