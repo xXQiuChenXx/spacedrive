@@ -22,6 +22,7 @@ export function useDragAndDrop({
     const filteredFiles = droppedFiles.filter((file) => file.type);
     if (!droppedFiles.length) return;
     await uploadFile({ files: filteredFiles });
+    setDragState(false);
   };
 
   const handleDragLeave: DragEventHandler<HTMLTableElement> = (event) => {
