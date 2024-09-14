@@ -36,13 +36,12 @@ export const DataTable = ({
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       onDragLeave={handleDragLeave}
-      className="overflow-hidden rounded-md border mt-2.5"
     >
       <TableHeader>
         {table.getHeaderGroups().map((group) => (
           <TableRow key={group.id}>
             {group.headers.map((header) => (
-              <TableHead key={header.id} colSpan={header.colSpan}>
+              <TableHead key={header.id}>
                 {header.isPlaceholder
                   ? null
                   : flexRender(
@@ -81,9 +80,7 @@ export const DataTable = ({
                     cell.column.id !== "select" ? "row-data" : undefined
                   }
                   onClick={() => {
-                    if (cell.column.id === "select") {
-                      cell.row.toggleSelected();
-                    }
+                    if (cell.column.id === "select") cell.row.toggleSelected();
                   }}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}

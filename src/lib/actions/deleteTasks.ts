@@ -2,13 +2,13 @@
 import { revalidateTag } from "next/cache";
 import { type ItemsResponse } from "../driveRequest";
 import { apiConfig } from "@/config/api.config";
-import { getCachedUser } from "@/lib/oAuthHandler";
+import { getTokenWithVerfication } from "../fns";
 
 export async function deleteItems({ items }: { items: ItemsResponse[] }) {
-  const failed = [];
-  const token = await getCachedUser();
+  const { token } = await getTokenWithVerfication();
   if (!token) return { data: null, error: "Token not found" };
-  const { accessToken } = token;
+
+  const failed = [];
   for (const item of items) {
     try {
       const response = await fetch(
@@ -16,7 +16,7 @@ export async function deleteItems({ items }: { items: ItemsResponse[] }) {
         {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${token.accessToken}`,
             "Content-Type": "application/json",
           },
         }
@@ -28,7 +28,7 @@ export async function deleteItems({ items }: { items: ItemsResponse[] }) {
     }
   }
   await revalidateTag("items");
-  
+
   return {
     data: null,
     error: failed.length

@@ -72,13 +72,15 @@ export const TableShell = ({
         isDownloading={isDownloading}
         isUploading={isUploading}
       />
-      <DataTable
-        table={table}
-        uploadFile={uploadFile}
-        isUploading={isUploading}
-      />
-      <div className="mt-10">{children}</div>
+      <div className="overflow-hidden rounded-md border mt-2.5">
+        <DataTable
+          table={table}
+          uploadFile={uploadFile}
+          isUploading={isUploading}
+        />
+      </div>
       <TableFooter table={table} />
+      <div className="mt-10">{children}</div>
       {!isDesktop && (
         <MobileToolbar
           selectedItems={selectedItems}

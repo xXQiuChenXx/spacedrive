@@ -19,6 +19,7 @@ import RenameDialog from "../action-dialog/RenameDialog";
 import { downloadSingleFile } from "@/lib/downloadHandler";
 import FormatDate from "./format-date";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function getColumns(
   isDesktop: boolean,
@@ -29,15 +30,19 @@ export function getColumns(
     {
       id: "select",
       header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-          className="translate-y-0.5"
-        />
+        <div className="xl:min-w-5">
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
+            aria-label="Select all"
+            className="translate-y-0.5"
+          />
+        </div>
       ),
       cell: ({ row }) => (
         <Checkbox
@@ -50,7 +55,6 @@ export function getColumns(
       ),
       enableSorting: false,
       enableHiding: false,
-      size: 40,
     },
     {
       accessorKey: "file",
@@ -58,12 +62,12 @@ export function getColumns(
         <DataTableColumnHeader
           column={column}
           title="File Name"
-          className="lg:min-w-96"
+          className=" lg:min-w-96 xl:min-w-[30rem]"
         />
       ),
       cell: ({ cell, getValue }) => (
         <div
-          className="font-medium flex gap-3 items-center max-w-44 md:max-w-72 lg:max-w-sm xl:max-w-xl lg:min-w-96"
+          className="font-medium flex gap-3 items-center max-w-44 md:max-w-72 lg:max-w-sm xl:max-w-xl"
           data-group="row-data"
         >
           {(getValue() as ItemsResponse["file"])?.isFolder ? (
@@ -96,7 +100,6 @@ export function getColumns(
         return nameA.localeCompare(nameB);
       },
       enableHiding: false,
-      // size: 560,
     },
     {
       accessorKey: "size",
@@ -106,7 +109,6 @@ export function getColumns(
       meta: {
         show: isDesktop,
       },
-      size: 100,
       cell: ({ cell }) => formatBytes(cell.getValue() as number),
     },
     {
@@ -115,7 +117,6 @@ export function getColumns(
         <DataTableColumnHeader column={column} title="Last Modified" />
       ),
       cell: ({ cell }) => <FormatDate date={cell.getValue() as string} />,
-      size: 100,
       meta: {
         show: isDesktop,
       },
@@ -140,7 +141,7 @@ export function getColumns(
               onOpenChange={setShowRenameDialog}
             />
             <DropdownMenu>
-              <DropdownMenuTrigger asChild className="max-w-max">
+              <DropdownMenuTrigger asChild>
                 <Button
                   aria-label="Open menu"
                   variant="ghost"
@@ -159,11 +160,12 @@ export function getColumns(
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem
-                  onClick={() =>
+                  onClick={() => {
                     navigator.clipboard.writeText(
                       `${window.location.origin}${pathname}/${row.original.name}`
-                    )
-                  }
+                    );
+                    toast.success("Copied link to clipboard");
+                  }}
                 >
                   Copy Link
                 </DropdownMenuItem>
@@ -190,7 +192,6 @@ export function getColumns(
           </>
         );
       },
-      size: 40,
     },
   ];
 }
