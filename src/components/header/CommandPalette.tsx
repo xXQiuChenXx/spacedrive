@@ -1,9 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
@@ -14,20 +12,11 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import { SearchIcon } from "lucide-react";
-
-const links = [
-  { title: "Documentation", href: "/docs" },
-  { title: "Components", href: "/components" },
-  { title: "Blocks", href: "/blocks" },
-  { title: "Charts", href: "/charts" },
-  { title: "Themes", href: "/themes" },
-  { title: "Examples", href: "/examples" },
-];
+import { useDriveItemSearch } from "@/hooks/useDriveItemSearch";
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState("");
-  const router = useRouter();
+  const { result, setQuery } = useDriveItemSearch();
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -40,11 +29,6 @@ export function CommandPalette() {
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
   }, []);
-
-  const runCommand = (command: () => unknown) => {
-    setOpen(false);
-    command();
-  };
 
   return (
     <>
@@ -66,20 +50,21 @@ export function CommandPalette() {
           <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
             <CommandInput
               placeholder="Type a command or search..."
-              value={search}
-              onValueChange={setSearch}
+              onValueChange={setQuery}
             />
             <CommandList>
-              <CommandGroup heading="Links">
-                {links.map((link) => (
+              <CommandGroup heading="Search result:">
+                {result.map((item: any, i) => (
                   <CommandItem
-                    key={link.href}
-                    value={link.title}
-                    onSelect={() => {
-                      runCommand(() => router.push(link.href));
-                    }}
+                    key={`search-${i + 1}`}
+                    className="block"
+                    value={item.name}
+                    onSelect={() => setOpen(false)}
                   >
-                    {link.title}
+                    <Link href={item.path}>
+                      <p>{item.name}</p>
+                      <p className="text-muted-foreground">{item.path}</p>
+                    </Link>
                   </CommandItem>
                 ))}
               </CommandGroup>

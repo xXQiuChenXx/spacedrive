@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";
 import { getUserFromDB, saveUserToDB, updateToken } from "@/lib/oAuthStore";
 import { encrypt } from "@/lib/security";
-import { cookies } from "next/headers";
 import { revalidateTag } from "next/cache";
 
 export async function GET(request: NextRequest) {

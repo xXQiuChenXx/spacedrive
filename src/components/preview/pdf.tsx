@@ -17,7 +17,7 @@ export const PDFPreview = ({ file }: { file: OriResponse | ItemsResponse }) => {
   const filePath = encodeURI(origin + "/api/graph/raw?item=" + file.id);
   return (
     <PreviewContainer file={file}>
-      <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.js">
+      <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
         <div className="h-[80vh]">
           <Viewer
             fileUrl={filePath}

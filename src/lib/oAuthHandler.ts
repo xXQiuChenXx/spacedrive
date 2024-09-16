@@ -3,7 +3,7 @@ import { apiConfig } from "@/config/api.config";
 import { deleteTokenFromDB, getUserFromDB } from "./oAuthStore";
 import { unstable_cache } from "next/cache";
 import { decrypt } from "@/lib/security";
-import { AuthTokenOnly, DecrytedToken, UserInfo } from "@/types";
+import { DecrytedToken, UserInfo } from "@/types";
 
 export type AuthResponse = {
   token_type: string; // 'Bearer'

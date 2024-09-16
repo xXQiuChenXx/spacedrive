@@ -15,7 +15,7 @@ const MobileToolbar = ({
   onDownloadClick: () => void;
 }) => {
   return (
-    selectedItems.length && (
+    Boolean(selectedItems.length) && (
       <div className="fixed bottom-0 left-0 mb-6 z-50 w-full">
         <div className="bg-gray-900 flex justify-center w-fit mx-auto gap-5 border p-3 shodow-lg rounded">
           <Button

@@ -62,7 +62,7 @@ export function getColumns(
         <DataTableColumnHeader
           column={column}
           title="File Name"
-          className=" lg:min-w-96 xl:min-w-[30rem]"
+          className="md:min-w-72 lg:min-w-96 xl:min-w-[30rem]"
         />
       ),
       cell: ({ cell, getValue }) => (
