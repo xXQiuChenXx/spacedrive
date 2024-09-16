@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 import { ItemsResponse, OriResponse } from "./driveRequest";
 import JSZip from "jszip";
+import { apiConfig } from "@/config/api.config";
 
 export function downloadSingleFile({
   item,
@@ -27,7 +28,7 @@ export async function downloadMultiFiles({
   items.forEach(({ name, id }) => {
     dir.file(
       name,
-      fetch(`${window.location.origin}/api/graph/raw?item=${id}`).then((r) => {
+      fetch(`${apiConfig.origin}/api/graph/raw?item=${id}`).then((r) => {
         return r.blob();
       })
     );

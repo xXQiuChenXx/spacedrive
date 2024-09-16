@@ -26,4 +26,5 @@ export const ConfigSchema = z.object({
         "scope 'user.read' must be included to get the user information for authentication",
     }),
   cacheControlHeader: z.string().optional(),
+  origin: z.string(),
 });

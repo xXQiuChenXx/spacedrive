@@ -1,18 +1,14 @@
-"use client";
 import { ItemsResponse, OriResponse } from "@/lib/driveRequest";
 import PreviewContainer from "./PreviewContainer";
-import { useEffect, useState } from "react";
+import { apiConfig } from "@/config/api.config";
 
 export const OfficePreview = ({
   file,
 }: {
   file: OriResponse | ItemsResponse;
 }) => {
-    const [origin, setOrigin] = useState("");
-    useEffect(() => {
-        setOrigin(window.location.origin)
-    }, [])
-  const filePath = origin + "/api/graph/raw?item=" + file.id;
+    
+  const filePath = `${apiConfig.origin}/api/graph/raw?item=${file.id}`
   const url = `https://view.officeapps.live.com/op/embed.aspx?src=${filePath}`;
   return (
     <PreviewContainer file={file}>

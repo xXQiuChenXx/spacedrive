@@ -66,7 +66,9 @@ export const getItems = async ({
   listChild,
   row,
   expand,
-}: Props): Promise<ItemsResponse[] | OriResponse | null> => {
+}: Props): Promise<
+  ItemsResponse[] | OriResponse | null | { refresh: boolean }
+> => {
   const requestUrl = getItemRequestURL(folder, listChild);
   const params = new URLSearchParams({
     select: "name,id,size,lastModifiedDateTime,folder,file,video,image", //,@microsoft.graph.downloadUrl",
@@ -84,7 +86,6 @@ export const getItems = async ({
   }).then((res) => res.json());
 
   if (row && !response?.error) return response;
-
   if (response?.value) {
     return response.value.map((x: OriResponse) => {
       return {
@@ -98,8 +99,9 @@ export const getItems = async ({
     });
   }
 
-  if (response?.error?.code === "InvalidAuthenticationToken")
+  if (response?.error?.code === "InvalidAuthenticationToken") {
     await revalidateTag("token");
+  }
   return null;
 };
 
