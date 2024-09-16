@@ -7,6 +7,8 @@ import { CodePreview } from "./Code";
 import TextPreview from "./Text";
 import { PDFPreview } from "./pdf";
 import { OfficePreview } from "./Office";
+import { VideoPreview } from "./VideoPreview";
+import { AudioPreview } from "./AudioPreview";
 
 const PreviewFile = async ({ file }: { file: OriResponse }) => {
   const previewType = getPreviewType(getFileExtension(file.name), {
@@ -28,11 +30,11 @@ const PreviewFile = async ({ file }: { file: OriResponse }) => {
           <MarkdownPreview file={file} content={await getFileContent(file)} />
         );
 
-      //   case preview.video:
-      //     return <VideoPreview file={file} content={content} />;
+      case preview.video:
+        return <VideoPreview file={file} />;
 
-      //   case preview.audio:
-      //     return <AudioPreview file={file} content={content} />;
+      case preview.audio:
+        return <AudioPreview file={file} />;
 
       case preview.pdf:
         return <PDFPreview file={file} />;
