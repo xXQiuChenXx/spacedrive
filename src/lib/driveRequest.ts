@@ -101,6 +101,14 @@ export const getItems = async ({
 
   if (response?.error?.code === "InvalidAuthenticationToken") {
     await revalidateTag("token");
+    // recursion function
+    return await getItems({
+      folder,
+      access_token,
+      listChild,
+      row,
+      expand,
+    });
   }
   return null;
 };

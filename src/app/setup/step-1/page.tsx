@@ -20,9 +20,9 @@ import { redirect } from "next/navigation";
 const StepOne = async () => {
   const token = await getCachedUser();
   if (token?.refreshToken) redirect("/home");
-  
+
   const validate = validateAPIConfig({ config: apiConfig });
-  
+
   return (
     <Card className="w-11/12 md:w-5/6 lg:w-4/6 xl:w-7/12 2xl:w-1/2 mx-auto mt-20 lg:mt-28 shadow">
       <CardHeader>
