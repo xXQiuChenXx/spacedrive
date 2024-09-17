@@ -12,7 +12,7 @@ export async function deleteItems({ items }: { items: ItemsResponse[] }) {
   for (const item of items) {
     try {
       const response = await fetch(
-        `${apiConfig.graphApi}/me/drive/items/${item.id}`,
+        `${apiConfig.graphApi}/items/${item.id}`,
         {
           method: "DELETE",
           headers: {

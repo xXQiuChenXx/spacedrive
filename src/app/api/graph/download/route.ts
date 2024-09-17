@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
   const token = await getCachedUser();
   if (!token) return redirect("/setup");
   const { accessToken } = token;
-  const res = await fetch(`${apiConfig.graphApi}/me/drive/items/${id}/content`, {
+  const res = await fetch(`${apiConfig.graphApi}/items/${id}/content`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,

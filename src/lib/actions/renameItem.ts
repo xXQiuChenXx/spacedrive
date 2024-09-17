@@ -15,7 +15,7 @@ export async function renameItem({ item, newName }: renameItemProps) {
   const { token } = await getTokenWithVerfication();
   if (!token) return redirect("/setup");
   const response = await fetch(
-    `${apiConfig.graphApi}/me/drive/items/${item.id}`,
+    `${apiConfig.graphApi}/items/${item.id}`,
     {
       method: "PATCH",
       body: JSON.stringify({ name: newName }),

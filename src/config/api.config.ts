@@ -17,9 +17,9 @@ export const apiConfig: apiConfigT = {
   redirectURI: process.env.REDIRECT_URI || "http://localhost:3000",
 
   // These are the URLs of the OneDrive API endpoints. You would not need to change anything here if you are using OneDrive International
-  // or E5 Subscription OneDrive for Business. You may need to change these if you are using OneDrive 世纪互联.
+  // or E5 Subscription OneDrive for Business. You may need to change these if you are using OneDrive.
   authApi: "https://login.microsoftonline.com/common/oauth2/v2.0",
-  graphApi: "https://graph.microsoft.com/v1.0",
+  graphApi: "https://graph.microsoft.com/v1.0/me/drive",
 
   // The scope we require are listed here, in most cases you would not need to change this as well.
   scope: "user.read files.read.all offline_access",

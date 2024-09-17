@@ -112,7 +112,7 @@ export const getFileContent = async (
   if (!access_token) access_token = (await getCachedUser())?.accessToken;
 
   const response = await fetch(
-    `${apiConfig.graphApi}/me/drive/items/${item.id}/content`,
+    `${apiConfig.graphApi}/items/${item.id}/content`,
     {
       headers: {
         Authorization: `Bearer ${access_token}`,

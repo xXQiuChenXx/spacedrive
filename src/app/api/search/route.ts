@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     top: "10",
   });
   const searchResponse = await fetch(
-    `${apiConfig.graphApi}/me/drive/root/search(q='${q}')?${params.toString()}`,
+    `${apiConfig.graphApi}/root/search(q='${q}')?${params.toString()}`,
     {
       headers: {
         Authorization: `Bearer ${user.accessToken}`,
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
   if (searchResponse?.value) {
     const pms = searchResponse.value.map(async (res: any) => {
       const response = await fetch(
-        `${apiConfig.graphApi}/me/drive/items/${res.parentReference.id}`,
+        `${apiConfig.graphApi}/items/${res.parentReference.id}`,
         {
           headers: {
             Authorization: `Bearer ${user.accessToken}`,

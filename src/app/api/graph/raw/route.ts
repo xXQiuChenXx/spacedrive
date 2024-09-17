@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   const { accessToken } = token;
 
   const response = await fetch(
-    `${apiConfig.graphApi}/me/drive/items/${itemId}/content`,
+    `${apiConfig.graphApi}/items/${itemId}/content`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
