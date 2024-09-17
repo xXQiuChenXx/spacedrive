@@ -107,6 +107,6 @@ export const getUser = async (): Promise<UserInfo | undefined> => {
 };
 
 export const getCachedUser = unstable_cache(getUser, [], {
-  revalidate: 60 * 20, // 20 minutes
+  revalidate: 300, // 5 minutes
   tags: ["token"],
 });

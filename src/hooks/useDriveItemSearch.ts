@@ -4,7 +4,7 @@ import { useDebounce } from "use-debounce";
 export function useDriveItemSearch() {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState([]);
-  const [debounced] = useDebounce(query, 2000);
+  const [debounced] = useDebounce(query, 1500);
 
   useEffect(() => {
     async function searchItem() {

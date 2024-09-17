@@ -20,7 +20,6 @@ export async function getInformations({
 }) {
   const cookieStore = cookies();
   const userInfo = await getCachedUser();
-
   const session = cookieStore.get("session")?.value;
 
   if (session) {
