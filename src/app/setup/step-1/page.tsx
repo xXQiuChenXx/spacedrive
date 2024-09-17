@@ -19,6 +19,7 @@ import { redirect } from "next/navigation";
 
 const StepOne = async () => {
   const token = await getCachedUser();
+  console.log(token);
   if (token?.refreshToken) redirect("/home");
 
   const validate = validateAPIConfig({ config: apiConfig });

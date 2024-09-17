@@ -90,7 +90,11 @@ export const getAccountInformation = async (accessToken: string) => {
 
 export const getUser = async (): Promise<UserInfo | undefined> => {
   const token = await getUserFromDB();
-  if (!token?.refreshToken) return;
+  if (!token?.refreshToken) {
+    console.log(token);
+    console.log("Token not found");
+    return;
+  }
   const payload = (await decrypt(token.refreshToken)) as DecrytedToken;
   if (payload && payload.refreshToken) {
     const data = await exchangeToken({ refreshToken: payload.refreshToken });
@@ -104,6 +108,7 @@ export const getUser = async (): Promise<UserInfo | undefined> => {
       refreshToken: data.refresh_token,
     };
   }
+  console.log("failed to decrypt token")
 };
 
 export const getCachedUser = unstable_cache(getUser, [], {
