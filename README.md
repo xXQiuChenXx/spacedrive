@@ -68,6 +68,8 @@ You can easily deploy the app to following platform by clicking deploy button be
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FxXQiuChenXx%2Fspacedrive&env=CLIENT_ID,CLIENT_SECRET,REDIRECT_URI,POSTGRES_URL,POSTGRES_URL_NON_POOLING,NEXT_PUBLIC_URL,SECRET_KEY&project-name=spacedrive&repository-name=spacedrive)
 
+## Contributing
+Contributions are welcome! Please open an issue if you have any questions or suggestions. Your contributions will be acknowledged. See the [contributing guide](./CONTRIBUTING.md) for more information.
 
 ## License
 [MIT](https://github.com/xXQiuChenXx/onedrive-index/blob/master/LICENSE)
