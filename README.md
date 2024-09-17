@@ -1,6 +1,6 @@
 # [Space Drive](https://storage.myitscm.com)
 
-This is an open source oneline personal storage web application backed with OneDrive and build with everything new in Next.js 14.
+This is an open source online personal storage web application backed with OneDrive Graph API and build with everything new in Next.js 14.
 
 > **Warning**
 > This project is still in development and you can use it but some bugs may occur (less probability)
@@ -64,7 +64,9 @@ This is an open source oneline personal storage web application backed with OneD
 
 ## Deploy on Vercel
 
-You can easily deploy the app to vercel by clicking deploy button [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FxXQiuChenXx%2Fspacedrive&env=CLIENT_ID,CLIENT_SECRET,REDIRECT_URI,POSTGRES_URL,POSTGRES_URL_NON_POOLING,NEXT_PUBLIC_URL,SECRET_KEY&project-name=spacedrive&repository-name=spacedrive)
+You can easily deploy the app to following platform by clicking deploy button below
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FxXQiuChenXx%2Fspacedrive&env=CLIENT_ID,CLIENT_SECRET,REDIRECT_URI,POSTGRES_URL,POSTGRES_URL_NON_POOLING,NEXT_PUBLIC_URL,SECRET_KEY&project-name=spacedrive&repository-name=spacedrive)
 
 
 ## License
