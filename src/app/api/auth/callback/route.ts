@@ -4,6 +4,7 @@ import { NextRequest } from "next/server";
 import { getUserFromDB, saveUserToDB, updateToken } from "@/lib/oAuthStore";
 import { encrypt } from "@/lib/security";
 import { revalidateTag } from "next/cache";
+import { siteConfig } from "@/config/site.config";
 
 export async function GET(request: NextRequest) {
   const searchParmas = request.nextUrl.searchParams;
@@ -12,10 +13,11 @@ export async function GET(request: NextRequest) {
   if (!code) return redirect("/setup/step-2");
 
   const data = await exchangeCode(code);
+  if (siteConfig.debug) console.log(data);
   if (!data?.access_token || !data.refresh_token)
     return redirect("/setup/step-3?error=" + data?.error);
 
-  const information = await getAccountInformation(data.access_token);
+  const information = await getAccountInformation(data.access_token); // get user id
   if (!information)
     return redirect(`/setup/step-3?error=account_information_failed`);
 
@@ -33,6 +35,12 @@ export async function GET(request: NextRequest) {
       return redirect("/setup/step-3?error=" + err.message);
     });
   } else {
+    if (siteConfig.debug)
+      console.log({
+        mail: information.mail,
+        refreshToken: encryptedToken,
+        userId: information.id,
+      });
     await saveUserToDB({
       mail: information.mail,
       refreshToken: encryptedToken,
@@ -42,6 +50,6 @@ export async function GET(request: NextRequest) {
       return redirect("/setup/step-3?error=" + err.message);
     });
   }
-  revalidateTag("token");
+  await revalidateTag("token");
   return redirect("/setup/step-3");
 }

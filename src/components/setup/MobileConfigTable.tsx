@@ -38,12 +38,6 @@ export const MobileConfigTable = ({ config }: { config: apiConfigT }) => {
         <p className="font-bold">API SCOPE:</p>
         <code className="font-mono text-muted-foreground">{config.scope}</code>
       </div>
-      <div>
-        <p className="font-bold">postgressURL:</p>
-        <code className="font-mono text-muted-foreground">
-          {addStarsAndTrim(config.postgressURL)}
-        </code>
-      </div>
     </div>
   );
 };

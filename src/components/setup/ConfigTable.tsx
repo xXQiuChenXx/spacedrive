@@ -55,14 +55,6 @@ export const ConfigTable = ({ config }: { config: apiConfigT }) => {
             <code className="font-mono text-sm">{config.scope}</code>
           </td>
         </tr>
-        <tr className="border bg-white dark:border-gray-700 dark:bg-gray-900">
-          <td className="bg-gray-50 py-1 px-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700 dark:bg-gray-800 dark:text-gray-400">
-            postgresURL
-          </td>
-          <td className="whitespace-nowrap py-1 px-3 text-gray-500 dark:text-gray-400 break-words">
-            <code className="font-mono text-sm break-words">{addStarsAndTrim(config.postgressURL)}</code>
-          </td>
-        </tr>
       </tbody>
     </table>
   );
