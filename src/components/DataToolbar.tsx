@@ -5,7 +5,6 @@ import {
   SetStateAction,
   useRef,
   useState,
-  useTransition,
 } from "react";
 import { Input } from "@/components/ui/input";
 import { type Table } from "@tanstack/react-table";
@@ -19,60 +18,35 @@ import {
 import CreateFolderDialog from "./action-dialog/CreateFolderDialog";
 import { usePathname } from "next/navigation";
 import { ItemsResponse } from "@/lib/driveRequest";
-import { toast } from "sonner";
-import { uploadFile } from "@/lib/actions/uploadFile";
-import { downloadMultiFiles } from "@/lib/MultiFileDownloader";
-import path from "path";
 import { LoaderIcon } from "lucide-react";
-import { getCachedToken } from "@/lib/oAuthHandler";
 
 export const DataTableToolbar = ({
   table,
+  onDownloadClick,
+  isDownloading,
   setShowDeleteDialog,
+  setIsPermissionDialogOpen,
+  uploadFile,
+  isAdmin,
+  isUploading,
 }: {
   table: Table<ItemsResponse>;
   setShowDeleteDialog: Dispatch<SetStateAction<boolean>>;
+  setIsPermissionDialogOpen: Dispatch<SetStateAction<boolean>>;
+  isAdmin: boolean;
+  uploadFile: ({ files }: { files: File[] }) => void;
+  isDownloading: boolean;
+  isUploading: boolean;
+  onDownloadClick: () => void;
 }) => {
   const pathname = usePathname().replace("home/", "").replace("home", "");
   const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
     useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isPending, startTransition] = useTransition();
-  const [isDownloading, startDownloadTransition] = useTransition();
-  const folderName = path.basename(pathname);
 
   function uploadInputChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target?.files?.[0];
-    if (file) {
-      startTransition(async () => {
-        const token = await getCachedToken();
-        if (!token) toast.error("Failed to fetch token");
-        else {
-          const accessToken = token.accessToken;
-          const formdata = new FormData();
-          formdata.append("file", file);
-          formdata.append("path", pathname);
-          const { error } = await uploadFile({ formdata, accessToken });
-
-          if (error) {
-            toast.error(error);
-          } else {
-            toast.success(file.name + " uploaded successfully");
-          }
-        }
-      });
-    }
-  }
-  function onDonwloadClick() {
-    startDownloadTransition(async () => {
-      const items = table
-        .getSelectedRowModel()
-        .rows.map((r) => r.original)
-        .filter((item) => !item.file.isFolder);
-      await downloadMultiFiles({ items, folderName }).catch((err) =>
-        console.log(err)
-      );
-    });
+    if (file) uploadFile({ files: [file] });
   }
 
   return (
@@ -99,7 +73,11 @@ export const DataTableToolbar = ({
           variant="outline"
           className="w-1/2 md:w-fit md:ml-auto h-8 flex items-center py-4"
           aria-label="Donwload"
-          onClick={(e) => setIsCreateFolderDialogOpen(true)}
+          onClick={() => {
+            isAdmin
+              ? setIsCreateFolderDialogOpen(true)
+              : setIsPermissionDialogOpen(true);
+          }}
         >
           <PlusIcon className="size-4 mr-2" />
           Create Folder
@@ -109,22 +87,26 @@ export const DataTableToolbar = ({
           variant="outline"
           className="w-1/2 md:w-fit md:ml-auto h-8 flex items-center py-4"
           aria-label="Upload"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={isPending}
+          onClick={() => {
+            isAdmin
+              ? fileInputRef.current?.click()
+              : setIsPermissionDialogOpen(true);
+          }}
+          disabled={isUploading}
         >
-          {isPending ? (
+          {isUploading ? (
             <LoaderIcon className="animate-spin mr-2 size-4" />
           ) : (
             <UploadIcon className="size-4 mr-2" />
           )}
-          {isPending ? "Uploading..." : "Upload"}
+          {isUploading ? "Uploading..." : "Upload"}
         </Button>
         <Button
           size="sm"
           variant="outline"
           className="ml-auto hidden h-8 lg:flex"
           aria-label="Donwload"
-          onClick={onDonwloadClick}
+          onClick={() => onDownloadClick}
           disabled={!table.getIsSomeRowsSelected() || isDownloading}
         >
           {isDownloading ? (
@@ -146,7 +128,11 @@ export const DataTableToolbar = ({
           variant="outline"
           className="ml-auto hidden h-8 md:flex"
           aria-label="Upload"
-          onClick={() => setShowDeleteDialog(true)}
+          onClick={() => {
+            isAdmin
+              ? setShowDeleteDialog(true)
+              : setIsPermissionDialogOpen(true);
+          }}
           disabled={!table.getIsSomeRowsSelected()}
         >
           <Cross2Icon className="size-4 mr-2" />

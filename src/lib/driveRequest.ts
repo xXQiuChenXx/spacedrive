@@ -1,8 +1,8 @@
 "use server";
 import { revalidateTag } from "next/cache";
-import { getItemRequestURL } from "./graphAPI";
-import { config } from "@/config/api.config";
-import { getCachedToken } from "./oAuthHandler";
+import { getItemRequestURL } from "@/lib/graphAPI";
+import { apiConfig } from "@/config/api.config";
+import { getCachedUser } from "@/lib/oAuthHandler";
 
 type Props = {
   folder?: string[];
@@ -66,7 +66,9 @@ export const getItems = async ({
   listChild,
   row,
   expand,
-}: Props): Promise<ItemsResponse[] | OriResponse | null> => {
+}: Props): Promise<
+  ItemsResponse[] | OriResponse | null | { refresh: boolean }
+> => {
   const requestUrl = getItemRequestURL(folder, listChild);
   const params = new URLSearchParams({
     select: "name,id,size,lastModifiedDateTime,folder,file,video,image", //,@microsoft.graph.downloadUrl",
@@ -84,7 +86,6 @@ export const getItems = async ({
   }).then((res) => res.json());
 
   if (row && !response?.error) return response;
-
   if (response?.value) {
     return response.value.map((x: OriResponse) => {
       return {
@@ -100,6 +101,7 @@ export const getItems = async ({
 
   if (response?.error?.code === "InvalidAuthenticationToken")
     await revalidateTag("token");
+
   return null;
 };
 
@@ -107,10 +109,10 @@ export const getFileContent = async (
   item: OriResponse | ItemsResponse,
   access_token?: string
 ): Promise<string> => {
-  if (!access_token) access_token = (await getCachedToken())?.accessToken;
+  if (!access_token) access_token = (await getCachedUser())?.accessToken;
 
   const response = await fetch(
-    `${config.graphApi}/me/drive/items/${item.id}/content`,
+    `${apiConfig.graphApi}/items/${item.id}/content`,
     {
       headers: {
         Authorization: `Bearer ${access_token}`,

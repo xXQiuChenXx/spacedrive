@@ -1,6 +1,5 @@
 "use client";
 import { type OriResponse } from "@/lib/driveRequest";
-import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import React, { ReactNode } from "react";
 import {
@@ -13,18 +12,17 @@ import {
 } from "@/components/ui/card";
 import { formatBytes, formatDate } from "@/lib/utils";
 import { FileIcon } from "lucide-react";
-import { handleClick } from "@/lib/downloadHandler";
+import { downloadSingleFile } from "@/lib/downloadHandler";
 import { usePathname } from "next/navigation";
 
 const FileDescription = ({
   file,
   children,
 }: {
-  file: OriResponse | undefined;
+  file: OriResponse ;
   children: ReactNode;
 }) => {
   const pathname = usePathname();
-  if (!file) return notFound();
   return (
     <div className="mt-3 md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto flex space-y-10  flex-col">
       <Card className="md:py-3 md:px-5">
@@ -45,11 +43,11 @@ const FileDescription = ({
               </div>
               <div className="py-1">
                 <p className="text-muted-foreground">File Size:</p>
-                <p>{formatBytes(file.size)}</p>
+                <p className="truncate">{formatBytes(file.size)}</p>
               </div>
               <div className="py-1">
                 <p className="text-muted-foreground">Created At:</p>
-                <p>
+                <p className="truncate">
                   {file.createdDateTime
                     ? formatDate(file.createdDateTime)
                     : "none"}
@@ -57,11 +55,11 @@ const FileDescription = ({
               </div>
               <div className="py-1">
                 <p className="text-muted-foreground">Last Modified:</p>
-                <p>{formatDate(file.lastModifiedDateTime)}</p>
+                <p className="truncate">{formatDate(file.lastModifiedDateTime)}</p>
               </div>
               <div className="py-1">
                 <p className="text-muted-foreground">MIME type</p>
-                <p>{file.file?.mimeType || "none"}</p>
+                <p className="truncate">{file.file?.mimeType || "none"}</p>
               </div>
             </div>
           </div>
@@ -73,7 +71,7 @@ const FileDescription = ({
             variant="outline"
             className="w-full md:w-fit"
             onClick={(e) => {
-              handleClick({
+              downloadSingleFile({
                 item: { id: file.id, name: file.name },
               });
             }}

@@ -1,30 +1,25 @@
 import DataRoute from "@/components/DataRoute";
-import DataTable from "@/components/DataTable";
 import FileDescription from "@/components/FileDescription";
 import { MarkdownPreview } from "@/components/preview/Markdown";
-import { notFound, redirect } from "next/navigation";
-import { getCachedToken } from "@/lib/oAuthHandler";
-import { getInformations } from "@/lib/fns";
+import { notFound } from "next/navigation";
+import { getInformations } from "@/lib/home/all";
 import { Suspense } from "react";
 import PreviewFile from "@/components/preview/PreviewFile";
 import { ItemsResponse } from "@/lib/driveRequest";
 import { Loader } from "@/components/Loader";
+import { TableShell } from "@/components/table/TableShell";
 
 const HomePage = async ({
   params,
   searchParams,
 }: {
   params: { folder: string[] };
-  searchParams: {};
+  searchParams: {}; // todo: pagination
 }) => {
-  const token = await getCachedToken();
-  if (!token) return redirect("/setup");
-  const { accessToken } = token;
-
-  const { item, items, readmeContent, readmeFile } = await getInformations({
-    accessToken,
-    params: params.folder,
-  });
+  const { item, items, readmeContent, readmeFile, isAdmin } =
+    await getInformations({
+      params: params.folder,
+    });
 
   if (!items && !item) return notFound();
 
@@ -33,18 +28,20 @@ const HomePage = async ({
       <DataRoute />
       <Suspense fallback={<Loader />}>
         {items ? (
-          <DataTable data={items}>
+          <TableShell data={items} isAdmin={isAdmin}>
             {readmeContent && (
               <MarkdownPreview
                 content={readmeContent}
                 file={readmeFile as ItemsResponse}
               />
             )}
-          </DataTable>
+          </TableShell>
         ) : (
-          <FileDescription file={item}>
-            {item && <PreviewFile file={item} />}
-          </FileDescription>
+          item && (
+            <FileDescription file={item}>
+              <PreviewFile file={item} />
+            </FileDescription>
+          )
         )}
       </Suspense>
     </div>

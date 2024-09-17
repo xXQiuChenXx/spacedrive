@@ -1,4 +1,4 @@
-import { config } from "@/config/api.config";
+import { apiConfig } from "@/config/api.config";
 
 export const getItemRequestURL = (
   path: string[] | string = "/",
@@ -7,9 +7,9 @@ export const getItemRequestURL = (
   const location = typeof path === "string" ? path : `/${path.join("/")}`;
   const isRoot = path === "/" ? "" : ":";
   if (listChild) {
-    return `${config.graphApi}/me/drive/root${isRoot}${location}${isRoot}/children`;
+    return `${apiConfig.graphApi}/root${isRoot}${location}${isRoot}/children`;
   } else {
-    return `${config.graphApi}/me/drive/root${isRoot}${location}`;
+    return `${apiConfig.graphApi}/root${isRoot}${location}`;
   }
 };
 
@@ -20,7 +20,7 @@ export const getUploadItemURL = ({
   path: string;
   fileName: string;
 }): string => {
-  return `${config.graphApi}/me/drive/root:${
+  return `${apiConfig.graphApi}/root:${
     path === "/" ? "" : path
   }/${fileName}:/content`;
 };

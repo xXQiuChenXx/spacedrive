@@ -1,13 +1,16 @@
 "use client";
+
 import { type OriResponse } from "@/lib/driveRequest";
 import Image from "next/image";
 import PreviewContainer from "./PreviewContainer";
-import { useEffect, useState } from "react";
-export const ImagePreview = ({ file }: { file: OriResponse }) => {
-  const [origin, setOrigin] = useState("");
-  useEffect(() => {
-    setOrigin(window.location.origin);
-  }, []);
+
+export const ImagePreview = ({
+  file,
+  origin,
+}: {
+  file: OriResponse;
+  origin: string;
+}) => {
   return (
     <PreviewContainer file={file}>
       <Image

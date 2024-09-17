@@ -1,22 +1,22 @@
 "use server";
 import { revalidateTag } from "next/cache";
 import { type ItemsResponse } from "../driveRequest";
-import { config } from "@/config/api.config";
-import { getCachedToken } from "@/lib/oAuthHandler";
+import { apiConfig } from "@/config/api.config";
+import { getTokenWithVerfication } from "../fns";
 
 export async function deleteItems({ items }: { items: ItemsResponse[] }) {
-  const failed = [];
-  const token = await getCachedToken();
+  const { token } = await getTokenWithVerfication();
   if (!token) return { data: null, error: "Token not found" };
-  const { accessToken } = token;
+
+  const failed = [];
   for (const item of items) {
     try {
       const response = await fetch(
-        `${config.graphApi}/me/drive/items/${item.id}`,
+        `${apiConfig.graphApi}/items/${item.id}`,
         {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${token.accessToken}`,
             "Content-Type": "application/json",
           },
         }
@@ -28,7 +28,7 @@ export async function deleteItems({ items }: { items: ItemsResponse[] }) {
     }
   }
   await revalidateTag("items");
-  
+
   return {
     data: null,
     error: failed.length

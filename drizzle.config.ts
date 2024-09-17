@@ -1,11 +1,11 @@
 import { type Config } from "drizzle-kit"
-import { config } from "@/config/api.config"
+import { apiConfig } from "@/config/api.config"
 
 export default {
   schema: "./src/db/schema/index.ts",
   dialect: "postgresql",
   out: "./src/drizzle",
   dbCredentials: {
-    url: config.postgressURL,
+    url: apiConfig.postgressURL,
   },
 } satisfies Config

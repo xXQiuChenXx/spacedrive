@@ -1,46 +1,45 @@
-"use server";
-import { config } from "@/config/api.config";
-import { getTokenFromDB, saveTokenToDB, type TokenModel } from "./oAuthStore";
+import "server-only";
+import { apiConfig } from "@/config/api.config";
+import { deleteTokenFromDB, getUserFromDB } from "./oAuthStore";
 import { unstable_cache } from "next/cache";
+import { decrypt } from "@/lib/security";
+import { DecrytedToken, UserInfo } from "@/types";
 
-export const generateAuthorisationUrl = (): string => {
-  const { clientId, redirectURI, authApi, scope } = config;
-  const params = new URLSearchParams();
-  params.append("client_id", clientId);
-  params.append("redirect_uri", redirectURI);
-  params.append("response_type", "code");
-  params.append("scope", scope);
-  params.append("response_mode", "query");
-
-  return `${authApi}/authorize?${params.toString()}`;
-};
-
-type AuthResponse = {
+export type AuthResponse = {
   token_type: string; // 'Bearer'
   scope: string; // 'Files.Read Files.Read.All Files.Read.Selected ',
   expires_in: number; // 3665,
   ext_expires_in: number; // 3665,
   access_token: string;
   refresh_token: string;
-  error?: {
-    // error response
-    message: string;
-    code: string;
-  };
+  error?:
+    | {
+        // error response
+        message: string;
+        code: string;
+      }
+    | string;
 };
 
-const isTokenExpired = (token: TokenModel): boolean => {
-  const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
-  return currentTime >= token.issuedAt + token.expiredIn - 5; // -5 for possible delay
+export type ErrorResponse = {
+  error: string;
+  error_description: string;
+  error_codes: number[];
+  timestamp: string;
+  trace_id: string;
+  correlation_id: string;
+  error_uri: string;
 };
 
-export const exchangeCode = async (code: string): Promise<AuthResponse> => {
-  let response = await fetch(`${config.authApi}/token`, {
+export const exchangeCode = async (
+  code: string
+): Promise<AuthResponse | null> => {
+  let response = await fetch(`${apiConfig.authApi}/token`, {
     method: "post",
     body: new URLSearchParams({
-      client_id: config.clientId,
-      client_secret: config.clientSecret,
-      redirect_uri: config.redirectURI,
+      client_id: apiConfig.clientId,
+      client_secret: apiConfig.clientSecret,
+      redirect_uri: apiConfig.redirectURI,
       grant_type: "authorization_code",
       code: code,
     }),
@@ -49,20 +48,20 @@ export const exchangeCode = async (code: string): Promise<AuthResponse> => {
     },
     cache: "no-cache",
   }).then((res) => res.json());
-
-  if (!response || response?.error) throw new Error(response.error);
   return response;
 };
 
 export const exchangeToken = async ({
   refreshToken,
-}: Pick<TokenModel, "refreshToken">): Promise<AuthResponse> => {
-  let response = await fetch(`${config.authApi}/token`, {
+}: {
+  refreshToken: string;
+}): Promise<AuthResponse> => {
+  let response = await fetch(`${apiConfig.authApi}/token`, {
     method: "POST",
     body: new URLSearchParams({
-      client_id: config.clientId,
-      client_secret: config.clientSecret,
-      redirect_uri: config.redirectURI,
+      client_id: apiConfig.clientId,
+      client_secret: apiConfig.clientSecret,
+      redirect_uri: apiConfig.redirectURI,
       grant_type: "refresh_token",
       refresh_token: refreshToken,
     }),
@@ -72,7 +71,6 @@ export const exchangeToken = async ({
     },
   }).then((res) => res.json());
 
-  if (response?.error) throw new Error(response.error);
   return response;
 };
 
@@ -86,41 +84,29 @@ export const getAccountInformation = async (accessToken: string) => {
     cache: "no-cache",
   }).then((res) => res.json());
 
-  if (response?.error) throw new Error(response.error);
+  if (response?.error) return null;
   return response;
 };
 
-export const renewToken = async ({
-  refreshToken,
-}: Pick<TokenModel, "refreshToken">) => {
-  const res = (await exchangeToken({ refreshToken })) as AuthResponse;
-  if (res.error) throw new Error(res.error.message); // break the recursion if error occur
-  await saveTokenToDB({
-    accessToken: res.access_token,
-    refreshToken: res.refresh_token,
-    expiredIn: res.expires_in,
-    issuedAt: Math.floor(Date.now() / 1000),
-  });
-};
-
-export const getToken = async (): Promise<Pick<
-  TokenModel,
-  "accessToken" | "refreshToken"
-> | null> => {
-  const token = await getTokenFromDB();
-  if (!token) return null;
-  if (isTokenExpired(token)) {
-    await renewToken({ refreshToken: token.refreshToken });
-    return await getToken(); // Recursion function
-  } else {
+export const getUser = async (): Promise<UserInfo | undefined> => {
+  const token = await getUserFromDB();
+  if (!token?.refreshToken) return;
+  const payload = (await decrypt(token.refreshToken)) as DecrytedToken;
+  if (payload && payload.refreshToken) {
+    const data = await exchangeToken({ refreshToken: payload.refreshToken });
+    if (data?.error === "invalid_grant") {
+      await deleteTokenFromDB();
+      return;
+    }
     return {
-      accessToken: token.accessToken,
-      refreshToken: token.refreshToken,
+      ...token,
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token,
     };
   }
 };
 
-export const getCachedToken = unstable_cache(getToken, [], {
-  revalidate: 60, // 60 seconds
+export const getCachedUser = unstable_cache(getUser, [], {
+  revalidate: 300, // 5 minutes
   tags: ["token"],
 });

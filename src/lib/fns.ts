@@ -1,40 +1,41 @@
-import {
-  getFileContent,
-  getItems,
-  ItemsResponse,
-  OriResponse,
-} from "@/lib/driveRequest";
+"use server";
 
-export async function getInformations({
-  accessToken,
-  params,
-}: {
-  accessToken: string;
-  params: string[];
-}) {
-  const items = (await getItems({
-    access_token: accessToken,
-    folder: params,
-    listChild: true,
-  })) as ItemsResponse[];
+import { revalidateTag } from "next/cache";
+import { getCachedUser } from "./oAuthHandler";
+import { apiConfig } from "@/config/api.config";
+import { cookies } from "next/headers";
+import { decrypt, encrypt } from "./security";
 
-  let item;
-  let readmeFile = items?.find(
-    (item) => item.name.toLowerCase() === "readme.md"
-  );
-  let readmeContent;
+export async function getCachedToken() {
+  const userInfo = await getCachedUser();
+  if (userInfo) return userInfo.accessToken;
+}
 
-  if (!items) {
-    item = (await getItems({
-      access_token: accessToken,
-      folder: params,
-      row: true,
-    })) as OriResponse;
+export async function refreshItems() {
+  await revalidateTag("items");
+}
+
+export async function grantPermission(secretKey: string) {
+  if (secretKey === apiConfig.secretKey) {
+    const cookieStore = cookies();
+    const userInfo = await getCachedUser();
+    const encrypted = await encrypt({ payload: { id: userInfo?.userId } });
+    cookieStore.set("session", encrypted);
+    return { success: true };
+  } else {
+    return { success: false, error: "Invalid Secret Key" };
   }
+}
 
-  if (readmeFile) {
-    readmeContent = await getFileContent(readmeFile, accessToken);
+export async function getTokenWithVerfication() {
+  const cookieStore = cookies();
+  const session = cookieStore.get("session")?.value;
+  if (!session) return { error: "Session not found" };
+  const decryted = await decrypt(session);
+  const token = await getCachedUser();
+  if (decryted?.id === token?.userId) {
+    if (token) return { token };
+    else return { error: "Token not found" };
   }
-
-  return { items, item, readmeContent, readmeFile };
+  return { error: "Invalid session" };
 }

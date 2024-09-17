@@ -7,55 +7,44 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getTokenFromDB } from "@/lib/oAuthStore";
-import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { getCachedUser } from "@/lib/oAuthHandler";
 import Link from "next/link";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 const StepThree = async ({
   searchParams,
 }: {
   searchParams: { error?: string };
 }) => {
-  const token = await getTokenFromDB();
-  if (!token) console.log("Token not found");
   const { error } = searchParams;
+  const token = await getCachedUser();
+
+  const isError = Boolean(error || !token?.refreshToken);
+
   return (
-    <div>
-      <Card className="w-[900px] mx-auto mt-32 shadow">
-        <CardHeader>
-          <CardTitle>Step 3 / 3 - All most done!</CardTitle>
-          <CardDescription>
-            Deploy your new project in one-click.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {error ? (
-            <p>Oops! Somthing when wrong, Error {error}</p>
-          ) : (
-            <p>Everything set! You may proceed</p>
-          )}
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <Link href="/setup/step-2">
-            <Button variant="outline">Go back</Button>
-          </Link>
-          {error ? (
-            <Link href="/setup/step-1">
-              <Button>Retry</Button>
-            </Link>
-          ) : (
-            <Link href="/home">
-              <Button>
-                Get Started
-                <ArrowRightIcon className="ml-1" width={20} height={20} />
-              </Button>
-            </Link>
-          )}
-        </CardFooter>
-      </Card>
-    </div>
+    <Card className="w-11/12 md:w-5/6 lg:w-4/6 xl:w-7/12 2xl:w-1/2 mx-auto mt-20 lg:mt-28 shadow">
+      <CardHeader>
+        <CardTitle>Step 3 - Finalizing!</CardTitle>
+        <CardDescription>Finalize the application setups.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        {isError ? (
+          <p className="text-red-600">
+            Oops! Somthing when wrong, Error:{" "}
+            {error || "Unable to retrieve token"}
+          </p>
+        ) : (
+          <p>Well done! Everything set, you may proceed</p>
+        )}
+      </CardContent>
+      <CardFooter className="flex justify-between">
+        <Link href="/setup/step-2">
+          <Button variant="outline">Go back</Button>
+        </Link>
+        <Link href={isError ? "/setup" : "/home"}>
+          <Button>{isError ? "Retry" : "Get Started!"}</Button>
+        </Link>
+      </CardFooter>
+    </Card>
   );
 };
 

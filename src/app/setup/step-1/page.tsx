@@ -9,42 +9,80 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Datatable from "@/components/setup/Datatable";
-import { config } from "@/config/api.config";
+import { apiConfig } from "@/config/api.config";
 import Link from "next/link";
+import { ConfigTable } from "@/components/setup/ConfigTable";
+import { validateAPIConfig } from "@/lib/setups";
+import { MobileConfigTable } from "@/components/setup/MobileConfigTable";
+import { getCachedUser } from "@/lib/oAuthHandler";
+import { redirect } from "next/navigation";
 
-const StepOne = () => {
+const StepOne = async () => {
+  const token = await getCachedUser();
+  if (token?.refreshToken) redirect("/home");
+
+  const validate = validateAPIConfig({ config: apiConfig });
+
   return (
-    <div>
-      <Card className="w-[900px] mx-auto mt-32 shadow">
-        <CardHeader className="space-y-3">
-          <CardTitle>Step 1 / 3 - Preparation</CardTitle>
-          <CardDescription className="leading-normal text-base">
-            Welcome to your new One-Drive-Index Web App. Configure your web
-            application and gain an access token to start your journey. Check
-            the following configurations before proceeding with authorising with
-            your own Microsoft account.
-          </CardDescription>
-          <p className="mt-2 text-yellow-400">
-            <IconAlertTriangle className="inline-block mr-2" width={20} />
-            Note: If you see anything missing or incorrect, you need to
-            reconfigure and redeploy this instance.
+    <Card className="w-11/12 md:w-5/6 lg:w-4/6 xl:w-7/12 2xl:w-1/2 mx-auto mt-20 lg:mt-28 shadow">
+      <CardHeader>
+        <CardTitle>Step 1 - Preparation</CardTitle>
+        <CardDescription className="leading-normal text-base">
+          Configuration checking
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p className="text-muted-foreground leading-normal text-base mb-4">
+          🎉 Welcome to your new One-Drive-Index Web App. Configure your web
+          application then gain an access token to start your journey. Check the
+          following configurations before proceeding with authorizing with your
+          own Microsoft account.
+        </p>
+        <ConfigTable config={apiConfig} />
+        <MobileConfigTable config={apiConfig} />
+        {validate.success && (
+          <p className="mt-3 text-green-600">
+            *Your configs looks fine, you may proceed
           </p>
-        </CardHeader>
-        <CardContent>
-          <Datatable config={config} />
-          <p className="mt-3 text-green-400">* Everything looks fine</p>
-        </CardContent>
-        <CardFooter className="flex">
+        )}
+        {validate?.error && (
+          <div className="mt-3">
+            {validate.error.errors.map((err, i) => (
+              <p key={`err-${i + 1}`} className="text-red-600">
+                {err.message}
+              </p>
+            ))}
+          </div>
+        )}
+        <p className="mt-2 text-yellow-600 flex items-center">
+          <span>
+            <IconAlertTriangle className="inline-block mr-2 size-5" />
+          </span>
+          Note: If you see anything missing or incorrect, you may reconfigure
+          and redeploy this instance.
+        </p>
+      </CardContent>
+      <CardFooter className="flex">
+        {validate.success ? (
           <Link href={"/setup/step-2"} className="ml-auto">
             <Button type="button">
               Next
-              <ArrowRightIcon className="ml-2" width={20} height={20} />
+              <ArrowRightIcon className="ml-2 size-5" />
             </Button>
           </Link>
-        </CardFooter>
-      </Card>
-    </div>
+        ) : (
+          <Button
+            type="button"
+            disabled
+            className="ml-auto"
+            variant="secondary"
+          >
+            Next
+            <ArrowRightIcon className="ml-2 size-5" />
+          </Button>
+        )}
+      </CardFooter>
+    </Card>
   );
 };
 
