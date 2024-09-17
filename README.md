@@ -62,7 +62,7 @@ This is an open source online personal storage web application backed with OneDr
    ```
 
 
-## Deploy on Vercel
+## Deploy the application
 
 You can easily deploy the app to following platform by clicking deploy button below
 
