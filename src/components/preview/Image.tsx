@@ -1,3 +1,5 @@
+"use client"
+
 import { type OriResponse } from "@/lib/driveRequest";
 import Image from "next/image";
 import PreviewContainer from "./PreviewContainer";

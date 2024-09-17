@@ -4,7 +4,6 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
-import { BookOpenText } from "lucide-react";
 import { useMemo } from "react";
 import { ItemsResponse, OriResponse } from "@/lib/driveRequest";
 import PreviewContainer from "./PreviewContainer";

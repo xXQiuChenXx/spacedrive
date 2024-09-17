@@ -43,11 +43,11 @@ const FileDescription = ({
               </div>
               <div className="py-1">
                 <p className="text-muted-foreground">File Size:</p>
-                <p>{formatBytes(file.size)}</p>
+                <p className="truncate">{formatBytes(file.size)}</p>
               </div>
               <div className="py-1">
                 <p className="text-muted-foreground">Created At:</p>
-                <p>
+                <p className="truncate">
                   {file.createdDateTime
                     ? formatDate(file.createdDateTime)
                     : "none"}
@@ -55,11 +55,11 @@ const FileDescription = ({
               </div>
               <div className="py-1">
                 <p className="text-muted-foreground">Last Modified:</p>
-                <p>{formatDate(file.lastModifiedDateTime)}</p>
+                <p className="truncate">{formatDate(file.lastModifiedDateTime)}</p>
               </div>
               <div className="py-1">
                 <p className="text-muted-foreground">MIME type</p>
-                <p>{file.file?.mimeType || "none"}</p>
+                <p className="truncate">{file.file?.mimeType || "none"}</p>
               </div>
             </div>
           </div>
