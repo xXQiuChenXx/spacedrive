@@ -10,7 +10,7 @@ export const apiConfig: apiConfigT = {
   clientSecret: process.env.CLIENT_SECRET || "",
   // Todo: check spelling
   postgressURL:
-    process.env.POSTGRES_URL || process.env.POSTGRES_URL_NON_POOLING || "",
+    process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || "",
 
   // The redirectUri is the URL that the user will be redirected to after they have authenticated with Microsoft Graph API.
   // Likewise, you would not need to change redirectUri if you are using your personal Microsoft account with OneDrive International.

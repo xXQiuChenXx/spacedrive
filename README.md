@@ -24,6 +24,8 @@ This is an open source oneline personal storage web application backed with OneD
 - [X] Sorting features for each column
 - [ ] Date based on client side timezone
 - [ ] Internationalize (translations)
+- [ ] Use password to protect route
+- [X] Only authorized user can modify the files.
 
 ## Running Locally
 
@@ -62,7 +64,7 @@ This is an open source oneline personal storage web application backed with OneD
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+You can easily deploy the app to vercel by clicking deploy button [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FxXQiuChenXx%2Fspacedrive&env=CLIENT_ID,CLIENT_SECRET,REDIRECT_URI,POSTGRES_URL,POSTGRES_URL_NON_POOLING,NEXT_PUBLIC_URL,SECRET_KEY&project-name=spacedrive&repository-name=spacedrive)
 
 
 ## License
