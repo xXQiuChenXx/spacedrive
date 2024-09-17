@@ -15,7 +15,7 @@ export const OfficePreview = ({
   return (
     <PreviewContainer file={file}>
       <iframe
-        className="h-lvh"
+        className="h-[70vh] md:h-lvh"
         src={url}
         width="100%"
         height="100%"
