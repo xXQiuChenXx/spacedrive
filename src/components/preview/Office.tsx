@@ -2,14 +2,15 @@
 
 import { ItemsResponse, OriResponse } from "@/lib/driveRequest";
 import PreviewContainer from "./PreviewContainer";
-import { apiConfig } from "@/config/api.config";
 
 export const OfficePreview = ({
   file,
+  origin,
 }: {
+  origin: string;
   file: OriResponse | ItemsResponse;
 }) => {
-  const filePath = `${apiConfig.origin}/api/graph/raw?item=${file.id}`;
+  const filePath = `${origin}/api/graph/raw?item=${file.id}`;
   const url = `https://view.officeapps.live.com/op/embed.aspx?src=${filePath}`;
   return (
     <PreviewContainer file={file}>

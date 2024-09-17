@@ -1,15 +1,21 @@
-"use client"
+"use client";
 
 import { type OriResponse } from "@/lib/driveRequest";
 import Image from "next/image";
 import PreviewContainer from "./PreviewContainer";
-import { apiConfig } from "@/config/api.config";
-export const ImagePreview = ({ file }: { file: OriResponse }) => {
+
+export const ImagePreview = ({
+  file,
+  origin,
+}: {
+  file: OriResponse;
+  origin: string;
+}) => {
   return (
     <PreviewContainer file={file}>
       <Image
         loader={({ src }) => src}
-        src={`${apiConfig.origin}/api/graph/raw?item=${file.id}`}
+        src={`${origin}/api/graph/raw?item=${file.id}`}
         alt="image-preview"
         width={file.image?.width}
         height={file.image?.height}
