@@ -91,8 +91,6 @@ export const getAccountInformation = async (accessToken: string) => {
 export const getUser = async (): Promise<UserInfo | undefined> => {
   const token = await getUserFromDB();
   if (!token?.refreshToken) {
-    console.log(token);
-    console.log("Token not found");
     return;
   }
   const payload = (await decrypt(token.refreshToken)) as DecrytedToken;
