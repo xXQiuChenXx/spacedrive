@@ -30,7 +30,7 @@ export const TableShell = ({
   const router = useRouter();
   const pathname = usePathname();
   const pathSegment = pathname.split("/");
-  const cleanPath = pathname.replace(/^home\/?|\/home\/?$/, "");
+  const cleanPath = `/${pathSegment.slice(2, pathSegment.length).join("/")}`;
   const columns = useMemo(
     () => getColumns(isDesktop, pathname, isAdmin),
     [isDesktop, pathname, isAdmin]
