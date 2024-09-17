@@ -13,7 +13,7 @@ const PreviewContainer = ({
   file: ItemsResponse | OriResponse;
 }) => {
   return (
-    <div className="rounded-lg border bg-card shadow-sm py-6 px-5 md:max-w-3xl lg:max-w-4xl xl:max-w-5xl w-full mx-auto text-wrap">
+    <div className="rounded-lg border bg-card shadow-sm py-6 px-2 md:px-5 md:max-w-3xl lg:max-w-4xl xl:max-w-5xl w-full mx-auto text-wrap">
       <div className="flex items-center">
         <FontAwesomeIcon
           icon={getFileIcon(file.name, { video: Boolean(file?.video) })}
