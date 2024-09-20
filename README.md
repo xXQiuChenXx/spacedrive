@@ -3,7 +3,7 @@
 This is an open source online personal storage web application backed with OneDrive Graph API and build with everything new in Next.js 14.
 
 > **Warning**
-> This project is still in development and you can use it but some bugs may occur (less probability).
+> This project is still in development, the app works well but some bugs might occur.
 
 ## Tech Stack
 
