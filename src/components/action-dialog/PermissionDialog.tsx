@@ -29,8 +29,10 @@ export const PermissionDialog = ({
     startTransition(async () => {
       if (!secretKey) return;
       const res = await grantPermission(secretKey);
-      if (res.success) onSuccess?.();
-      else setError(res.error);
+      if (res.success) {
+        await onSuccess?.();
+        await props.onOpenChange?.(false);
+      } else setError(res.error);
     });
   };
   return (
