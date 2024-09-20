@@ -34,7 +34,7 @@ const FileDescription = ({
           <div className="flex flex-col md:flex-row gap-5">
             <div className="border w-full md:w-fit text-center flex items-center justify-center flex-col px-8 py-20 break-all rounded-lg">
               <FileIcon
-                className="mb-2"
+                className="mb-2 size-7"
                 fileName={file.name}
                 isVideo={Boolean(file?.video)}
               />
