@@ -22,7 +22,7 @@ export const apiConfig: apiConfigT = {
   graphApi: "https://graph.microsoft.com/v1.0/me/drive",
 
   // The scope we require are listed here, in most cases you would not need to change this as well.
-  scope: "user.read files.read.all offline_access",
+  scope: "user.read files.readwrite.all offline_access",
   secretKey: process.env.SECRET_KEY || "QVG6rjN",
 
   // Cache-Control header, check Vercel documentation for more details. The default settings imply:
