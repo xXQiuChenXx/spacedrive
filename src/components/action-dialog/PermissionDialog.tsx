@@ -32,7 +32,6 @@ export const PermissionDialog = ({
       if (res.success) onSuccess?.();
       else setError(res.error);
     });
-
   };
   return (
     <Dialog {...props}>
@@ -43,7 +42,12 @@ export const PermissionDialog = ({
             Please enter the secret key to grant permission to do the action
           </DialogDescription>
         </DialogHeader>
-        <Input onChange={(e) => setSecretKey(e.target.value)} />
+        <Input
+          onChange={(e) => setSecretKey(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleClick();
+          }}
+        />
         {error && <p className="text-red-600">{error}</p>}
         <DialogFooter className="justify-end gap-3 md:gap-2">
           <DialogClose asChild>

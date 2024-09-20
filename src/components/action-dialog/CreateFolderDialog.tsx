@@ -56,6 +56,9 @@ const CreateFolderDialog = ({
         <Input
           value={folderName}
           onChange={(e) => setFolderName(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleClick();
+          }}
         />
         <DialogFooter className="justify-end gap-3 md:gap-2">
           <DialogClose asChild>

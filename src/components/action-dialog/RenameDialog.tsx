@@ -25,7 +25,7 @@ const RenameDialog = ({ item, onSuccess, ...props }: RenameItemProps) => {
   const [fileName, setFileName] = useState<string>(item.name);
   const [isRenamePending, startRenameTransition] = useTransition();
 
-  function onRename() {
+  function handleClick() {
     startRenameTransition(async () => {
       const { error } = await renameItem({ item, newName: fileName });
       props.onOpenChange?.(false);
@@ -46,7 +46,13 @@ const RenameDialog = ({ item, onSuccess, ...props }: RenameItemProps) => {
           <DialogTitle>Rename File</DialogTitle>
           <DialogDescription>Enter the new name of the file</DialogDescription>
         </DialogHeader>
-        <Input value={fileName} onChange={(e) => setFileName(e.target.value)} />
+        <Input
+          value={fileName}
+          onChange={(e) => setFileName(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleClick();
+          }}
+        />
         <DialogFooter className="justify-end gap-3 md:gap-2">
           <DialogClose asChild>
             <Button type="button" variant="outline">
@@ -58,7 +64,7 @@ const RenameDialog = ({ item, onSuccess, ...props }: RenameItemProps) => {
             title="rename"
             variant="secondary"
             disabled={isRenamePending}
-            onClick={onRename}
+            onClick={handleClick}
           >
             {isRenamePending && (
               <LoaderIcon
