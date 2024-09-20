@@ -1,6 +1,6 @@
 import { getFileContent, OriResponse } from "@/lib/driveRequest";
-import { getFileExtension } from "@/lib/getFileIcon";
-import { getPreviewType, preview } from "@/lib/getPreviewType";
+import { getFileExtension } from "@/lib/icon/getFileType";
+import { getPreviewType, preview } from "@/lib/icon/getPreviewType";
 import { MarkdownPreview } from "./Markdown";
 import { ImagePreview } from "./Image";
 import { CodePreview } from "./Code";
@@ -15,6 +15,7 @@ const PreviewFile = async ({ file }: { file: OriResponse }) => {
   const previewType = getPreviewType(getFileExtension(file.name), {
     video: Boolean(file.video),
   });
+
   if (previewType) {
     switch (previewType) {
       case preview.image:

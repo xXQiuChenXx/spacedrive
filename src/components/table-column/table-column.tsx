@@ -1,6 +1,6 @@
 "use client";
 
-import { type ColumnDef } from "@tanstack/react-table";
+import { Cell, Getter, type ColumnDef } from "@tanstack/react-table";
 import { ItemsResponse } from "@/lib/driveRequest";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "./column-header";
@@ -13,13 +13,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { formatBytes } from "@/lib/utils";
-import { FolderIcon, FileTextIcon } from "lucide-react";
+import { FolderIcon } from "lucide-react";
 import DeleteDialog from "../action-dialog/DeleteDialog";
 import RenameDialog from "../action-dialog/RenameDialog";
 import { downloadSingleFile } from "@/lib/downloadHandler";
 import FormatDate from "./format-date";
 import { useState } from "react";
 import { toast } from "sonner";
+import { FileIcon } from "../icons/FileIcon";
 
 export function getColumns(
   isDesktop: boolean,
@@ -65,27 +66,25 @@ export function getColumns(
           className="md:min-w-72 lg:min-w-96 xl:min-w-[30rem]"
         />
       ),
-      cell: ({ cell, getValue }) => (
-        <div
-          className="font-medium flex gap-3 items-center max-w-44 md:max-w-72 lg:max-w-sm xl:max-w-xl"
-          data-group="row-data"
-        >
-          {(getValue() as ItemsResponse["file"])?.isFolder ? (
-            <FolderIcon
+      cell: ({ cell, getValue }) => {
+        const value = getValue() as ItemsResponse["file"];
+        return (
+          <div
+            className="font-medium flex gap-3 items-center max-w-44 md:max-w-72 lg:max-w-sm xl:max-w-xl"
+            data-group="row-data"
+          >
+            <FileIcon
+              fileName={value.name}
               className="size-5 flex-shrink-0"
               data-group="row-data"
+              isFolder={value?.isFolder}
             />
-          ) : (
-            <FileTextIcon
-              className="size-5 flex-shrink-0"
-              data-group="row-data"
-            />
-          )}
-          <p className="w-full truncate" data-group="row-data">
-            {(getValue() as ItemsResponse["file"]).name}
-          </p>
-        </div>
-      ),
+            <p className="w-full truncate" data-group="row-data">
+              {value.name}
+            </p>
+          </div>
+        );
+      },
       filterFn: (row, id, value) => {
         const name = (row.getValue("file") as ItemsResponse)?.name;
         return name.toLowerCase().includes((value as string).toLowerCase());

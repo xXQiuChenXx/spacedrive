@@ -89,6 +89,7 @@ export const getAccountInformation = async (accessToken: string) => {
 };
 
 export const getUser = async (): Promise<UserInfo | undefined> => {
+  console.log("get user function")
   const token = await getUserFromDB();
   if (!token?.refreshToken) {
     return;

@@ -8,7 +8,7 @@ import {
   ItemsResponse,
   OriResponse,
 } from "../driveRequest";
-import { getCachedUser } from "../oAuthHandler";
+import { getCachedUser } from "@/lib/oAuthHandler";
 import { redirect } from "next/navigation";
 
 export async function getInformations({

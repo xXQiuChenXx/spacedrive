@@ -11,15 +11,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { formatBytes, formatDate } from "@/lib/utils";
-import { FileIcon } from "lucide-react";
 import { downloadSingleFile } from "@/lib/downloadHandler";
 import { usePathname } from "next/navigation";
+import { FileIcon } from "@/components/icons/FileIcon";
 
 const FileDescription = ({
   file,
   children,
 }: {
-  file: OriResponse ;
+  file: OriResponse;
   children: ReactNode;
 }) => {
   const pathname = usePathname();
@@ -33,7 +33,11 @@ const FileDescription = ({
         <CardContent>
           <div className="flex flex-col md:flex-row gap-5">
             <div className="border w-full md:w-fit text-center flex items-center justify-center flex-col px-8 py-20 break-all rounded-lg">
-              <FileIcon className="mb-2" />
+              <FileIcon
+                className="mb-2"
+                fileName={file.name}
+                isVideo={Boolean(file?.video)}
+              />
               <p className="md:w-32">{file.name}</p>
             </div>
             <div className="flex flex-col p-2.5">
@@ -55,7 +59,9 @@ const FileDescription = ({
               </div>
               <div className="py-1">
                 <p className="text-muted-foreground">Last Modified:</p>
-                <p className="truncate">{formatDate(file.lastModifiedDateTime)}</p>
+                <p className="truncate">
+                  {formatDate(file.lastModifiedDateTime)}
+                </p>
               </div>
               <div className="py-1">
                 <p className="text-muted-foreground">MIME type</p>

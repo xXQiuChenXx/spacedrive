@@ -1,16 +1,18 @@
-import { getFileExtension } from '@/lib/getFileIcon'
+import { getFileExtension } from "@/lib/icon/getFileType";
 
 export const preview = {
-  markdown: 'markdown',
-  image: 'image',
-  text: 'text',
-  pdf: 'pdf',
-  code: 'code',
-  video: 'video',
-  audio: 'audio',
-  office: 'ms-office',
-  url: 'url',
-}
+  markdown: "markdown",
+  image: "image",
+  text: "text",
+  pdf: "pdf",
+  code: "code",
+  video: "video",
+  audio: "audio",
+  office: "ms-office",
+  url: "url",
+};
+
+export type previewType = keyof typeof preview;
 
 export const extensions: { [key: string]: string } = {
   gif: preview.image,
@@ -35,7 +37,7 @@ export const extensions: { [key: string]: string } = {
   c: preview.code,
   cpp: preview.code,
   h: preview.code,
-  hpp:preview.code,
+  hpp: preview.code,
   js: preview.code,
   jsx: preview.code,
   java: preview.code,
@@ -75,49 +77,52 @@ export const extensions: { [key: string]: string } = {
   oga: preview.audio,
   opus: preview.audio,
   flac: preview.audio,
-}
+};
 
-export function getPreviewType(extension: string, flags?: { video?: boolean }): string | undefined {
-  let previewType = extensions[extension]
+export function getPreviewType(
+  extension: string,
+  flags?: { video?: boolean }
+): string | undefined {
+  let previewType = extensions[extension];
   if (!previewType) {
-    return previewType
+    return previewType;
   }
 
   // Files with '.ts' extensions may be TypeScript files or TS Video files, we check for the flag 'video'
   // to determine what preview renderer to use for '.ts' files.
-  if (extension === 'ts') {
+  if (extension === "ts") {
     if (flags?.video) {
-      previewType = preview.video
+      previewType = preview.video;
     }
   }
 
-  return previewType
+  return previewType;
 }
 
 export function getLanguageByFileName(filename: string): string {
-  const extension = getFileExtension(filename)
+  const extension = getFileExtension(filename);
   switch (extension) {
-    case 'h':
-      return 'c'
-    case 'hpp':
-      return 'cpp'
-    case 'ts':
-    case 'tsx':
-      return 'typescript'
-    case 'rs':
-      return 'rust'
-    case 'js':
-    case 'jsx':
-      return 'javascript'
-    case 'sh':
-      return 'shell'
-    case 'cs':
-      return 'csharp'
-    case 'py':
-      return 'python'
-    case 'yml':
-      return 'yaml'
+    case "h":
+      return "c";
+    case "hpp":
+      return "cpp";
+    case "ts":
+    case "tsx":
+      return "typescript";
+    case "rs":
+      return "rust";
+    case "js":
+    case "jsx":
+      return "javascript";
+    case "sh":
+      return "shell";
+    case "cs":
+      return "csharp";
+    case "py":
+      return "python";
+    case "yml":
+      return "yaml";
     default:
-      return extension
+      return extension;
   }
 }
