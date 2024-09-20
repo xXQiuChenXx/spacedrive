@@ -35,7 +35,7 @@ export function CommandPalette() {
       <Button
         variant="outline"
         className={
-          "p-0 border-none md:border relative h-8 justify-start rounded-lg md:bg-muted/50 text-sm font-normal text-muted-foreground shadow-none md:w-48 lg:w-64"
+          "p-0 border-none md:border relative h-8 justify-start rounded-lg md:bg-muted/50 text-sm font-normal text-muted-foreground shadow-none md:w-48 lg:w-64 md:border-solid"
         }
         onClick={() => setOpen(true)}
       >
