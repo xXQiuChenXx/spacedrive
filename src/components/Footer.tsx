@@ -8,7 +8,7 @@ const Footer = () => {
       <p className="text-xs">
         Built with ❤️ by {" "}
         <Link
-          href="https://personal.myitscm.com"
+          href="https://taihong.myitscm.com"
           rel="noreferrer noopener"
           target="_blank"
           className="font-medium"
