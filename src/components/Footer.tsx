@@ -1,19 +1,19 @@
 import Link from "next/link";
-import React from "react";
+import { siteConfig } from "@/config/site.config";
 
 const Footer = () => {
   return (
     <footer className="flex flex-col gap-2 w-full border-t shadow justify-center items-center mt-auto py-4">
-      <p className="text-sm font-semibold">Space Drive</p>
+      <p className="text-sm font-semibold">{siteConfig.siteTitle}</p>
       <p className="text-xs">
-        Built with ❤️ by {" "}
+        Built with {" "}
         <Link
-          href="https://taihong.myitscm.com"
+          href="https://github.com/xXQiuChenXx/spacedrive"
           rel="noreferrer noopener"
           target="_blank"
           className="font-medium"
         >
-          Tai Hong
+          Space Drive
         </Link>
       </p>
     </footer>

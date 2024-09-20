@@ -4,6 +4,7 @@ import { IconWhirl } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { CommandPalette } from "./CommandPalette";
+import { siteConfig } from "@/config/site.config";
 
 export function SiteHeader() {
   return (
@@ -11,7 +12,7 @@ export function SiteHeader() {
       <div className="px-5 md:container flex h-14 items-center">
         <Link href="/" className="mr-2 flex items-center md:mr-6 md:space-x-2">
           <IconWhirl width={25} height={25} aria-hidden="true" />
-          <span className="font-bold whitespace-nowrap">Space Drive</span>
+          <span className="font-bold whitespace-nowrap">{siteConfig.siteTitle}</span>
         </Link>
         <nav className="flex w-full items-center gap-6 text-sm">
           <Link
