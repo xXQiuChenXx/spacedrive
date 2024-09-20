@@ -8,10 +8,14 @@ const MobileToolbar = ({
   setDeleteDialogOpen,
   isDownloading,
   onDownloadClick,
+  setPermDialogOpen,
+  isAdmin,
 }: {
   selectedItems: ItemsResponse[];
   setDeleteDialogOpen: Dispatch<SetStateAction<boolean>>;
+  setPermDialogOpen: Dispatch<SetStateAction<boolean>>;
   isDownloading: boolean;
+  isAdmin: boolean;
   onDownloadClick: () => void;
 }) => {
   return (
@@ -20,7 +24,9 @@ const MobileToolbar = ({
         <div className="bg-gray-900 flex justify-center w-fit mx-auto gap-5 border p-3 shodow-lg rounded">
           <Button
             variant="destructive"
-            onClick={() => setDeleteDialogOpen(true)}
+            onClick={() =>
+              isAdmin ? setDeleteDialogOpen(true) : setPermDialogOpen(true)
+            }
           >
             Delete
           </Button>

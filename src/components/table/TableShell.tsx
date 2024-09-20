@@ -83,8 +83,10 @@ export const TableShell = ({
       <div className="mt-10">{children}</div>
       {!isDesktop && (
         <MobileToolbar
+          isAdmin={isAdmin}
           selectedItems={selectedItems}
           setDeleteDialogOpen={setDeleteDialogOpen}
+          setPermDialogOpen={setPermDialogOpen}
           isDownloading={isDownloading}
           onDownloadClick={onDownloadClick}
         />
