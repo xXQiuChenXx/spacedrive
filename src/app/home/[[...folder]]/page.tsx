@@ -9,13 +9,14 @@ import { ItemsResponse } from "@/lib/driveRequest";
 import { Loader } from "@/components/Loader";
 import { TableShell } from "@/components/table/TableShell";
 
-const HomePage = async ({
-  params,
-  searchParams,
-}: {
-  params: { folder: string[] };
-  searchParams: {}; // todo: pagination
+type Params = Promise<{ folder: string[] }>;
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
+const HomePage = async (props: {
+  params: Params;
+  searchParams: SearchParams;
 }) => {
+  const params = await props.params;
   const { item, items, readmeContent, readmeFile, isAdmin } =
     await getInformations({
       params: params.folder,
