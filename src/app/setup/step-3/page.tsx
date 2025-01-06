@@ -10,11 +10,10 @@ import {
 import { getCachedUser } from "@/lib/oAuthHandler";
 import Link from "next/link";
 
-const StepThree = async ({
-  searchParams,
-}: {
-  searchParams: { error?: string };
-}) => {
+type SearchParams = Promise<{ error: string }>;
+
+const StepThree = async (props: { searchParams: SearchParams }) => {
+  const searchParams = await props.searchParams;
   const { error } = searchParams;
   const token = await getCachedUser();
 
