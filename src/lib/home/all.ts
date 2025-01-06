@@ -18,7 +18,7 @@ export async function getInformations({
   params: string[];
   isAdmin?: boolean;
 }) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const userInfo = await getCachedUser();
   const session = cookieStore.get("session")?.value;
 

@@ -17,7 +17,7 @@ export async function refreshItems() {
 
 export async function grantPermission(secretKey: string) {
   if (secretKey === apiConfig.secretKey) {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const userInfo = await getCachedUser();
     const encrypted = await encrypt({ payload: { id: userInfo?.userId } });
     cookieStore.set("session", encrypted);
@@ -28,7 +28,7 @@ export async function grantPermission(secretKey: string) {
 }
 
 export async function getTokenWithVerfication() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const session = cookieStore.get("session")?.value;
   if (!session) return { error: "Session not found" };
   const decryted = await decrypt(session);

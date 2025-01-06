@@ -15,12 +15,12 @@ import { apiConfig } from "@/config/api.config";
 import { redirect } from "next/navigation";
 import { getCachedUser } from "@/lib/oAuthHandler";
 
-const StepTwo = async ({
-  searchParams,
-}: {
-  searchParams: { type: string };
-}) => {
+type SearchParams = Promise<{ type: string }>;
+
+const StepTwo = async (props: { searchParams: SearchParams }) => {
+  const searchParams = await props.searchParams;
   const validate = validateAPIConfig({ config: apiConfig });
+  
   if (!validate.success) return redirect("/setup/step-1");
   const token = await getCachedUser();
   if (token?.refreshToken) redirect("/home");
