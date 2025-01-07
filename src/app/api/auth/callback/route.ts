@@ -31,7 +31,6 @@ export async function GET(request: NextRequest) {
     if (userInfo.userId !== information.id)
       return redirect("/setup/step-3?error=account_mismatch");
     await updateToken({ refresh_token: encryptedToken }).catch((err) => {
-      console.log(err);
       return redirect("/setup/step-3?error=" + err.message);
     });
   } else {
