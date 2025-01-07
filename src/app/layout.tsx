@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Theme } from "@radix-ui/themes";
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider } from "@/components/root/ThemeProvider";
 import NextTopLoader from "nextjs-toploader";
 import { SiteHeader } from "@/components/header/SiteHeader";
 import { Toaster } from "@/components/ui/toaster";
@@ -24,12 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <ThemeProvider>
           <Theme className="min-h-screen flex flex-col">
             <NextTopLoader
               height={2}
