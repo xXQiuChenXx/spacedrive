@@ -43,7 +43,7 @@
     "next-themes": "^0.3.0",
     "nextjs-toploader": "^3.6.15",
     "pdfjs-dist": "^3.11.174",
-    "postgres": "^3.4.4",
+    "postgres": "^3.4.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-drag-drop-files": "^2.3.10",
