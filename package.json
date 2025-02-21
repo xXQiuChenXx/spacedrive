@@ -34,7 +34,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",
-    "drizzle-kit": "^0.24.2",
+    "drizzle-kit": "^0.30.4",
     "drizzle-orm": "^0.33.0",
     "jose": "^5.9.6",
     "jszip": "^3.10.1",
