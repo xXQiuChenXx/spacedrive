@@ -1,11 +1,5 @@
 "use client";
-import {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useRef,
-  useState,
-} from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { type Table } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
@@ -25,14 +19,12 @@ export const DataTableToolbar = ({
   onDownloadClick,
   isDownloading,
   setShowDeleteDialog,
-  setIsPermissionDialogOpen,
   uploadFile,
   isAdmin,
   isUploading,
 }: {
   table: Table<ItemsResponse>;
   setShowDeleteDialog: Dispatch<SetStateAction<boolean>>;
-  setIsPermissionDialogOpen: Dispatch<SetStateAction<boolean>>;
   isAdmin: boolean;
   uploadFile: ({ files }: { files: File[] }) => void;
   isDownloading: boolean;
@@ -61,84 +53,74 @@ export const DataTableToolbar = ({
           className="h-8 p-4 md:w-40 lg:w-64"
         />
       </div>
-      <div className="flex items-center md:gap-2 w-full md:w-fit gap-4">
-        <CreateFolderDialog
-          pathname={pathname}
-          open={isCreateFolderDialogOpen}
-          onOpenChange={setIsCreateFolderDialogOpen}
-          onSuccess={() => table.toggleAllPageRowsSelected(false)} // cancel all selection after created
-        />
-        <Button
-          size="sm"
-          variant="outline"
-          className="w-1/2 md:w-fit md:ml-auto h-8 flex items-center py-4"
-          aria-label="Donwload"
-          onClick={() => {
-            isAdmin
-              ? setIsCreateFolderDialogOpen(true)
-              : setIsPermissionDialogOpen(true);
-          }}
-        >
-          <PlusIcon className="size-4 mr-2" />
-          Create Folder
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          className="w-1/2 md:w-fit md:ml-auto h-8 flex items-center py-4"
-          aria-label="Upload"
-          onClick={() => {
-            isAdmin
-              ? fileInputRef.current?.click()
-              : setIsPermissionDialogOpen(true);
-          }}
-          disabled={isUploading}
-        >
-          {isUploading ? (
-            <LoaderIcon className="animate-spin mr-2 size-4" />
-          ) : (
-            <UploadIcon className="size-4 mr-2" />
-          )}
-          {isUploading ? "Uploading..." : "Upload"}
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          className="ml-auto hidden h-8 lg:flex"
-          aria-label="Donwload"
-          onClick={() => onDownloadClick}
-          disabled={!table.getIsSomeRowsSelected() || isDownloading}
-        >
-          {isDownloading ? (
-            <LoaderIcon className="animate-spin mr-2 size-4" />
-          ) : (
-            <DownloadIcon className="size-4 mr-2" />
-          )}
-          {isDownloading ? "Downloading" : "Download"}
-        </Button>
-        <Input
-          type="file"
-          ref={fileInputRef}
-          className="hidden"
-          hidden
-          onChange={uploadInputChange}
-        />
-        <Button
-          size="sm"
-          variant="outline"
-          className="ml-auto hidden h-8 md:flex"
-          aria-label="Upload"
-          onClick={() => {
-            isAdmin
-              ? setShowDeleteDialog(true)
-              : setIsPermissionDialogOpen(true);
-          }}
-          disabled={!table.getIsSomeRowsSelected()}
-        >
-          <Cross2Icon className="size-4 mr-2" />
-          Delete
-        </Button>
-      </div>
+      {isAdmin && (
+        <div className="flex items-center md:gap-2 w-full md:w-fit gap-4">
+          <CreateFolderDialog
+            pathname={pathname}
+            open={isCreateFolderDialogOpen}
+            onOpenChange={setIsCreateFolderDialogOpen}
+            onSuccess={() => table.toggleAllPageRowsSelected(false)} // cancel all selection after created
+          />
+          <Button
+            size="sm"
+            variant="outline"
+            className="w-1/2 md:w-fit md:ml-auto h-8 flex items-center py-4"
+            aria-label="Donwload"
+            onClick={() => setIsCreateFolderDialogOpen(true)}
+          >
+            <PlusIcon className="size-4 mr-2" />
+            Create Folder
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="w-1/2 md:w-fit md:ml-auto h-8 flex items-center py-4"
+            aria-label="Upload"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading}
+          >
+            {isUploading ? (
+              <LoaderIcon className="animate-spin mr-2 size-4" />
+            ) : (
+              <UploadIcon className="size-4 mr-2" />
+            )}
+            {isUploading ? "Uploading..." : "Upload"}
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="ml-auto hidden h-8 lg:flex"
+            aria-label="Donwload"
+            onClick={() => onDownloadClick}
+            disabled={!table.getIsSomeRowsSelected() || isDownloading}
+          >
+            {isDownloading ? (
+              <LoaderIcon className="animate-spin mr-2 size-4" />
+            ) : (
+              <DownloadIcon className="size-4 mr-2" />
+            )}
+            {isDownloading ? "Downloading" : "Download"}
+          </Button>
+          <Input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            hidden
+            onChange={uploadInputChange}
+          />
+          <Button
+            size="sm"
+            variant="outline"
+            className="ml-auto hidden h-8 md:flex"
+            aria-label="Upload"
+            onClick={() => setShowDeleteDialog(true)}
+            disabled={!table.getIsSomeRowsSelected()}
+          >
+            <Cross2Icon className="size-4 mr-2" />
+            Delete
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

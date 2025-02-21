@@ -24,7 +24,7 @@ export async function getInformations({
 
   if (session) {
     const decrypted = await decrypt(session);
-    isAdmin = decrypted?.id === userInfo?.userId;
+    isAdmin = decrypted?.userId === userInfo?.userId;
   }
 
   if (!userInfo?.accessToken || !userInfo.refreshToken)

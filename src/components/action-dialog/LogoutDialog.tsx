@@ -7,50 +7,36 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ComponentPropsWithRef, useState, useTransition } from "react";
+import { ComponentPropsWithRef, useTransition } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { LoaderIcon } from "lucide-react";
-import { grantAdmin } from "@/lib/PermissionManager";
+import { clearPermission } from "@/lib/PermissionManager";
 
 interface CreateFolderProps extends ComponentPropsWithRef<typeof Dialog> {
   onSuccess?: () => void;
 }
 
-export const PermissionDialog = ({
-  onSuccess,
-  ...props
-}: CreateFolderProps) => {
+export const LogoutDialog = ({ onSuccess, ...props }: CreateFolderProps) => {
   const [isPending, startTransition] = useTransition();
-  const [secretKey, setSecretKey] = useState<string>();
-  const [error, setError] = useState<string>();
 
   const handleClick = async () => {
     startTransition(async () => {
-      if (!secretKey) return;
-      const res = await grantAdmin(secretKey);
-      if (res) {
-        await onSuccess?.();
-        await props.onOpenChange?.(false);
-      } else setError("Invalid Secret Key");
+      await clearPermission();
+      await onSuccess?.();
+      await props.onOpenChange?.(false);
     });
   };
   return (
     <Dialog {...props}>
       <DialogContent onClick={(e) => e.stopPropagation()}>
-        <DialogHeader>
-          <DialogTitle>Grant Permissions</DialogTitle>
+        <DialogHeader className="space-y-3">
+          <DialogTitle>Logout</DialogTitle>
           <DialogDescription>
-            Please enter the secret key to grant permission to do the action
+            Are you sure you want to clear all the permissions? You will be no
+            longer to do some actions and access to specific locked folder.
           </DialogDescription>
         </DialogHeader>
-        <Input
-          onChange={(e) => setSecretKey(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleClick();
-          }}
-        />
-        {error && <p className="text-red-600">{error}</p>}
+
         <DialogFooter className="justify-end gap-3 md:gap-2">
           <DialogClose asChild>
             <Button type="button" variant="outline" title="cancel">
@@ -58,7 +44,7 @@ export const PermissionDialog = ({
             </Button>
           </DialogClose>
           <Button
-            variant="secondary"
+            variant="destructive"
             title="delete"
             onClick={handleClick}
             disabled={isPending}
@@ -70,7 +56,7 @@ export const PermissionDialog = ({
                 aria-hidden="true"
               />
             )}
-            Submit
+            Confirm
           </Button>
         </DialogFooter>
       </DialogContent>

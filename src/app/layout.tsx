@@ -4,10 +4,8 @@ import "./globals.css";
 import { Theme } from "@radix-ui/themes";
 import { ThemeProvider } from "@/components/root/ThemeProvider";
 import NextTopLoader from "nextjs-toploader";
-import { SiteHeader } from "@/components/header/SiteHeader";
 import { Toaster } from "@/components/ui/toaster";
 import { siteConfig } from "@/config/site.config";
-import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,9 +29,7 @@ export default function RootLayout({
               color="rgb(156, 163, 175, 0.9)"
               showSpinner={false}
             />
-            <SiteHeader />
             {children}
-            <Footer />
           </Theme>
         </ThemeProvider>
         <Toaster />

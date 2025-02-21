@@ -1,6 +1,5 @@
 "use client";
 import { ReactNode, useMemo, useState } from "react";
-import { PermissionDialog } from "@/components/action-dialog/PermissionDialog";
 import { DataTableToolbar } from "@/components/DataToolbar";
 import TableFooter from "@/components/table/TableFooter";
 import { useDataTable } from "@/hooks/useDataTable";
@@ -25,9 +24,7 @@ export const TableShell = ({
   isAdmin: boolean;
 }) => {
   const isDesktop = useMediaQuery("(min-width: 860px)");
-  const [isPermDialogOpen, setPermDialogOpen] = useState<boolean>(false);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
-  const router = useRouter();
   const pathname = usePathname();
   const pathSegment = pathname.split("/");
   const cleanPath = `/${pathSegment.slice(2, pathSegment.length).join("/")}`;
@@ -46,16 +43,11 @@ export const TableShell = ({
   const { isUploading, uploadFile } = useUploader({
     isAdmin,
     path: cleanPath,
-    setPermDialogOpen,
   });
 
   return (
     <div className="w-full md:w-11/12 mx-auto overflow-auto">
-      <PermissionDialog
-        onSuccess={() => router.refresh()} // todo: check
-        open={isPermDialogOpen}
-        onOpenChange={setPermDialogOpen}
-      />
+    
       <DeleteDialog
         items={selectedItems}
         open={isDeleteDialogOpen}
@@ -65,7 +57,6 @@ export const TableShell = ({
       <DataTableToolbar
         table={table}
         setShowDeleteDialog={setDeleteDialogOpen}
-        setIsPermissionDialogOpen={setPermDialogOpen}
         isAdmin={isAdmin}
         uploadFile={uploadFile}
         onDownloadClick={onDownloadClick}
@@ -86,7 +77,6 @@ export const TableShell = ({
           isAdmin={isAdmin}
           selectedItems={selectedItems}
           setDeleteDialogOpen={setDeleteDialogOpen}
-          setPermDialogOpen={setPermDialogOpen}
           isDownloading={isDownloading}
           onDownloadClick={onDownloadClick}
         />

@@ -35,17 +35,13 @@ async function upload({
 export function useUploader({
   isAdmin,
   path,
-  setPermDialogOpen,
 }: {
   isAdmin: boolean;
   path: string;
-  setPermDialogOpen: Dispatch<SetStateAction<boolean>>;
 }) {
   const [isUploading, startUploading] = useTransition();
   function uploadFile({ files }: { files: File[] }) {
-    if (!isAdmin) {
-      return setPermDialogOpen(true);
-    }
+    if (!isAdmin) return;
     startUploading(async () => {
       const accessToken = await getCachedToken();
       if (accessToken && isAdmin) {

@@ -14,6 +14,12 @@ import { ItemsResponse } from "@/lib/driveRequest";
 import { flexRender, Table as TanstackTable } from "@tanstack/react-table";
 import DragBox from "../DragBox";
 import { useDragAndDrop } from "@/hooks/useDragAndDrop";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 export const DataTable = ({
   table,
@@ -56,37 +62,49 @@ export const DataTable = ({
       <TableBody>
         {table.getRowModel().rows?.length && !dragState ? (
           table.getRowModel().rows.map((row, i) => (
-            <TableRow
-              key={`item-${i + 1}`}
-              className="cursor-pointer"
-              data-state={row.getIsSelected() && "selected"}
-              onContextMenu={(event) => {
-                event.preventDefault(); // todo
-              }}
-              onClick={(event) => {
-                if (
-                  (event.target as HTMLElement).getAttribute("data-group") ===
-                  "row-data"
-                ) {
-                  const filename = (row.getValue("file") as any)?.name;
-                  router.push(`${pathname}/${filename}`);
-                }
-              }}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <TableCell
-                  key={cell.id}
-                  data-group={
-                    cell.column.id !== "select" ? "row-data" : undefined
-                  }
-                  onClick={() => {
-                    if (cell.column.id === "select") cell.row.toggleSelected();
+            <ContextMenu key={row.id}>
+              <ContextMenuTrigger asChild>
+                <TableRow
+                  key={`item-${i + 1}`}
+                  className="cursor-pointer"
+                  data-state={row.getIsSelected() && "selected"}
+                  onClick={(event) => {
+                    if (
+                      (event.target as HTMLElement).getAttribute(
+                        "data-group"
+                      ) === "row-data"
+                    ) {
+                      const filename = (row.getValue("file") as any)?.name;
+                      router.push(`${pathname}/${filename}`);
+                    }
                   }}
                 >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
-            </TableRow>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      data-group={
+                        cell.column.id !== "select" ? "row-data" : undefined
+                      }
+                      onClick={() => {
+                        if (cell.column.id === "select")
+                          cell.row.toggleSelected();
+                      }}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </ContextMenuTrigger>
+              <ContextMenuContent>
+                <ContextMenuItem onClick={() => {}}>Rename</ContextMenuItem>
+                <ContextMenuItem>Share</ContextMenuItem>
+                <ContextMenuItem>Download</ContextMenuItem>
+                <ContextMenuItem>Delete</ContextMenuItem>
+              </ContextMenuContent>
+            </ContextMenu>
           ))
         ) : (
           <TableRow>
