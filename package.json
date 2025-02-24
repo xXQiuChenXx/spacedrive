@@ -35,7 +35,7 @@
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",
     "drizzle-kit": "^0.30.4",
-    "drizzle-orm": "^0.33.0",
+    "drizzle-orm": "^0.39.3",
     "jose": "^5.10.0",
     "jszip": "^3.10.1",
     "lucide-react": "^0.475.0",
